@@ -18,7 +18,7 @@
       <el-table-column prop="interestRate" label="实际利率"></el-table-column>
       <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
       <el-table-column prop="profitDate" label="收利日期"></el-table-column>
-      <el-table-column prop="depositPeriod" label="存款期"></el-table-column>
+      <el-table-column prop="depositPeriod" label="存款期（日）"></el-table-column>
       <el-table-column prop="expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column>
       <el-table-column prop="expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
       <el-table-column prop="totalEffectiveUnterestIncome" label="实际利息总收益"></el-table-column>
@@ -26,7 +26,7 @@
       <el-table-column prop="buyingTime" label="买入时间"></el-table-column>
       <el-table-column prop="dueTime" label="到期时间"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="150">
+      <el-table-column label="操作"  width="300">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -35,6 +35,7 @@
             @click="handleEdit(scope.$index, scope.row)"
           >编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">设置提醒规则</el-button>
         </template>
       </el-table-column>
     </el-table>
