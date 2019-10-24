@@ -69,6 +69,7 @@ export default {
     },
     handleAdd() {
       console.log("handleAdd");
+      this.$emit("handleAdd", this.param);
     }
   }
 };

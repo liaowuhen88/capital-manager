@@ -1,31 +1,31 @@
 <template>
   <div class="bank-box">
-    <searchs @search="getBanks" />
+    <el-row>
+      <el-col :span="3">
+        <el-input v-model="input" placeholder="请输入文件名称"></el-input>
+      </el-col>
+      <el-col :span="3">
+        <el-date-picker
+          v-model="bank.times"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-col>
+      <el-col :span="2" :offset="4">
+        <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
+      </el-col>
+      <el-col :span="2" :offset="4">
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">上传文件</el-button>
+        <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
+      </el-col>
+    </el-row>
 
     <el-table :data="banks" show-summary @selection-change="selectChange" style="width: 100%">
       <el-table-column type="selection"></el-table-column>
-      <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="bank" label="银行"></el-table-column>
-      <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
-      <el-table-column prop="cashAamount" label="现金金额"></el-table-column>
-      <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
-      <el-table-column prop="accountBalance" label="总金额"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="300">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            plain
-            @click="investmentDetails(scope.$index, scope.row)"
-          >查询投资明细</el-button>
-          <el-button
-            size="mini"
-            type="primary"
-            plain
-            @click="operationLog(scope.$index, scope.row)"
-          >查询交易流水</el-button>
-        </template>
-      </el-table-column>
+      <el-table-column prop="name" label="文件名称"></el-table-column>
+      <el-table-column prop="bank" label="文件描述"></el-table-column>
     </el-table>
     <el-pagination
       background
@@ -40,25 +40,19 @@
       :visible.sync="bankFormVisible"
       @close="resetForm('bankForm')"
     >
-      <el-form :model="bank" :rules="rules" ref="bankForm">
-        <el-form-item label="姓名" prop="name" label-width="50px">
-          <el-input v-model="bank.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="银行" label-width="50px">
-          <el-input v-model="bank.phone" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="卡号" label-width="50px">
-          <el-input v-model="bank.address" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="日期" label-width="50px">
-          <el-date-picker
-            v-model="bank.date"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择日期"
-          ></el-date-picker>
-        </el-form-item>
-      </el-form>
+      <el-upload
+        class="upload-demo"
+        drag
+        action="https://jsonplaceholder.typicode.com/posts/"
+        multiple
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">
+          将文件拖到此处，或
+          <em>点击上传</em>
+        </div>
+        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
       <div slot="footer" class="dialog-footer">
         <el-button @click="bankFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitBank('bankForm')">确 定</el-button>
@@ -79,6 +73,7 @@ export default {
         name: "",
         phone: "",
         address: "",
+        times: "",
         status: 0
       },
       bankBackup: Object.assign({}, this.bank),
