@@ -10,15 +10,20 @@
       <el-table-column prop="cashAamount" label="现金金额"></el-table-column>
       <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
       <el-table-column prop="accountBalance" label="总金额"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="150">
+      <el-table-column label="操作" fixed="right" width="300">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="primary"
             plain
-            @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            @click="investmentDetails(scope.$index, scope.row)"
+          >查询投资明细</el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            plain
+            @click="operationLog(scope.$index, scope.row)"
+          >查询交易流水</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -122,11 +127,11 @@ export default {
           console.error(err);
         });
     },
-    handleEdit(index, row) {
-      this.dialogTitle = "编辑";
-      this.bank = Object.assign({}, row);
-      this.bankFormVisible = true;
-      this.rowIndex = index;
+    investmentDetails(index, row) {
+      this.$message({
+        showClose: true,
+        message: "将来展示投资明细"
+      });
     },
     submitBank(formName) {
       // 表单验证
@@ -149,22 +154,11 @@ export default {
         }
       });
     },
-    handleDelete(index, row) {
-      this.$confirm(`确定删除用户 【${row.name}】 吗?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.banks.splice(index, 1);
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-        })
-        .catch(() => {
-          console.log("取消删除");
-        });
+    operationLog(index, row) {
+      this.$message({
+        showClose: true,
+        message: "将来展示交易流水"
+      });
     },
     resetForm(formName) {
       this.$refs[formName].clearValidate();
