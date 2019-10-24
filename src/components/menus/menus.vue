@@ -25,7 +25,15 @@
     </el-menu-item>
     <el-menu-item index="/bankLog">
       <i class="el-icon-menu"></i>
-      <span slot="title">操作日志</span>
+      <span slot="title">交易流水</span>
+    </el-menu-item>
+    <el-menu-item index="/uploadFile">
+      <i class="el-icon-menu"></i>
+      <span slot="title">上传资料</span>
+    </el-menu-item>
+    <el-menu-item index="/earningsStatistics">
+      <i class="el-icon-menu"></i>
+      <span slot="title">盈利统计</span>
     </el-menu-item>
     <!-- <el-menu-item index="/articles">
       <i class="el-icon-document"></i>
