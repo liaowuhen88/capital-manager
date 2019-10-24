@@ -20,6 +20,8 @@
       <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
       <el-table-column prop="transactionAmount" label="交易金额"></el-table-column>
       <el-table-column prop="transactionType" label="交易类型"></el-table-column>
+      <el-table-column prop="transactionParty" label="交易方"></el-table-column>
+      <el-table-column prop="transactionCard" label="交易卡号"></el-table-column>
       <el-table-column prop="transactionTime" label="交易日期"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="150">

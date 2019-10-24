@@ -55,11 +55,11 @@ Mock.mock('/api/bankProducts', bankProductsData)
 // 操作流水数据
 const bankLogData = () => {
   let bankLogs = [
-    {"name":"李杰","bank":"交通银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"转账","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息"},
-    {"name":"李杰","bank":"招生银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"转账","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息"},
-    {"name":"李艳","bank":"中国银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"转账","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息"},
-    {"name":"李凭跃","bank":"交通银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"转账","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息"},
-    {"name":"李杰","bank":"广发银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"转账","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息"},
+    {"name":"李杰","bank":"交通银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"转账","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息","transactionParty":"李杰-招商银行","transactionCard":"6221777655466"},
+    {"name":"李杰","bank":"招生银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"利息收入","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息"},
+    {"name":"李艳","bank":"中国银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"购买理财","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息"},
+    {"name":"李凭跃","bank":"交通银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"利息收入","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息"},
+    {"name":"李杰","bank":"广发银行","bankCard":Mock.mock(/^1[0-9]{10}$/),"transactionAmount":"10000","transactionType":"购买理财","transactionTime":Random.date('yyyy-MM-dd'),"remark":"备注信息"},
   ]
   return bankLogs
 }
