@@ -1,19 +1,7 @@
 <template>
-  <div class="user-box">
-    <el-row>
-      <el-col :span="24">
-        <div class="tool-box">
-          <el-button
-            type="primary"
-            icon="el-icon-circle-plus-outline"
-            size="small"
-            @click="handleAdd"
-          >新增</el-button>
-          <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
-        </div>
-      </el-col>
-    </el-row>
-    <el-table :data="users" @selection-change="selectChange" style="width: 100%">
+  <div class="bankLog-box">
+    <searchs @search="getBankLogs" />
+    <el-table :data="bankLogs" @selection-change="selectChange" style="width: 100%">
       <el-table-column type="selection"></el-table-column>
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bank" label="银行"></el-table-column>
@@ -46,22 +34,22 @@
     <el-dialog
       :title="dialogTitle"
       width="600px"
-      :visible.sync="userFormVisible"
-      @close="resetForm('userForm')"
+      :visible.sync="bankLogFormVisible"
+      @close="resetForm('bankLogForm')"
     >
-      <el-form :model="user" :rules="rules" ref="userForm">
+      <el-form :model="bankLog" :rules="rules" ref="bankLogForm">
         <el-form-item label="姓名" prop="name" label-width="50px">
-          <el-input v-model="user.name" autocomplete="off"></el-input>
+          <el-input v-model="bankLog.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="银行" label-width="50px">
-          <el-input v-model="user.phone" autocomplete="off"></el-input>
+          <el-input v-model="bankLog.phone" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="卡号" label-width="50px">
-          <el-input v-model="user.address" autocomplete="off"></el-input>
+          <el-input v-model="bankLog.address" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="日期" label-width="50px">
           <el-date-picker
-            v-model="user.date"
+            v-model="bankLog.date"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="选择日期"
@@ -69,19 +57,20 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="userFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitUser('userForm')">确 定</el-button>
+        <el-button @click="bankLogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitBankLog('bankLogForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
-
+ 
 <script>
+import searchs from "@/components/search/search";
 export default {
   data() {
     return {
-      users: [],
-      user: {
+      bankLogs: [],
+      bankLog: {
         id: "",
         date: "",
         name: "",
@@ -89,9 +78,9 @@ export default {
         address: "",
         status: 0
       },
-      userBackup: Object.assign({}, this.user),
+      bankLogBackup: Object.assign({}, this.bankLog),
       multipleSelection: [],
-      userFormVisible: false,
+      bankLogFormVisible: false,
       dialogTitle: "",
       rowIndex: 9999,
       rules: {
@@ -103,14 +92,32 @@ export default {
     };
   },
   mounted() {
-    this.getUsers();
+    this.getBankLogs();
+  },
+  components: {
+    searchs
   },
   methods: {
-    getUsers() {
+    getBankLogs(param) {
       this.loading = true;
       this.$http("/api/bankLogs")
         .then(res => {
-          this.users = res.data;
+          this.bankLogs = res.data.filter(item => {
+            if (param) {
+              if ("" != param.name && "" != param.bank) {
+                return item.name == param.name && item.bank == param.bank;
+              }
+              if ("" != param.name) {
+                return item.name == param.name;
+              }
+              if ("" != param.bank) {
+                return item.bank == param.bank;
+              }
+              return true;
+            } else {
+              return true;
+            }
+          });
         })
         .catch(err => {
           console.error(err);
@@ -118,24 +125,24 @@ export default {
     },
     handleEdit(index, row) {
       this.dialogTitle = "编辑";
-      this.user = Object.assign({}, row);
-      this.userFormVisible = true;
+      this.bankLog = Object.assign({}, row);
+      this.bankLogFormVisible = true;
       this.rowIndex = index;
     },
-    submitUser(formName) {
+    submitBankLog(formName) {
       // 表单验证
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let id = this.user.id;
+          let id = this.bankLog.id;
           if (id) {
             // id非空-修改
-            this.users.splice(this.rowIndex, 1, this.user);
+            this.bankLogs.splice(this.rowIndex, 1, this.bankLog);
           } else {
             // id为空-新增
-            this.user.id = this.users.length + 1;
-            this.users.unshift(this.user);
+            this.bankLog.id = this.bankLogs.length + 1;
+            this.bankLogs.unshift(this.bankLog);
           }
-          this.userFormVisible = false;
+          this.bankLogFormVisible = false;
           this.$message({
             type: "success",
             message: id ? "修改成功！" : "新增成功！"
@@ -150,7 +157,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.users.splice(index, 1);
+          this.bankLogs.splice(index, 1);
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -192,15 +199,15 @@ export default {
     },
     handleAdd() {
       this.dialogTitle = "新增";
-      this.user = Object.assign({}, this.userBackup);
-      this.userFormVisible = true;
+      this.bankLog = Object.assign({}, this.bankLogBackup);
+      this.bankLogFormVisible = true;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.user-box {
+.bankLog-box {
   width: 100%;
   .tool-box {
     padding: 10px 10px;
