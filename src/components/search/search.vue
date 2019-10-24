@@ -2,17 +2,17 @@
   <el-row>
     <el-col :span="3">
       <el-select v-model="param.name" clearable placeholder="请选择姓名">
-        <el-option v-for="item in names" :key="item" :label="item" :value="item"></el-option>
+        <el-option v-for="item in names" :key="item.key" :label="item.lable" :value="item.key"></el-option>
       </el-select>
     </el-col>
     <el-col :span="3">
       <el-select v-model="param.bank" clearable placeholder="请选择银行">
-        <el-option v-for="item in banks" :key="item" :label="item" :value="item"></el-option>
+        <el-option v-for="item in banks" :key="item.key" :label="item.lable" :value="item.key"></el-option>
       </el-select>
     </el-col>
     <el-col :span="3">
       <el-select v-model="param.bankCard" clearable placeholder="请选择银行卡">
-        <el-option v-for="item in bankCards" :key="item" :label="item" :value="item"></el-option>
+        <el-option v-for="item in bankCards" :key="item.key" :label="item.lable" :value="item.key"></el-option>
       </el-select>
     </el-col>
     <el-col :span="3">
@@ -40,10 +40,26 @@ export default {
   data() {
     return {
       currentPath: location.pathname,
-      names: ["李杰", "李艳", "李凭跃"],
-      banks: ["中国工商银行", "招商银行", "交通银行", "天津银行"],
-      bankCards: ["622100", "65554", "6333", "6000"],
-      param: { name: "", bank: "", bankCard: "",times:"" }
+      names: [
+        { key: "", lable: "全部" },
+        { key: "李杰", lable: "李杰" },
+        { key: "李艳", lable: "李艳" },
+        { key: "李凭跃", lable: "李凭跃" }
+      ],
+      banks: [
+        { key: "", lable: "全部" },
+        { key: "中国工商银行", lable: "中国工商银行" },
+        { key: "招商银行", lable: "招商银行" },
+        { key: "交通银行", lable: "交通银行" },
+        { key: "天津银行", lable: "天津银行" }
+      ],
+      bankCards: [
+        { key: "", lable: "全部" },
+        { key: "622100", lable: "622100" },
+        { key: "65554", lable: "65554" },
+        { key: "6333", lable: "6333" }
+      ],
+      param: { name: "", bank: "", bankCard: "", times: "" }
     };
   },
   methods: {

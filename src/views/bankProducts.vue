@@ -14,7 +14,8 @@
       <el-table-column prop="productType" label="产品类型"></el-table-column>
       <el-table-column prop="bankProduct" label="购买产品"></el-table-column>
       <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
-      <el-table-column prop="interestRate" label="利率"></el-table-column>
+      <el-table-column prop="expectedinterestRate" label="预期利率"></el-table-column>
+      <el-table-column prop="interestRate" label="实际利率"></el-table-column>
       <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
       <el-table-column prop="profitDate" label="收利日期"></el-table-column>
       <el-table-column prop="depositPeriod" label="存款期"></el-table-column>
