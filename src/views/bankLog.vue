@@ -4,13 +4,13 @@
     <el-table :data="bankLogs" @selection-change="selectChange" style="width: 100%">
       <el-table-column type="selection"></el-table-column>
       <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="bank" label="银行"></el-table-column>
+      <el-table-column prop="bankName" label="银行"></el-table-column>
       <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
       <el-table-column prop="transactionAmount" label="交易金额"></el-table-column>
       <el-table-column prop="transactionType" label="交易类型"></el-table-column>
       <el-table-column prop="transactionParty" label="交易方"></el-table-column>
       <el-table-column prop="transactionCard" label="交易卡号"></el-table-column>
-      <el-table-column prop="transactionTime" label="交易日期"></el-table-column>
+      <el-table-column prop="transactionTime" label="交易日期"  width="180"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
     </el-table>
     <el-pagination
