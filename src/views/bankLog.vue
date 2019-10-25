@@ -12,17 +12,6 @@
       <el-table-column prop="transactionCard" label="交易卡号"></el-table-column>
       <el-table-column prop="transactionTime" label="交易日期"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="150">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            plain
-            @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
     </el-table>
     <el-pagination
       background

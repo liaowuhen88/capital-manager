@@ -25,7 +25,7 @@
     </el-menu-item>
     <el-menu-item index="/bankLog">
       <i class="el-icon-menu"></i>
-      <span slot="title">交易流水</span>
+      <span slot="title">账单</span>
     </el-menu-item>
     <el-menu-item index="/uploadFile">
       <i class="el-icon-menu"></i>

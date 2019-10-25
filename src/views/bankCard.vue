@@ -1,29 +1,79 @@
 <template>
   <div class="bank-box">
-    <searchs @search="getBanks" />
+    <searchs @search="getBanks" @handleAdd="handleAdd" />
 
-    <el-table :data="banks" show-summary @selection-change="selectChange" style="width: 100%">
-      <el-table-column type="selection"></el-table-column>
+    <el-table :stripe="true" :data="banks" show-summary style="width: 100%">
       <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="bank" label="银行"></el-table-column>
-      <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
+      <el-table-column prop="bankName" label="银行"></el-table-column>
+      <el-table-column prop="bankCard" label="银行卡号"  width="150"></el-table-column>
       <el-table-column prop="cashAamount" label="现金金额"></el-table-column>
       <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
       <el-table-column prop="accountBalance" label="总金额"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="300">
+      <el-table-column prop="updateTime" label="最近更新时间"  width="180"></el-table-column>
+      <el-table-column label="当前时间"  width="180">{{ Utils.getTime() }}</el-table-column>
+      <el-table-column label="操作" fixed="right" width="350">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            plain
-            @click="investmentDetails(scope.$index, scope.row)"
-          >查询投资明细</el-button>
-          <el-button
-            size="mini"
-            type="primary"
-            plain
-            @click="operationLog(scope.$index, scope.row)"
-          >查询交易流水</el-button>
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="investmentDetails(scope.$index, scope.row)"
+              >转入</el-button>
+            </el-col>
+            <el-col :span="6">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="investmentDetails(scope.$index, scope.row)"
+              >转出</el-button>
+            </el-col>
+            <el-col :span="6">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="investmentDetails(scope.$index, scope.row)"
+              >转账</el-button>
+            </el-col>
+            <el-col :span="6">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="operationLog(scope.$index, scope.row)"
+              >账单</el-button>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="investmentDetails(scope.$index, scope.row)"
+              >活期利息收入</el-button>
+            </el-col>
+            <el-col :span="8">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="investmentDetails(scope.$index, scope.row)"
+              >查询投资明细</el-button>
+            </el-col>
+            <el-col :span="8">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="investmentDetails(scope.$index, scope.row)"
+              >买入理财</el-button>
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
     </el-table>
@@ -41,22 +91,17 @@
       @close="resetForm('bankForm')"
     >
       <el-form :model="bank" :rules="rules" ref="bankForm">
-        <el-form-item label="姓名" prop="name" label-width="50px">
+        <el-form-item label="姓名:" prop="name" label-width="100px">
           <el-input v-model="bank.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="银行" label-width="50px">
-          <el-input v-model="bank.phone" autocomplete="off"></el-input>
+        <el-form-item label="银行:" prop="bankName" label-width="100px">
+          <el-input v-model="bank.bankName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="卡号" label-width="50px">
-          <el-input v-model="bank.address" autocomplete="off"></el-input>
+        <el-form-item label="卡号:" prop="bankCard" label-width="100px">
+          <el-input v-model="bank.bankCard" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="日期" label-width="50px">
-          <el-date-picker
-            v-model="bank.date"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择日期"
-          ></el-date-picker>
+        <el-form-item label="现金金额:" label-width="100px">
+          <el-input v-model="bank.cashAmount" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -68,18 +113,19 @@
 </template>
 
 <script>
-import searchs from "@/components/search/search";
+import searchs from "@/components/search/search_common.vue";
 export default {
   data() {
     return {
       banks: [],
       bank: {
         id: "",
-        date: "",
         name: "",
-        phone: "",
-        address: "",
-        status: 0
+        bankName: "",
+        bankCard: "",
+        cashAmount: "",
+        investmentAmount: "",
+        accountBalance: ""
       },
       bankBackup: Object.assign({}, this.bank),
       multipleSelection: [],
@@ -87,10 +133,9 @@ export default {
       dialogTitle: "",
       rowIndex: 9999,
       rules: {
-        name: [
-          { required: true, message: "请输入姓名", trigger: "blur" },
-          { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" }
-        ]
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        bankName: [{ required: true, message: "请输入银行", trigger: "blur" }],
+        bankCard: [{ required: true, message: "请输入卡号", trigger: "blur" }]
       }
     };
   },
@@ -104,24 +149,20 @@ export default {
   methods: {
     getBanks(param) {
       this.loading = true;
-      this.$http("/api/banks")
+      this.$http({
+        method: "post",
+        url: "http://localhost:8086/api/banks/selectAll",
+        data: param
+      })
         .then(res => {
-          this.banks = res.data.filter(item => {
-            if (param) {
-              if ("" != param.name && "" != param.bank) {
-                return item.name == param.name && item.bank == param.bank;
-              }
-              if ("" != param.name) {
-                return item.name == param.name;
-              }
-              if ("" != param.bank) {
-                return item.bank == param.bank;
-              }
-              return true;
-            } else {
-              return true;
-            }
-          });
+          if (res.data.code == 0) {
+            this.banks = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
         })
         .catch(err => {
           console.error(err);
@@ -142,9 +183,24 @@ export default {
             // id非空-修改
             this.banks.splice(this.rowIndex, 1, this.bank);
           } else {
-            // id为空-新增
-            this.bank.id = this.banks.length + 1;
-            this.banks.unshift(this.bank);
+            this.$http({
+              method: "post",
+              url: "http://localhost:8086/api/banks/insert",
+              data: this.bank
+            })
+              .then(res => {
+                if (res.data.code == 0) {
+                  this.banks = res.data.data;
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: res.data.msg
+                  });
+                }
+              })
+              .catch(err => {
+                console.error(err);
+              });
           }
           this.bankFormVisible = false;
           this.$message({
@@ -186,9 +242,6 @@ export default {
             console.log("取消删除");
           });
       }
-    },
-    selectChange(val) {
-      this.multipleSelection = val;
     },
     handleAdd() {
       this.dialogTitle = "新增";

@@ -25,17 +25,46 @@
       <el-table-column prop="principalAndInterestIncome" label="本息收益"></el-table-column>
       <el-table-column prop="buyingTime" label="买入时间"></el-table-column>
       <el-table-column prop="dueTime" label="到期时间"></el-table-column>
+      <el-table-column prop="dueTime" label="当前时间"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
-      <el-table-column label="操作"  width="300">
+      <el-table-column label="操作" fixed="right" width="200">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            plain
-            @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">设置提醒规则</el-button>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="handleEdit(scope.$index, scope.row)"
+              >编辑</el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="handleEdit(scope.$index, scope.row)"
+              >理财赎回</el-button>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="handleEdit(scope.$index, scope.row)"
+              >利息收入</el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="handleDelete(scope.$index, scope.row)"
+              >设置提醒规则</el-button>
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
     </el-table>
