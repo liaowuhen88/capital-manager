@@ -87,26 +87,24 @@ export default {
     searchs
   },
   methods: {
-    getBankLogs(param) {
-      this.loading = true;
-      this.$http("/api/bankLogs")
+    getBankLogs(index, row) {
+      this.dialogTitle = "查看账单";
+      this.bankLogsFormVisible = true;
+      this.bank = Object.assign({}, row);
+      this.$http({
+        method: "post",
+        url: "http://localhost:8086/api/bankBill/query",
+        data: {}
+      })
         .then(res => {
-          this.bankLogs = res.data.filter(item => {
-            if (param) {
-              if ("" != param.name && "" != param.bank) {
-                return item.name == param.name && item.bank == param.bank;
-              }
-              if ("" != param.name) {
-                return item.name == param.name;
-              }
-              if ("" != param.bank) {
-                return item.bank == param.bank;
-              }
-              return true;
-            } else {
-              return true;
-            }
-          });
+          if (res.data.code == 0) {
+            this.bankLogs = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
         })
         .catch(err => {
           console.error(err);

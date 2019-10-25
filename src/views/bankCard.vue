@@ -20,14 +20,14 @@
                 type="primary"
                 plain
                 @click="income(scope.$index, scope.row)"
-              >转入（收入）</el-button>
+              >转入</el-button>
             </el-col>
             <el-col :span="5">
               <el-button
                 size="mini"
                 type="primary"
                 plain
-                @click="investmentDetails(scope.$index, scope.row)"
+                @click="pay(scope.$index, scope.row)"
               >支出</el-button>
             </el-col>
             <el-col :span="6">
@@ -35,16 +35,8 @@
                 size="mini"
                 type="primary"
                 plain
-                @click="investmentDetails(scope.$index, scope.row)"
+                @click="transfer(scope.$index, scope.row)"
               >转账</el-button>
-            </el-col>
-            <el-col :span="6">
-              <el-button
-                size="mini"
-                type="primary"
-                plain
-                @click="getBankLogs(scope.$index, scope.row)"
-              >账单</el-button>
             </el-col>
           </el-row>
 
@@ -54,7 +46,7 @@
                 size="mini"
                 type="primary"
                 plain
-                @click="investmentDetails(scope.$index, scope.row)"
+                @click="cashInterestIncome(scope.$index, scope.row)"
               >活期利息收入</el-button>
             </el-col>
             <el-col :span="8">
@@ -62,15 +54,7 @@
                 size="mini"
                 type="primary"
                 plain
-                @click="investmentDetails(scope.$index, scope.row)"
-              >查询投资明细</el-button>
-            </el-col>
-            <el-col :span="8">
-              <el-button
-                size="mini"
-                type="primary"
-                plain
-                @click="investmentDetails(scope.$index, scope.row)"
+                @click="investment(scope.$index, scope.row)"
               >买入理财</el-button>
             </el-col>
           </el-row>
@@ -134,27 +118,6 @@
         <el-button @click="bankIncomeFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitBankIncome('bankIncomeForm')">确 定</el-button>
       </div>
-    </el-dialog>
-
-    <el-dialog :title="dialogTitle" :visible.sync="bankLogsFormVisible">
-      <el-table :data="bankLogs" style="width: 100%">
-        <el-table-column prop="name" label="姓名"></el-table-column>
-        <el-table-column prop="bankName" label="银行"></el-table-column>
-        <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
-        <el-table-column prop="transactionAmount" label="交易金额"></el-table-column>
-        <el-table-column prop="transactionType" label="交易类型"></el-table-column>
-        <el-table-column prop="transactionParty" label="交易方"></el-table-column>
-        <el-table-column prop="transactionCard" label="交易卡号"></el-table-column>
-        <el-table-column prop="transactionTime" label="交易日期"></el-table-column>
-        <el-table-column prop="remark" label="备注"></el-table-column>
-      </el-table>
-      <el-pagination
-        background
-        :page-sizes="[10, 20, 30, 50]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
-      ></el-pagination>
     </el-dialog>
   </div>
 </template>
@@ -225,12 +188,6 @@ export default {
           console.error(err);
         });
     },
-    investmentDetails(index, row) {
-      this.$message({
-        showClose: true,
-        message: "将来展示投资明细"
-      });
-    },
     submitBank(formName) {
       // 表单验证
       this.$refs[formName].validate(valid => {
@@ -296,13 +253,6 @@ export default {
         }
       });
     },
-
-    operationLog(index, row) {
-      this.$message({
-        showClose: true,
-        message: "将来展示交易流水"
-      });
-    },
     resetForm(formName) {
       this.$refs[formName].clearValidate();
     },
@@ -312,34 +262,38 @@ export default {
       this.bankFormVisible = true;
     },
     income(index, row) {
-      this.dialogTitle = "新增收入";
+      this.dialogTitle = "收入";
       this.bankInCome = Object.assign({}, row);
       this.bankInCome.bankCardId = row.id;
       this.bankIncomeFormVisible = true;
     },
-    getBankLogs(index, row) {
-      this.dialogTitle = "查看账单";
-      this.bankLogsFormVisible = true;
-      this.bank = Object.assign({}, row);
-      this.$http({
-        method: "post",
-        url: "http://localhost:8086/api/bankBill/query",
-        data: {}
-      })
-        .then(res => {
-          if (res.data.code == 0) {
-            this.bankLogs = res.data.data;
-          } else {
-            this.$message({
-              showClose: true,
-              message: res.data.msg
-            });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
+    transfer(index, row) {
+      this.dialogTitle = "转账";
+      this.bankInCome = Object.assign({}, row);
+      this.bankInCome.bankCardId = row.id;
+      this.bankIncomeFormVisible = true;
+    },
+    pay(index, row) {
+      this.dialogTitle = "支出";
+      this.bankInCome = Object.assign({}, row);
+      this.bankInCome.bankCardId = row.id;
+      this.bankIncomeFormVisible = true;
+    },
+    cashInterestIncome(index, row) {
+      this.dialogTitle = "活期利息收入";
+      this.bankInCome = Object.assign({}, row);
+      this.bankInCome.bankCardId = row.id;
+      this.bankIncomeFormVisible = true;
+    },
+    investment(index, row) {
+      this.dialogTitle = "购买理财";
+      this.bankInCome = Object.assign({}, row);
+      this.bankInCome.bankCardId = row.id;
+      this.bankIncomeFormVisible = true;
     }
+
+    
+    
   }
 };
 </script>
