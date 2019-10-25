@@ -32,20 +32,17 @@ export default {
     return {
       currentPath: location.pathname,
       names: [
-        { key: "", lable: "全部" },
         { key: "李杰", lable: "李杰" },
         { key: "李艳", lable: "李艳" },
         { key: "李凭跃", lable: "李凭跃" }
       ],
       banks: [
-        { key: "", lable: "全部" },
         { key: "中国工商银行", lable: "中国工商银行" },
         { key: "招商银行", lable: "招商银行" },
         { key: "交通银行", lable: "交通银行" },
         { key: "天津银行", lable: "天津银行" }
       ],
       bankCards: [
-        { key: "", lable: "全部" },
         { key: "622100", lable: "622100" },
         { key: "65554", lable: "65554" },
         { key: "6333", lable: "6333" }

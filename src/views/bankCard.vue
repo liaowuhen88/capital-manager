@@ -1,34 +1,34 @@
 <template>
   <div class="bank-box">
-    <searchs @search="getBanks" @handleAdd="handleAdd" />
+    <searchsVue @search="getBanks" @handleAdd="handleAdd" />
 
     <el-table :stripe="true" :data="banks" show-summary style="width: 100%">
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bankName" label="银行"></el-table-column>
-      <el-table-column prop="bankCard" label="银行卡号"  width="150"></el-table-column>
-      <el-table-column prop="cashAamount" label="现金金额"></el-table-column>
+      <el-table-column prop="bankCard" label="银行卡号" width="150"></el-table-column>
+      <el-table-column prop="cashAmount" label="现金金额"></el-table-column>
       <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
       <el-table-column prop="accountBalance" label="总金额"></el-table-column>
-      <el-table-column prop="updateTime" label="最近更新时间"  width="180"></el-table-column>
-      <el-table-column label="当前时间"  width="180">{{ Utils.getTime() }}</el-table-column>
+      <el-table-column prop="updateTime" label="最近更新时间" width="180"></el-table-column>
+      <el-table-column label="当前时间" width="180">{{ Utils.getTime() }}</el-table-column>
       <el-table-column label="操作" fixed="right" width="350">
         <template slot-scope="scope">
           <el-row :gutter="20">
-            <el-col :span="6">
+            <el-col :span="7">
               <el-button
                 size="mini"
                 type="primary"
                 plain
-                @click="investmentDetails(scope.$index, scope.row)"
-              >转入</el-button>
+                @click="income(scope.$index, scope.row)"
+              >转入（收入）</el-button>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="5">
               <el-button
                 size="mini"
                 type="primary"
                 plain
                 @click="investmentDetails(scope.$index, scope.row)"
-              >转出</el-button>
+              >支出</el-button>
             </el-col>
             <el-col :span="6">
               <el-button
@@ -43,7 +43,7 @@
                 size="mini"
                 type="primary"
                 plain
-                @click="operationLog(scope.$index, scope.row)"
+                @click="getBankLogs(scope.$index, scope.row)"
               >账单</el-button>
             </el-col>
           </el-row>
@@ -109,15 +109,63 @@
         <el-button type="primary" @click="submitBank('bankForm')">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog
+      :title="dialogTitle"
+      width="600px"
+      :visible.sync="bankIncomeFormVisible"
+      @close="resetForm('bankIncomeForm')"
+    >
+      <el-form :model="bankInCome" :rules="rules" ref="bankIncomeForm">
+        <el-form-item label="姓名:" prop="name" label-width="100px">
+          <el-input v-model="bankInCome.name" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="银行:" prop="bankName" label-width="100px">
+          <el-input v-model="bankInCome.bankName" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="卡号:" prop="bankCard" label-width="100px">
+          <el-input v-model="bankInCome.bankCard" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="交易金额:" label-width="100px">
+          <el-input v-model="bankInCome.amount" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="bankIncomeFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitBankIncome('bankIncomeForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :title="dialogTitle" :visible.sync="bankLogsFormVisible">
+      <el-table :data="bankLogs" style="width: 100%">
+        <el-table-column prop="name" label="姓名"></el-table-column>
+        <el-table-column prop="bankName" label="银行"></el-table-column>
+        <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
+        <el-table-column prop="transactionAmount" label="交易金额"></el-table-column>
+        <el-table-column prop="transactionType" label="交易类型"></el-table-column>
+        <el-table-column prop="transactionParty" label="交易方"></el-table-column>
+        <el-table-column prop="transactionCard" label="交易卡号"></el-table-column>
+        <el-table-column prop="transactionTime" label="交易日期"></el-table-column>
+        <el-table-column prop="remark" label="备注"></el-table-column>
+      </el-table>
+      <el-pagination
+        background
+        :page-sizes="[10, 20, 30, 50]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="400"
+      ></el-pagination>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import searchs from "@/components/search/search_common.vue";
+import searchsVue from "@/components/search/search_common.vue";
 export default {
   data() {
     return {
       banks: [],
+      bankLogs:[],
       bank: {
         id: "",
         name: "",
@@ -128,8 +176,17 @@ export default {
         accountBalance: ""
       },
       bankBackup: Object.assign({}, this.bank),
+      bankInCome: {
+        name: "",
+        bankName: "",
+        bankCard: "",
+        bankCardId: "",
+        amount: ""
+      },
       multipleSelection: [],
       bankFormVisible: false,
+      bankIncomeFormVisible: false,
+      bankLogsFormVisible: false,
       dialogTitle: "",
       rowIndex: 9999,
       rules: {
@@ -143,7 +200,7 @@ export default {
     this.getBanks();
   },
   components: {
-    searchs
+    searchsVue
   },
   props: ["param"],
   methods: {
@@ -210,6 +267,36 @@ export default {
         }
       });
     },
+    submitBankIncome(formName) {
+      // 表单验证
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$http({
+            method: "post",
+            url: "http://localhost:8086/api/banks/income",
+            data: this.bankInCome
+          })
+            .then(res => {
+              if (res.data.code == 0) {
+                this.$message({
+                  type: "success",
+                  message: "新增成功！"
+                });
+                this.bankIncomeFormVisible = false;
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: res.data.msg
+                });
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
+        }
+      });
+    },
+
     operationLog(index, row) {
       this.$message({
         showClose: true,
@@ -219,34 +306,39 @@ export default {
     resetForm(formName) {
       this.$refs[formName].clearValidate();
     },
-    mulDelete() {
-      let len = this.multipleSelection.length;
-      if (len === 0) {
-        this.$message({
-          type: "warning",
-          message: "请至少选择一项！"
-        });
-      } else {
-        this.$confirm(`确定删除选中的 ${len} 个用户吗？`, "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: `成功删除了${len}条数据！`
-            });
-          })
-          .catch(() => {
-            console.log("取消删除");
-          });
-      }
-    },
     handleAdd() {
       this.dialogTitle = "新增";
       this.bank = Object.assign({}, this.bankBackup);
       this.bankFormVisible = true;
+    },
+    income(index, row) {
+      this.dialogTitle = "新增收入";
+      this.bankInCome = Object.assign({}, row);
+      this.bankInCome.bankCardId = row.id;
+      this.bankIncomeFormVisible = true;
+    },
+    getBankLogs(index, row) {
+      this.dialogTitle = "查看账单";
+      this.bankLogsFormVisible = true;
+      this.bank = Object.assign({}, row);
+      this.$http({
+        method: "post",
+        url: "http://localhost:8086/api/bankBill/query",
+        data: {}
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.bankLogs = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   }
 };
