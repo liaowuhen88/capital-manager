@@ -93,7 +93,7 @@ export default {
       this.bank = Object.assign({}, row);
       this.$http({
         method: "post",
-        url: "http://localhost:8086/api/bankBill/query",
+        url: this.BASE_API+"/api/bankBill/query",
         data: {}
       })
         .then(res => {

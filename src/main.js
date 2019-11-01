@@ -15,7 +15,7 @@ Vue.use(ElementUI);
 Vue.prototype.$http = axios;
 Vue.prototype.Utils = Utils;
 Vue.prototype.$qs = qs;
-
+Vue.prototype.BASE_API = process.env.BASE_API;
 new Vue({
   router,
   store,

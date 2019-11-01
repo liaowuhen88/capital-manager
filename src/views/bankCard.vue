@@ -191,7 +191,7 @@ export default {
       this.loading = true;
       this.$http({
         method: "post",
-        url: "http://localhost:8086/api/banks/selectAll",
+        url: this.BASE_API+"/api/banks/selectAll",
         data: param
       })
         .then(res => {
@@ -219,7 +219,7 @@ export default {
           } else {
             this.$http({
               method: "post",
-              url: "http://localhost:8086/api/banks/insert",
+              url: this.BASE_API+"/api/banks/insert",
               data: this.bank
             })
               .then(res => {
