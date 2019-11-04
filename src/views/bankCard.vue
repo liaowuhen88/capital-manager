@@ -119,10 +119,13 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="bankInCome_transferCard" label="选择转入账号:" label-width="100px">
-          <el-select v-model="bankInCome.transferCar" clearable placeholder="选择转入账号">
-            <el-option value></el-option>
+        <el-form-item v-if="bankInCome_transferCard" label="转入账号:" label-width="100px">
+          <el-select v-model="bankInCome.transferCard" filterable clearable placeholder="选择转入账号">
+            <el-option v-for="item in banks" :key="item.id" :label="item.selectName" :value="item.id"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="备注:" label-width="100px">
+          <el-input v-model="bankInCome.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -156,7 +159,10 @@ export default {
       bankInCome: {
         bankCardId: "",
         transactionTime: "",
-        transactionAmount: ""
+        transactionType: "",
+        transactionAmount: "",
+        transferCard:"",
+        remark: ""
       },
       multipleSelection: [],
       bankFormVisible: false,
@@ -191,7 +197,7 @@ export default {
       this.loading = true;
       this.$http({
         method: "post",
-        url: this.BASE_API+"/api/banks/selectAll",
+        url: this.BASE_API + "/api/banks/selectAll",
         data: param
       })
         .then(res => {
@@ -219,7 +225,7 @@ export default {
           } else {
             this.$http({
               method: "post",
-              url: this.BASE_API+"/api/banks/insert",
+              url: this.BASE_API + "/api/banks/insert",
               data: this.bank
             })
               .then(res => {
@@ -288,6 +294,7 @@ export default {
       this.dialogTitle = "收入";
       this.bank = Object.assign({}, row);
       this.bankInCome.bankCardId = row.id;
+      this.bankInCome.transactionType = 1;
       this.bankIncomeFormVisible = true;
     },
     transfer(index, row) {
@@ -296,7 +303,7 @@ export default {
       this.bankInCome_transferCard = true;
       this.dialogTitle = "转账";
       this.bank = Object.assign({}, row);
-
+      this.bankInCome.transactionType = 3;
       this.bankInCome.bankCardId = row.id;
       this.bankIncomeFormVisible = true;
     },
@@ -306,7 +313,7 @@ export default {
       this.bankInCome_transferCard = false;
       this.dialogTitle = "支出";
       this.bank = Object.assign({}, row);
-
+      this.bankInCome.transactionType = 2;
       this.bankInCome.bankCardId = row.id;
       this.bankIncomeFormVisible = true;
     },
@@ -316,7 +323,7 @@ export default {
       this.bankInCome_transferCard = false;
       this.dialogTitle = "活期利息收入";
       this.bank = Object.assign({}, row);
-
+      this.bankInCome.transactionType = 4;
       this.bankInCome.bankCardId = row.id;
       this.bankIncomeFormVisible = true;
     },
@@ -326,6 +333,7 @@ export default {
       this.bankInCome_transferCard = false;
       this.dialogTitle = "购买理财";
       this.bank = Object.assign({}, row);
+      this.bankInCome.transactionType = 5;
 
       this.bankInCome.bankCardId = row.id;
       this.bankIncomeFormVisible = true;

@@ -6,8 +6,8 @@
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bankName" label="银行"></el-table-column>
       <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
-      <el-table-column prop="transactionAmount" label="交易金额"></el-table-column>
-      <el-table-column prop="transactionType" label="交易类型"></el-table-column>
+      <el-table-column prop="realTransactionAmount" label="交易金额"></el-table-column>
+      <el-table-column prop="transactionTypeMsg" label="交易类型"></el-table-column>
       <el-table-column prop="transactionParty" label="交易方"></el-table-column>
       <el-table-column prop="transactionCard" label="交易卡号"></el-table-column>
       <el-table-column prop="transactionTime" label="交易日期"  width="180"></el-table-column>
