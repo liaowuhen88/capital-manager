@@ -126,32 +126,26 @@ export default {
   },
   methods: {
     getBankProducts(param) {
-      console.log("getBankProducts" + JSON.stringify(param));
       let postData = this.$qs.stringify({
         page: this.currentPage,
         rows: this.pageSize,
         name: this.name,
         bank: this.bank
       });
-      this.loading = true;
-      this.$http("/api/bankProducts")
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankProducts/selectAll",
+        data: param
+      })
         .then(res => {
-          this.bankProducts = res.data.filter(item => {
-            if (param) {
-              if ("" != param.name && "" != param.bank) {
-                return item.name == param.name && item.bank == param.bank;
-              }
-              if ("" != param.name) {
-                return item.name == param.name;
-              }
-              if ("" != param.bank) {
-                return item.bank == param.bank;
-              }
-              return true;
-            } else {
-              return true;
-            }
-          });
+          if (res.data.code == 0) {
+            this.bankProducts = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
         })
         .catch(err => {
           console.error(err);

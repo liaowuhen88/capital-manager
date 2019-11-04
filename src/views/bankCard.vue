@@ -114,14 +114,32 @@
         </el-form-item>
 
         <el-form-item v-if="bankInCome_bankProduct" label="理财产品:" label-width="100px">
-          <el-select v-model="bankInCome.bankProduct" clearable placeholder="选择理财产品">
-            <el-option value></el-option>
+          <el-select
+            v-model="bankInCome.bankProduct"
+            filterable
+            remote
+            :remote-method="getBankProducts"
+            :loading="loading"
+            clearable
+            placeholder="选择理财产品"
+          >
+            <el-option
+              v-for="item in bankProducts"
+              :key="item.id"
+              :label="item.selectName"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item v-if="bankInCome_transferCard" label="转入账号:" label-width="100px">
           <el-select v-model="bankInCome.transferCard" filterable clearable placeholder="选择转入账号">
-            <el-option v-for="item in banks" :key="item.id" :label="item.selectName" :value="item.id"></el-option>
+            <el-option
+              v-for="item in banks"
+              :key="item.id"
+              :label="item.selectName"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="备注:" label-width="100px">
@@ -143,6 +161,7 @@ export default {
     return {
       banks: [],
       bankLogs: [],
+      bankProducts: [],
       bankInCome_amount: true,
       bankInCome_bankProduct: false,
       bankInCome_transferCard: false,
@@ -161,7 +180,7 @@ export default {
         transactionTime: "",
         transactionType: "",
         transactionAmount: "",
-        transferCard:"",
+        transferCard: "",
         remark: ""
       },
       multipleSelection: [],
@@ -203,6 +222,26 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.banks = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getBankProducts(param) {
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankProducts/selectAll",
+        data: param
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.bankProducts = res.data.data;
           } else {
             this.$message({
               showClose: true,
