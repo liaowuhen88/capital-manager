@@ -2,13 +2,21 @@
   <div class="bank-box">
     <searchs @search="getBanks" />
 
-    <el-table :data="banks" show-summary @selection-change="selectChange" style="width: 100%">
+    <el-table
+      :data="banks"
+      show-summary
+      @selection-change="selectChange"
+      style="width: 100%"
+    >
       <el-table-column type="selection"></el-table-column>
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bank" label="银行"></el-table-column>
       <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
       <el-table-column prop="cashAamount" label="现金金额"></el-table-column>
-      <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
+      <el-table-column
+        prop="investmentAmount"
+        label="投资金额"
+      ></el-table-column>
       <el-table-column prop="accountBalance" label="总金额"></el-table-column>
       <el-table-column label="操作" fixed="right" width="300">
         <template slot-scope="scope">
@@ -17,13 +25,15 @@
             type="primary"
             plain
             @click="investmentDetails(scope.$index, scope.row)"
-          >查询投资明细</el-button>
+            >查询投资明细</el-button
+          >
           <el-button
             size="mini"
             type="primary"
             plain
             @click="operationLog(scope.$index, scope.row)"
-          >查询交易流水</el-button>
+            >查询交易流水</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -61,142 +71,146 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="bankFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitBank('bankForm')">确 定</el-button>
+        <el-button type="primary" @click="submitBank('bankForm')"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import searchs from "@/components/search/search";
+import searchs from '@/components/search/search'
 export default {
   data() {
     return {
       banks: [],
       bank: {
-        id: "",
-        date: "",
-        name: "",
-        phone: "",
-        address: "",
+        id: '',
+        date: '',
+        name: '',
+        phone: '',
+        address: '',
         status: 0
       },
       bankBackup: Object.assign({}, this.bank),
       multipleSelection: [],
       bankFormVisible: false,
-      dialogTitle: "",
+      dialogTitle: '',
       rowIndex: 9999,
       rules: {
         name: [
-          { required: true, message: "请输入姓名", trigger: "blur" },
-          { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" }
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+          { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
   mounted() {
-    this.getBanks();
+    this.getBanks()
   },
   components: {
     searchs
   },
-  props: ["param"],
+  props: ['param'],
   methods: {
     getBanks(param) {
-      this.loading = true;
-      this.$http("/api/banks")
+      this.loading = true
+      this.$http('/api/banks')
         .then(res => {
           this.banks = res.data.filter(item => {
             if (param) {
-              if ("" != param.name && "" != param.bank) {
-                return item.name == param.name && item.bank == param.bank;
+              if ('' != param.name && '' != param.bank) {
+                return item.name == param.name && item.bank == param.bank
               }
-              if ("" != param.name) {
-                return item.name == param.name;
+              if ('' != param.name) {
+                return item.name == param.name
               }
-              if ("" != param.bank) {
-                return item.bank == param.bank;
+              if ('' != param.bank) {
+                return item.bank == param.bank
               }
-              return true;
+              return true
             } else {
-              return true;
+              return true
             }
-          });
+          })
         })
         .catch(err => {
-          console.error(err);
-        });
+          console.error(err)
+        })
     },
     investmentDetails(index, row) {
+      console.log(index, row)
       this.$message({
         showClose: true,
-        message: "将来展示投资明细"
-      });
+        message: '将来展示投资明细'
+      })
     },
     submitBank(formName) {
       // 表单验证
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let id = this.bank.id;
+          let id = this.bank.id
           if (id) {
             // id非空-修改
-            this.banks.splice(this.rowIndex, 1, this.bank);
+            this.banks.splice(this.rowIndex, 1, this.bank)
           } else {
             // id为空-新增
-            this.bank.id = this.banks.length + 1;
-            this.banks.unshift(this.bank);
+            this.bank.id = this.banks.length + 1
+            this.banks.unshift(this.bank)
           }
-          this.bankFormVisible = false;
+          this.bankFormVisible = false
           this.$message({
-            type: "success",
-            message: id ? "修改成功！" : "新增成功！"
-          });
+            type: 'success',
+            message: id ? '修改成功！' : '新增成功！'
+          })
         }
-      });
+      })
     },
     operationLog(index, row) {
+      console.log(index, row)
       this.$message({
         showClose: true,
-        message: "将来展示交易流水"
-      });
+        message: '将来展示交易流水'
+      })
     },
     resetForm(formName) {
-      this.$refs[formName].clearValidate();
+      this.$refs[formName].clearValidate()
     },
     mulDelete() {
-      let len = this.multipleSelection.length;
+      let len = this.multipleSelection.length
       if (len === 0) {
         this.$message({
-          type: "warning",
-          message: "请至少选择一项！"
-        });
+          type: 'warning',
+          message: '请至少选择一项！'
+        })
       } else {
-        this.$confirm(`确定删除选中的 ${len} 个用户吗？`, "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+        this.$confirm(`确定删除选中的 ${len} 个用户吗？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
           .then(() => {
             this.$message({
-              type: "success",
+              type: 'success',
               message: `成功删除了${len}条数据！`
-            });
+            })
           })
           .catch(() => {
-            console.log("取消删除");
-          });
+            console.log('取消删除')
+          })
       }
     },
     selectChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelection = val
     },
     handleAdd() {
-      this.dialogTitle = "新增";
-      this.bank = Object.assign({}, this.bankBackup);
-      this.bankFormVisible = true;
+      this.dialogTitle = '新增'
+      this.bank = Object.assign({}, this.bankBackup)
+      this.bankFormVisible = true
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

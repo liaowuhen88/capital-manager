@@ -12,10 +12,13 @@ import './mock.js'
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+
+axios.defaults.baseURL = process.env.VUE_APP_BASE_API
+
 Vue.prototype.$http = axios;
 Vue.prototype.Utils = Utils;
 Vue.prototype.$qs = qs;
-Vue.prototype.BASE_API = process.env.BASE_API;
+
 new Vue({
   router,
   store,

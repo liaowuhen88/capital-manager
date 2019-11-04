@@ -13,16 +13,40 @@
       <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
       <el-table-column prop="productType" label="产品类型"></el-table-column>
       <el-table-column prop="bankProduct" label="购买产品"></el-table-column>
-      <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
-      <el-table-column prop="expectedinterestRate" label="预期利率"></el-table-column>
+      <el-table-column
+        prop="investmentAmount"
+        label="投资金额"
+      ></el-table-column>
+      <el-table-column
+        prop="expectedinterestRate"
+        label="预期利率"
+      ></el-table-column>
       <el-table-column prop="interestRate" label="实际利率"></el-table-column>
-      <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
+      <el-table-column
+        prop="interestPaymentMethod"
+        label="付息方式"
+      ></el-table-column>
       <el-table-column prop="profitDate" label="收利日期"></el-table-column>
-      <el-table-column prop="depositPeriod" label="存款期（日）"></el-table-column>
-      <el-table-column prop="expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column>
-      <el-table-column prop="expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
-      <el-table-column prop="totalEffectiveUnterestIncome" label="实际利息总收益"></el-table-column>
-      <el-table-column prop="principalAndInterestIncome" label="本息收益"></el-table-column>
+      <el-table-column
+        prop="depositPeriod"
+        label="存款期（日）"
+      ></el-table-column>
+      <el-table-column
+        prop="expectedInterestIncomeMonth"
+        label="利息预期收益(月)"
+      ></el-table-column>
+      <el-table-column
+        prop="expectedInterestIncomeTotal"
+        label="利息预期收益"
+      ></el-table-column>
+      <el-table-column
+        prop="totalEffectiveUnterestIncome"
+        label="实际利息总收益"
+      ></el-table-column>
+      <el-table-column
+        prop="principalAndInterestIncome"
+        label="本息收益"
+      ></el-table-column>
       <el-table-column prop="buyingTime" label="买入时间"></el-table-column>
       <el-table-column prop="dueTime" label="到期时间"></el-table-column>
       <el-table-column prop="dueTime" label="当前时间"></el-table-column>
@@ -36,7 +60,8 @@
                 type="primary"
                 plain
                 @click="handleEdit(scope.$index, scope.row)"
-              >编辑</el-button>
+                >编辑</el-button
+              >
             </el-col>
             <el-col :span="12">
               <el-button
@@ -44,7 +69,8 @@
                 type="primary"
                 plain
                 @click="handleEdit(scope.$index, scope.row)"
-              >理财赎回</el-button>
+                >理财赎回</el-button
+              >
             </el-col>
           </el-row>
           <el-row :gutter="20">
@@ -54,7 +80,8 @@
                 type="primary"
                 plain
                 @click="handleEdit(scope.$index, scope.row)"
-              >利息收入</el-button>
+                >利息收入</el-button
+              >
             </el-col>
             <el-col :span="12">
               <el-button
@@ -62,7 +89,8 @@
                 type="primary"
                 plain
                 @click="handleDelete(scope.$index, scope.row)"
-              >设置提醒规则</el-button>
+                >设置提醒规则</el-button
+              >
             </el-col>
           </el-row>
         </template>
@@ -102,14 +130,16 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="bankProductFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitBankProduct('bankProductForm')">确 定</el-button>
+        <el-button type="primary" @click="submitBankProduct('bankProductForm')"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import searchs from "@/components/search/search";
+import searchs from '@/components/search/search'
 export default {
   data() {
     return {
@@ -117,149 +147,149 @@ export default {
       currentPage: 1, //默认开始页面
       pageSize: 10,
       bankProducts: [],
-      name: "",
-      bank: "",
+      name: '',
+      bank: '',
       bankProduct: {
-        id: "",
-        date: "",
-        name: "",
-        phone: "",
-        address: "",
+        id: '',
+        date: '',
+        name: '',
+        phone: '',
+        address: '',
         status: 0
       },
       bankProductBackup: Object.assign({}, this.bankProduct),
       multipleSelection: [],
       bankProductFormVisible: false,
-      dialogTitle: "",
+      dialogTitle: '',
       rowIndex: 9999,
       rules: {
         name: [
-          { required: true, message: "请输入姓名", trigger: "blur" },
-          { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" }
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+          { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
   mounted() {
-    this.getBankProducts();
+    this.getBankProducts()
   },
   components: {
     searchs
   },
   methods: {
     getBankProducts(param) {
-      console.log("getBankProducts" + JSON.stringify(param));
-      let postData = this.$qs.stringify({
-        page: this.currentPage,
-        rows: this.pageSize,
-        name: this.name,
-        bank: this.bank
-      });
-      this.loading = true;
-      this.$http("/api/bankProducts")
+      console.log('getBankProducts' + JSON.stringify(param))
+      // let postData = this.$qs.stringify({
+      //   page: this.currentPage,
+      //   rows: this.pageSize,
+      //   name: this.name,
+      //   bank: this.bank
+      // });
+      this.loading = true
+      this.$http('/api/bankProducts')
         .then(res => {
           this.bankProducts = res.data.filter(item => {
             if (param) {
-              if ("" != param.name && "" != param.bank) {
-                return item.name == param.name && item.bank == param.bank;
+              if ('' != param.name && '' != param.bank) {
+                return item.name == param.name && item.bank == param.bank
               }
-              if ("" != param.name) {
-                return item.name == param.name;
+              if ('' != param.name) {
+                return item.name == param.name
               }
-              if ("" != param.bank) {
-                return item.bank == param.bank;
+              if ('' != param.bank) {
+                return item.bank == param.bank
               }
-              return true;
+              return true
             } else {
-              return true;
+              return true
             }
-          });
+          })
         })
         .catch(err => {
-          console.error(err);
-        });
+          console.error(err)
+        })
     },
     handleEdit(index, row) {
-      this.dialogTitle = "编辑";
-      this.bankProduct = Object.assign({}, row);
-      this.bankProductFormVisible = true;
-      this.rowIndex = index;
+      this.dialogTitle = '编辑'
+      this.bankProduct = Object.assign({}, row)
+      this.bankProductFormVisible = true
+      this.rowIndex = index
     },
     submitbankProduct(formName) {
       // 表单验证
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let id = this.bankProduct.id;
+          let id = this.bankProduct.id
           if (id) {
             // id非空-修改
-            this.bankProducts.splice(this.rowIndex, 1, this.bankProduct);
+            this.bankProducts.splice(this.rowIndex, 1, this.bankProduct)
           } else {
             // id为空-新增
-            this.bankProducts.id = this.bankProducts.length + 1;
-            this.bankProducts.unshift(this.bankProduct);
+            this.bankProducts.id = this.bankProducts.length + 1
+            this.bankProducts.unshift(this.bankProduct)
           }
-          this.bankProductFormVisible = false;
+          this.bankProductFormVisible = false
           this.$message({
-            type: "success",
-            message: id ? "修改成功！" : "新增成功！"
-          });
+            type: 'success',
+            message: id ? '修改成功！' : '新增成功！'
+          })
         }
-      });
+      })
     },
     handleDelete(index, row) {
-      this.$confirm(`确定删除用户 【${row.name}】 吗?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm(`确定删除用户 【${row.name}】 吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          this.bankProducts.splice(index, 1);
+          this.bankProducts.splice(index, 1)
           this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
+            type: 'success',
+            message: '删除成功!'
+          })
         })
         .catch(() => {
-          console.log("取消删除");
-        });
+          console.log('取消删除')
+        })
     },
     resetForm(formName) {
-      this.$refs[formName].clearValidate();
+      this.$refs[formName].clearValidate()
     },
     mulDelete() {
-      let len = this.multipleSelection.length;
+      let len = this.multipleSelection.length
       if (len === 0) {
         this.$message({
-          type: "warning",
-          message: "请至少选择一项！"
-        });
+          type: 'warning',
+          message: '请至少选择一项！'
+        })
       } else {
-        this.$confirm(`确定删除选中的 ${len} 个用户吗？`, "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+        this.$confirm(`确定删除选中的 ${len} 个用户吗？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
           .then(() => {
             this.$message({
-              type: "success",
+              type: 'success',
               message: `成功删除了${len}条数据！`
-            });
+            })
           })
           .catch(() => {
-            console.log("取消删除");
-          });
+            console.log('取消删除')
+          })
       }
     },
     selectChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelection = val
     },
     handleAdd() {
-      this.dialogTitle = "新增";
-      this.bankProduct = Object.assign({}, this.bankProductBackup);
-      this.bankProductFormVisible = true;
+      this.dialogTitle = '新增'
+      this.bankProduct = Object.assign({}, this.bankProductBackup)
+      this.bankProductFormVisible = true
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
