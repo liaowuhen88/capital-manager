@@ -12,7 +12,7 @@
       <el-table-column prop="bank" label="银行"></el-table-column>
       <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
       <el-table-column prop="productType" label="产品类型"></el-table-column>
-      <el-table-column prop="bankProduct" label="购买产品"></el-table-column>
+      <el-table-column prop="bankProduct" label="产品"></el-table-column>
       <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
       <el-table-column prop="expectedinterestRate" label="预期利率"></el-table-column>
       <el-table-column prop="interestRate" label="实际利率"></el-table-column>
@@ -43,7 +43,7 @@
                 size="mini"
                 type="primary"
                 plain
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="redeem(scope.$index, scope.row)"
               >理财赎回</el-button>
             </el-col>
           </el-row>
@@ -53,7 +53,7 @@
                 size="mini"
                 type="primary"
                 plain
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="income(scope.$index, scope.row)"
               >利息收入</el-button>
             </el-col>
             <el-col :span="12">
@@ -61,7 +61,7 @@
                 size="mini"
                 type="primary"
                 plain
-                @click="handleDelete(scope.$index, scope.row)"
+                @click="reminderRule(scope.$index, scope.row)"
               >设置提醒规则</el-button>
             </el-col>
           </el-row>
@@ -75,6 +75,7 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="400"
     ></el-pagination>
+
     <el-dialog
       :title="dialogTitle"
       width="600px"
@@ -82,22 +83,30 @@
       @close="resetForm('bankProductForm')"
     >
       <el-form :model="bankProduct" :rules="rules" ref="bankProductForm">
-        <el-form-item label="姓名" prop="name" label-width="50px">
-          <el-input v-model="bankProduct.name" autocomplete="off"></el-input>
+        <el-form-item label="姓名:" prop="name" label-width="100px">
+          <el-input v-model="bankProduct.name" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="银行" label-width="50px">
-          <el-input v-model="bankProduct.phone" autocomplete="off"></el-input>
+        <el-form-item label="银行:" prop="bankName" label-width="100px">
+          <el-input v-model="bankProduct.bankName" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="卡号" label-width="50px">
-          <el-input v-model="bankProduct.address" autocomplete="off"></el-input>
+        <el-form-item label="卡号:" prop="bankCard" label-width="100px">
+          <el-input v-model="bankProduct.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="日期" label-width="50px">
-          <el-date-picker
-            v-model="bankProduct.date"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择日期"
-          ></el-date-picker>
+        <el-form-item label="产品类型:" prop="productType" label-width="100px">
+          <el-input v-model="bankProduct.productType" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="产品:" prop="bankProduct" label-width="100px">
+          <el-input v-model="bankProduct.bankProduct" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="选择日期:" prop="transactionTime" label-width="100px">
+          <el-date-picker v-model="bankInCome.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="金额:" label-width="100px">
+          <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="备注:" label-width="100px">
+          <el-input v-model="bankInCome.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -126,6 +135,14 @@ export default {
         phone: "",
         address: "",
         status: 0
+      },
+      bankInCome: {
+        bankCardId: "",
+        transactionTime: "",
+        transactionType: "",
+        transactionAmount: "",
+        transferCard: "",
+        remark: ""
       },
       bankProductBackup: Object.assign({}, this.bankProduct),
       multipleSelection: [],
@@ -180,10 +197,41 @@ export default {
         });
     },
     handleEdit(index, row) {
-      this.dialogTitle = "编辑";
+      this.$message({
+        type: "success",
+        message: "目前不支持编辑,待提供"
+      });
+    },
+    reminderRule(index, row) {
+      this.$message({
+        type: "success",
+        message: "目前不支持设置提醒规则,待提供"
+      });
+    },
+    redeem(index, row) {
+      this.$confirm(`确定要赎回 【${row.bankProduct}】 吗?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "赎回成功!"
+          });
+        })
+        .catch(() => {
+          console.log("赎回失败");
+        });
+    },
+    income(index, row) {
       this.bankProduct = Object.assign({}, row);
       this.bankProductFormVisible = true;
       this.rowIndex = index;
+      this.dialogTitle = "利息收入";
+      this.bankInCome.bankCardId = row.id;
+      this.bankInCome.transactionType = 1;
+      this.bankIncomeFormVisible = true;
     },
     submitbankProduct(formName) {
       // 表单验证

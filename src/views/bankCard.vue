@@ -113,7 +113,7 @@
           <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item v-if="bankInCome_bankProduct" label="选择理财产品:" label-width="100px">
+        <el-form-item v-if="bankInCome_bankProduct" label="理财产品:" label-width="100px">
           <el-select v-model="bankInCome.bankProduct" clearable placeholder="选择理财产品">
             <el-option value></el-option>
           </el-select>
