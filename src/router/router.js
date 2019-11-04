@@ -4,6 +4,7 @@ import Index from '../views/Index.vue'
 import Console from '../views/Console.vue'
 import bankCard from '../views/bankCard.vue'
 import bankProducts from '../views/bankProducts.vue'
+import bankMyProduct from '../views/bankMyProduct.vue'
 import bankLog from '../views/bankLog.vue'
 import Login from '../views/Login.vue'
 import NotFound from '../views/NotFound.vue'
@@ -43,6 +44,11 @@ const router = new Router({
           path: '/bankProducts',
           name: 'bankProducts',
           component: bankProducts
+        },
+        {
+          path: '/bankMyProduct',
+          name: 'bankMyProduct',
+          component: bankMyProduct
         },
         {
           path: '/bankLog',

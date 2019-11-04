@@ -7,14 +7,27 @@
       @selection-change="selectChange"
       style="width: 100%"
     >
+      <el-table-column type="selection"></el-table-column>
+      <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bank" label="银行"></el-table-column>
+      <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
       <el-table-column prop="productType" label="产品类型"></el-table-column>
       <el-table-column prop="bankProduct" label="产品"></el-table-column>
+      <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
       <el-table-column prop="expectedinterestRate" label="预期利率"></el-table-column>
+      <el-table-column prop="interestRate" label="实际利率"></el-table-column>
       <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
+      <el-table-column prop="profitDate" label="收利日期"></el-table-column>
       <el-table-column prop="depositPeriod" label="存款期（日）"></el-table-column>
+      <el-table-column prop="expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column>
+      <el-table-column prop="expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
+      <el-table-column prop="totalEffectiveUnterestIncome" label="实际利息总收益"></el-table-column>
+      <el-table-column prop="principalAndInterestIncome" label="本息收益"></el-table-column>
+      <el-table-column prop="buyingTime" label="买入时间"></el-table-column>
+      <el-table-column prop="dueTime" label="到期时间"></el-table-column>
+      <el-table-column prop="dueTime" label="当前时间"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
-      <el-table-column label="操作" fixed="right">
+      <el-table-column label="操作" fixed="right" width="200">
         <template slot-scope="scope">
           <el-row :gutter="20">
             <el-col :span="12">
@@ -24,6 +37,32 @@
                 plain
                 @click="handleEdit(scope.$index, scope.row)"
               >编辑</el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="redeem(scope.$index, scope.row)"
+              >理财赎回</el-button>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="income(scope.$index, scope.row)"
+              >利息收入</el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="reminderRule(scope.$index, scope.row)"
+              >设置提醒规则</el-button>
             </el-col>
           </el-row>
         </template>

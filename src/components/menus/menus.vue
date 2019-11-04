@@ -6,7 +6,8 @@
     background-color="#20222A"
     text-color="rgba(255,255,255,.8)"
     active-text-color="#ffd04b"
-    :collapse="isCollapse">
+    :collapse="isCollapse"
+  >
     <el-menu-item index="/console">
       <i class="el-icon-location"></i>
       <span slot="title">主页</span>
@@ -14,14 +15,18 @@
     <!-- <el-menu-item index="/users">
       <i class="el-icon-menu"></i>
       <span slot="title">用户</span>
-    </el-menu-item> -->
-     <el-menu-item index="/bankCard">
+    </el-menu-item>-->
+    <el-menu-item index="/bankCard">
       <i class="el-icon-menu"></i>
       <span slot="title">银行卡</span>
     </el-menu-item>
+    <el-menu-item index="/bankMyProduct">
+      <i class="el-icon-menu"></i>
+      <span slot="title">已购买理财产品</span>
+    </el-menu-item>
     <el-menu-item index="/bankProducts">
       <i class="el-icon-menu"></i>
-      <span slot="title">理财产品</span>
+      <span slot="title">理财产品列表</span>
     </el-menu-item>
     <el-menu-item index="/bankLog">
       <i class="el-icon-menu"></i>
@@ -42,7 +47,7 @@
     <el-menu-item index="/mailList">
       <i class="el-icon-message"></i>
       <span slot="title">邮件</span>
-    </el-menu-item> -->
+    </el-menu-item>-->
     <!-- <el-submenu index="4">
       <template slot="title">
         <i class="el-icon-setting"></i>
@@ -50,7 +55,7 @@
       </template>
       <el-menu-item index="/profile">基本资料 (空)</el-menu-item>
       <el-menu-item index="/password">修改密码 (空)</el-menu-item>
-    </el-submenu> -->
+    </el-submenu>-->
     <el-menu-item index="/echarts">
       <i class="el-icon-share"></i>
       <span slot="title">图表</span>
@@ -60,21 +65,21 @@
 
 <script>
 export default {
-  props: ['isCollapse'],
-  data () {
+  props: ["isCollapse"],
+  data() {
     return {
       currentPath: location.pathname
-    }
+    };
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-  .el-menu {
-    border: none;
-  }
-  .menu-nav:not(.el-menu--collapse) {
-    width: 200px;
-    min-height: 400px;
-  }
+.el-menu {
+  border: none;
+}
+.menu-nav:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
 </style>
