@@ -1,12 +1,21 @@
 <template>
   <div class="bankProduct-box">
-    <searchs @search="getBankProducts" />
-    <el-table
-      :data="bankProducts"
-      show-summary
-      @selection-change="selectChange"
-      style="width: 100%"
-    >
+    <el-row>
+      <el-col :span="3">
+        <el-select v-model="bankProduct.bank" clearable placeholder="请选择银行">
+          <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="3" :offset="1">
+        <el-button type="primary" icon="el-icon-search" @click="getBankProducts()">搜索</el-button>
+      </el-col>
+      <el-col :span="3" :offset="14">
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">新增理财产品</el-button>
+        <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
+      </el-col>
+    </el-row>
+
+    <el-table :data="bankProducts" @selection-change="selectChange" style="width: 100%">
       <el-table-column prop="bank" label="银行"></el-table-column>
       <el-table-column prop="productType" label="产品类型"></el-table-column>
       <el-table-column prop="bankProduct" label="产品"></el-table-column>
@@ -17,13 +26,29 @@
       <el-table-column label="操作" fixed="right">
         <template slot-scope="scope">
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="8">
               <el-button
                 size="mini"
                 type="primary"
                 plain
                 @click="handleEdit(scope.$index, scope.row)"
               >编辑</el-button>
+            </el-col>
+            <el-col :span="8">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="buying(scope.$index, scope.row)"
+              >买入</el-button>
+            </el-col>
+            <el-col :span="8">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="upload(scope.$index, scope.row)"
+              >上传资料</el-button>
             </el-col>
           </el-row>
         </template>
@@ -44,30 +69,29 @@
       @close="resetForm('bankProductForm')"
     >
       <el-form :model="bankProduct" :rules="rules" ref="bankProductForm">
-        <el-form-item label="姓名:" prop="name" label-width="100px">
-          <el-input v-model="bankProduct.name" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="银行:" prop="bankName" label-width="100px">
-          <el-input v-model="bankProduct.bankName" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="卡号:" prop="bankCard" label-width="100px">
-          <el-input v-model="bankProduct.bankCard" :disabled="true" autocomplete="off"></el-input>
+        <el-form-item label="银行:" prop="bank" label-width="100px">
+          <el-select v-model="bankProduct.bank" filterable clearable placeholder="选择转入账号">
+            <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="产品类型:" prop="productType" label-width="100px">
-          <el-input v-model="bankProduct.productType" :disabled="true" autocomplete="off"></el-input>
+          <el-input v-model="bankProduct.productType" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="产品:" prop="bankProduct" label-width="100px">
-          <el-input v-model="bankProduct.bankProduct" :disabled="true" autocomplete="off"></el-input>
+          <el-input v-model="bankProduct.bankProduct" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="选择日期:" prop="transactionTime" label-width="100px">
-          <el-date-picker v-model="bankInCome.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
+        <el-form-item label="预期利率:" prop="expectedinterestRate" label-width="100px">
+          <el-input v-model="bankProduct.expectedinterestRate" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="金额:" label-width="100px">
-          <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
+        <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="100px">
+          <el-input v-model="bankProduct.interestPaymentMethod" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="备注:" label-width="100px">
-          <el-input v-model="bankInCome.remark" autocomplete="off"></el-input>
+        <el-form-item label="存款期（日）:" prop="depositPeriod" label-width="100px">
+          <el-input v-model="bankProduct.depositPeriod" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="备注:" prop="remark" label-width="100px">
+          <el-input v-model="bankProduct.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -87,15 +111,18 @@ export default {
       currentPage: 1, //默认开始页面
       pageSize: 10,
       bankProducts: [],
+      bankNames: [],
       name: "",
       bank: "",
       bankProduct: {
         id: "",
-        date: "",
-        name: "",
-        phone: "",
-        address: "",
-        status: 0
+        bank: "",
+        productType: "",
+        bankProduct: "",
+        expectedinterestRate: "",
+        depositPeriod: "",
+        interestPaymentMethod: 0,
+        remark: ""
       },
       bankInCome: {
         bankCardId: "",
@@ -120,6 +147,7 @@ export default {
   },
   mounted() {
     this.getBankProducts();
+    this.getBankNames();
   },
   components: {
     searchs
@@ -151,107 +179,83 @@ export default {
           console.error(err);
         });
     },
+    getBankNames(param) {
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/banks/getBankName",
+        data: param
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.bankNames = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
     handleEdit(index, row) {
       this.$message({
         type: "success",
         message: "目前不支持编辑,待提供"
       });
     },
-    reminderRule(index, row) {
+    buying(index, row) {
       this.$message({
         type: "success",
-        message: "目前不支持设置提醒规则,待提供"
+        message: "目前不支持买入,待提供"
       });
     },
-    redeem(index, row) {
-      this.$confirm(`确定要赎回 【${row.bankProduct}】 吗?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "赎回成功!"
-          });
-        })
-        .catch(() => {
-          console.log("赎回失败");
-        });
+    upload(index, row) {
+      this.$message({
+        type: "success",
+        message: "目前不支持上传资料,待提供"
+      });
     },
-    income(index, row) {
-      this.bankProduct = Object.assign({}, row);
-      this.bankProductFormVisible = true;
-      this.rowIndex = index;
-      this.dialogTitle = "利息收入";
-      this.bankInCome.bankCardId = row.id;
-      this.bankInCome.transactionType = 1;
-      this.bankIncomeFormVisible = true;
-    },
-    submitbankProduct(formName) {
+
+    submitBankProduct(formName) {
       // 表单验证
       this.$refs[formName].validate(valid => {
         if (valid) {
           let id = this.bankProduct.id;
           if (id) {
             // id非空-修改
-            this.bankProducts.splice(this.rowIndex, 1, this.bankProduct);
+            this.banks.splice(this.rowIndex, 1, this.bank);
           } else {
-            // id为空-新增
-            this.bankProducts.id = this.bankProducts.length + 1;
-            this.bankProducts.unshift(this.bankProduct);
+            this.$http({
+              method: "post",
+              url: this.BASE_API + "/api/bankProducts/insert",
+              data: this.bankProduct
+            })
+              .then(res => {
+                if (res.data.code == 0) {
+                  this.banks = res.data.data;
+                  this.$message({
+                    type: "success",
+                    message: id ? "修改成功！" : "新增成功！"
+                  });
+                  this.bankProductFormVisible = false;
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: res.data.msg
+                  });
+                }
+              })
+              .catch(err => {
+                console.error(err);
+              });
           }
-          this.bankProductFormVisible = false;
-          this.$message({
-            type: "success",
-            message: id ? "修改成功！" : "新增成功！"
-          });
         }
       });
     },
-    handleDelete(index, row) {
-      this.$confirm(`确定删除用户 【${row.name}】 吗?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.bankProducts.splice(index, 1);
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-        })
-        .catch(() => {
-          console.log("取消删除");
-        });
-    },
     resetForm(formName) {
       this.$refs[formName].clearValidate();
-    },
-    mulDelete() {
-      let len = this.multipleSelection.length;
-      if (len === 0) {
-        this.$message({
-          type: "warning",
-          message: "请至少选择一项！"
-        });
-      } else {
-        this.$confirm(`确定删除选中的 ${len} 个用户吗？`, "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: `成功删除了${len}条数据！`
-            });
-          })
-          .catch(() => {
-            console.log("取消删除");
-          });
-      }
     },
     selectChange(val) {
       this.multipleSelection = val;

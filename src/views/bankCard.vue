@@ -74,7 +74,9 @@
           <el-input v-model="bank.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="银行:" prop="bankName" label-width="100px">
-          <el-input v-model="bank.bankName" autocomplete="off"></el-input>
+          <el-select v-model="bank.bankName" filterable clearable placeholder="选择转入账号">
+            <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="卡号:" prop="bankCard" label-width="100px">
           <el-input v-model="bank.bankCard" autocomplete="off"></el-input>
@@ -108,28 +110,8 @@
         <el-form-item label="选择日期:" prop="bankCard" label-width="100px">
           <el-date-picker v-model="bankInCome.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
-
         <el-form-item v-if="bankInCome_amount" label="交易金额:" label-width="100px">
           <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
-        </el-form-item>
-
-        <el-form-item v-if="bankInCome_bankProduct" label="理财产品:" label-width="100px">
-          <el-select
-            v-model="bankInCome.bankProduct"
-            filterable
-            remote
-            :remote-method="getBankProducts"
-            :loading="loading"
-            clearable
-            placeholder="选择理财产品"
-          >
-            <el-option
-              v-for="item in bankProducts"
-              :key="item.id"
-              :label="item.selectName"
-              :value="item.id"
-            ></el-option>
-          </el-select>
         </el-form-item>
 
         <el-form-item v-if="bankInCome_transferCard" label="转入账号:" label-width="100px">
@@ -141,6 +123,26 @@
               :value="item.id"
             ></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item v-if="bankInCome_bankProduct" label="理财产品:" label-width="100px">
+          <el-select
+            v-model="bankInCome.bankProduct"
+            filterable
+            remote
+            :remote-method="getBankProducts"
+            clearable
+            placeholder="选择理财产品"
+          >
+            <el-option
+              v-for="item in bankProducts"
+              :key="item.id"
+              :label="item.selectName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+         <el-form-item v-if="bankInCome_amount" label="交易金额:" label-width="100px">
+          <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注:" label-width="100px">
           <el-input v-model="bankInCome.remark" autocomplete="off"></el-input>
@@ -162,6 +164,7 @@ export default {
       banks: [],
       bankLogs: [],
       bankProducts: [],
+      bankNames: [],
       bankInCome_amount: true,
       bankInCome_bankProduct: false,
       bankInCome_transferCard: false,
@@ -206,6 +209,7 @@ export default {
   },
   mounted() {
     this.getBanks();
+    this.getBankProducts();
   },
   components: {
     searchsVue
@@ -242,6 +246,26 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.bankProducts = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getBankNames(param) {
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/banks/getBankName",
+        data: param
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.bankNames = res.data.data;
           } else {
             this.$message({
               showClose: true,
@@ -295,7 +319,7 @@ export default {
         if (valid) {
           this.$http({
             method: "post",
-            url: "http://localhost:8086/api/bankBill/transaction",
+            url: this.BASE_API + "/api/bankBill/transaction",
             data: this.bankInCome
           })
             .then(res => {
