@@ -44,14 +44,14 @@
                 @click="cashInterestIncome(scope.$index, scope.row)"
               >活期利息收入</el-button>
             </el-col>
-            <el-col :span="12">
+            <!-- <el-col :span="12">
               <el-button
                 size="mini"
                 type="primary"
                 plain
                 @click="investment(scope.$index, scope.row)"
               >买入理财</el-button>
-            </el-col>
+            </el-col> -->
           </el-row>
         </template>
       </el-table-column>

@@ -23,7 +23,7 @@
       <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
       <el-table-column prop="depositPeriod" label="存款期（日）"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
-      <el-table-column label="操作" fixed="right">
+      <el-table-column label="操作" fixed="right" width="200">
         <template slot-scope="scope">
           <el-row :gutter="20">
             <el-col :span="8">
@@ -99,6 +99,45 @@
         <el-button type="primary" @click="submitBankProduct('bankProductForm')">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog
+      :title="dialogTitle"
+      width="600px"
+      :visible.sync="buyBankProductFormVisible"
+      @close="resetForm('bankMyProductForm')"
+    >
+      <el-form :model="bankMyProduct" :rules="rules" ref="bankMyProductForm">
+        <el-form-item label="选择买入账户:" label-width="100px">
+          <el-select v-model="bankMyProduct.bankCardId" filterable clearable placeholder="选择买入账号">
+            <el-option
+              v-for="item in banks"
+              :key="item.id"
+              :label="item.selectName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="投资金额:" prop="investmentAmount" label-width="100px">
+          <el-input v-model="bankMyProduct.investmentAmount" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="收利日期:" prop="profitDate" label-width="100px">
+          <el-date-picker v-model="bankMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="买入时间:" prop="buyingTime" label-width="100px">
+          <el-date-picker v-model="bankMyProduct.buyingTime" type="date" placeholder="买入时间"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="到期时间:" prop="dueTime" label-width="100px">
+          <el-date-picker v-model="bankMyProduct.dueTime" type="date" placeholder="到期时间"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="备注:" prop="remark" label-width="100px">
+          <el-input v-model="bankMyProduct.remark" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="buyBankProductFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitMyBankProduct('bankMyProductForm')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -112,8 +151,10 @@ export default {
       pageSize: 10,
       bankProducts: [],
       bankNames: [],
+      banks: [],
       name: "",
       bank: "",
+      buyBankProductFormVisible: false,
       bankProduct: {
         id: "",
         bank: "",
@@ -124,11 +165,13 @@ export default {
         interestPaymentMethod: 0,
         remark: ""
       },
-      bankInCome: {
+      bankMyProduct: {
         bankCardId: "",
-        transactionTime: "",
-        transactionType: "",
-        transactionAmount: "",
+        bankProductId: "",
+        investmentAmount: "",
+        profitDate: "",
+        buyingTime: "",
+        dueTime: "",
         transferCard: "",
         remark: ""
       },
@@ -148,6 +191,7 @@ export default {
   mounted() {
     this.getBankProducts();
     this.getBankNames();
+    this.getBanks();
   },
   components: {
     searchs
@@ -168,6 +212,27 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.bankProducts = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getBanks(param) {
+      this.loading = true;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/banks/selectAll",
+        data: param
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.banks = res.data.data;
           } else {
             this.$message({
               showClose: true,
@@ -206,10 +271,9 @@ export default {
       });
     },
     buying(index, row) {
-      this.$message({
-        type: "success",
-        message: "目前不支持买入,待提供"
-      });
+      this.bankMyProduct.bankProductId = row.id;
+      this.dialogTitle = "买入理财";
+      this.buyBankProductFormVisible = true;
     },
     upload(index, row) {
       this.$message({
@@ -217,7 +281,6 @@ export default {
         message: "目前不支持上传资料,待提供"
       });
     },
-
     submitBankProduct(formName) {
       // 表单验证
       this.$refs[formName].validate(valid => {
@@ -251,6 +314,36 @@ export default {
                 console.error(err);
               });
           }
+        }
+      });
+    },
+    submitMyBankProduct(formName) {
+      // 表单验证
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$http({
+            method: "post",
+            url: this.BASE_API + "/api/bankMyProducts/insert",
+            data: this.bankMyProduct
+          })
+            .then(res => {
+              if (res.data.code == 0) {
+                this.bankMyProduct = res.data.data;
+                this.$message({
+                  type: "success",
+                  message: id ? "修改成功！" : "新增成功！"
+                });
+                this.buyBankProductFormVisible = false;
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: res.data.msg
+                });
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
         }
       });
     },

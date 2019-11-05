@@ -1,26 +1,26 @@
 <template>
   <div class="bankProduct-box">
-    <searchs @search="getBankProducts" />
+    <searchs @search="getMyBankProducts" />
     <el-table
-      :data="bankProducts"
+      :data="bankMyProducts"
       show-summary
       @selection-change="selectChange"
       style="width: 100%"
     >
       <el-table-column type="selection"></el-table-column>
-      <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="bank" label="银行"></el-table-column>
-      <el-table-column prop="bankCard" label="银行卡号"></el-table-column>
-      <el-table-column prop="productType" label="产品类型"></el-table-column>
-      <el-table-column prop="bankProduct" label="产品"></el-table-column>
+      <el-table-column prop="bank.name" label="姓名"></el-table-column>
+      <el-table-column prop="bank.bankName" label="银行"></el-table-column>
+      <el-table-column prop="bank.bankCard" label="银行卡号"></el-table-column>
+      <el-table-column prop="bankProduct.productType" label="产品类型"></el-table-column>
+      <el-table-column prop="bankProduct.bankProduct" label="产品"></el-table-column>
       <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
-      <el-table-column prop="expectedinterestRate" label="预期利率"></el-table-column>
+      <el-table-column prop="bankProduct.expectedinterestRate" label="预期利率"></el-table-column>
       <el-table-column prop="interestRate" label="实际利率"></el-table-column>
-      <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
+      <el-table-column prop="bankProduct.interestPaymentMethod" label="付息方式"></el-table-column>
       <el-table-column prop="profitDate" label="收利日期"></el-table-column>
       <el-table-column prop="depositPeriod" label="存款期（日）"></el-table-column>
-      <el-table-column prop="expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column>
-      <el-table-column prop="expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
+      <el-table-column prop="bankProduct.expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column>
+      <el-table-column prop="bankProduct.expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
       <el-table-column prop="totalEffectiveUnterestIncome" label="实际利息总收益"></el-table-column>
       <el-table-column prop="principalAndInterestIncome" label="本息收益"></el-table-column>
       <el-table-column prop="buyingTime" label="买入时间"></el-table-column>
@@ -75,45 +75,6 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="400"
     ></el-pagination>
-
-    <el-dialog
-      :title="dialogTitle"
-      width="600px"
-      :visible.sync="bankProductFormVisible"
-      @close="resetForm('bankProductForm')"
-    >
-      <el-form :model="bankProduct" :rules="rules" ref="bankProductForm">
-        <el-form-item label="姓名:" prop="name" label-width="100px">
-          <el-input v-model="bankProduct.name" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="银行:" prop="bankName" label-width="100px">
-          <el-input v-model="bankProduct.bankName" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="卡号:" prop="bankCard" label-width="100px">
-          <el-input v-model="bankProduct.bankCard" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="产品类型:" prop="productType" label-width="100px">
-          <el-input v-model="bankProduct.productType" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="产品:" prop="bankProduct" label-width="100px">
-          <el-input v-model="bankProduct.bankProduct" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="选择日期:" prop="transactionTime" label-width="100px">
-          <el-date-picker v-model="bankInCome.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
-        </el-form-item>
-
-        <el-form-item label="金额:" label-width="100px">
-          <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="备注:" label-width="100px">
-          <el-input v-model="bankInCome.remark" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="bankProductFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitBankProduct('bankProductForm')">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -125,10 +86,23 @@ export default {
       total: 0, //默认数据总数
       currentPage: 1, //默认开始页面
       pageSize: 10,
-      bankProducts: [],
+      bankMyProducts: [],
       name: "",
       bank: "",
-      bankProduct: {
+      bankMyProduct: {
+        bank: {
+          name: "",
+          bankName: "",
+          bankCard: ""
+        },
+        bankProduct: {
+          productType: "",
+          bankProduct: "",
+          interestPaymentMethod:"",
+          expectedInterestIncomeMonth:"",
+          expectedInterestIncomeTotal:"",
+          expectedinterestRate:""
+        },
         id: "",
         date: "",
         name: "",
@@ -158,39 +132,33 @@ export default {
     };
   },
   mounted() {
-    this.getBankProducts();
+    this.getMyBankProducts();
   },
   components: {
     searchs
   },
   methods: {
-    getBankProducts(param) {
-      console.log("getBankProducts" + JSON.stringify(param));
+    getMyBankProducts(param) {
       let postData = this.$qs.stringify({
         page: this.currentPage,
         rows: this.pageSize,
         name: this.name,
         bank: this.bank
       });
-      this.loading = true;
-      this.$http("/api/bankProducts")
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankMyProducts/selectAll",
+        data: param
+      })
         .then(res => {
-          this.bankProducts = res.data.filter(item => {
-            if (param) {
-              if ("" != param.name && "" != param.bank) {
-                return item.name == param.name && item.bank == param.bank;
-              }
-              if ("" != param.name) {
-                return item.name == param.name;
-              }
-              if ("" != param.bank) {
-                return item.bank == param.bank;
-              }
-              return true;
-            } else {
-              return true;
-            }
-          });
+          if (res.data.code == 0) {
+            this.bankMyProducts = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
         })
         .catch(err => {
           console.error(err);
