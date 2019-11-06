@@ -141,9 +141,6 @@
             ></el-option>
           </el-select>
         </el-form-item>
-         <el-form-item v-if="bankInCome_amount" label="交易金额:" label-width="100px">
-          <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
-        </el-form-item>
         <el-form-item label="备注:" label-width="100px">
           <el-input v-model="bankInCome.remark" autocomplete="off"></el-input>
         </el-form-item>
