@@ -20,7 +20,7 @@
                 type="primary"
                 plain
                 @click="income(scope.$index, scope.row)"
-              >转入</el-button>
+              >收入</el-button>
             </el-col>
             <el-col :span="8">
               <el-button size="mini" type="primary" plain @click="pay(scope.$index, scope.row)">支出</el-button>
@@ -51,7 +51,7 @@
                 plain
                 @click="investment(scope.$index, scope.row)"
               >买入理财</el-button>
-            </el-col> -->
+            </el-col>-->
           </el-row>
         </template>
       </el-table-column>
@@ -98,25 +98,24 @@
       @close="resetForm('bankTransactionForm')"
     >
       <el-form :model="bankTransaction" :rules="bankTransactionRules" ref="bankTransactionForm">
-        <el-form-item label="付款方姓名:" prop="name" label-width="100px">
-          <el-input v-model="bank.name" :disabled="true" autocomplete="off"></el-input>
+        <el-form-item v-if="bankOut.show" label="付款方姓名:" prop="name" label-width="100px">
+          <el-input v-model="bankOut.name" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="付款银行:" prop="bankName" label-width="100px">
-          <el-input v-model="bank.bankName" :disabled="true" autocomplete="off"></el-input>
+        <el-form-item v-if="bankOut.show" label="付款银行:" prop="bankName" label-width="100px">
+          <el-input v-model="bankOut.bankName" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="付款卡号:" prop="bankCard" label-width="100px">
-          <el-input v-model="bank.bankCard" :disabled="true" autocomplete="off"></el-input>
+        <el-form-item v-if="bankOut.show" label="付款卡号:" prop="bankCard" label-width="100px">
+          <el-input v-model="bankOut.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-         <el-form-item label="收款方姓名:" prop="name" label-width="100px">
-          <el-input v-model="bank.name" :disabled="true" autocomplete="off"></el-input>
+        <el-form-item v-if="bankIn.show" label="收款方姓名:" prop="name" label-width="100px">
+          <el-input v-model="bankIn.name" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="收款方银行:" prop="bankName" label-width="100px">
-          <el-input v-model="bank.bankName" :disabled="true" autocomplete="off"></el-input>
+        <el-form-item v-if="bankIn.show" label="收款方银行:" prop="bankName" label-width="100px">
+          <el-input v-model="bankIn.bankName" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="收款方卡号:" prop="bankCard" label-width="100px">
-          <el-input v-model="bank.bankCard" :disabled="true" autocomplete="off"></el-input>
+        <el-form-item v-if="bankIn.show" label="收款方卡号:" prop="bankCard" label-width="100px">
+          <el-input v-model="bankIn.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-      
 
         <el-form-item label="选择日期:" prop="bankCard" label-width="100px">
           <el-date-picker v-model="bankTransaction.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
@@ -126,26 +125,15 @@
         </el-form-item>
 
         <el-form-item v-if="bankTransaction_transferCard" label="转入账号:" label-width="100px">
-          <el-select v-model="bankTransaction.transferCard" filterable clearable placeholder="选择转入账号">
-            <el-option
-              v-for="item in banks"
-              :key="item.id"
-              :label="item.selectName"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="bankTransaction_bankProduct" label="理财产品:" label-width="100px">
           <el-select
-            v-model="bankTransaction.bankProduct"
+            v-model="bankTransaction.transferCard"
             filterable
-            remote
-            :remote-method="getBankProducts"
             clearable
-            placeholder="选择理财产品"
+            placeholder="选择转入账号"
+            @change="transferCard"
           >
             <el-option
-              v-for="item in bankProducts"
+              v-for="item in banks"
               :key="item.id"
               :label="item.selectName"
               :value="item.id"
@@ -182,6 +170,26 @@ export default {
         bankName: "",
         bankCard: "",
         cashAmount: "",
+        investmentAmount: "",
+        accountBalance: ""
+      },
+      bankIn: {
+        id: "",
+        name: "",
+        bankName: "",
+        bankCard: "",
+        cashAmount: "",
+        investmentAmount: "",
+        show: false,
+        accountBalance: ""
+      },
+      bankOut: {
+        id: "",
+        name: "",
+        bankName: "",
+        bankCard: "",
+        cashAmount: "",
+        show: false,
         investmentAmount: "",
         accountBalance: ""
       },
@@ -360,44 +368,61 @@ export default {
     },
     income(index, row) {
       this.bankTransaction_amount = true;
-      this.bankTransaction_bankProduct = false;
       this.bankTransaction_transferCard = false;
       this.dialogTitle = "收入";
-      this.bank = Object.assign({}, row);
+      this.bankIn = Object.assign({}, row);
+      this.bankIn.show = true;
+      this.bankOut = {};
       this.bankTransaction.bankCardId = row.id;
       this.bankTransaction.transactionType = 1;
       this.bankTransactionFormVisible = true;
     },
     transfer(index, row) {
       this.bankTransaction_amount = true;
-      this.bankTransaction_bankProduct = false;
       this.bankTransaction_transferCard = true;
       this.dialogTitle = "转账";
-      this.bank = Object.assign({}, row);
+      this.bankOut = Object.assign({}, row);
+      this.bankOut.show = true;
+      this.bankIn = {};
+      this.bankIn.show = true;
       this.bankTransaction.transactionType = 3;
       this.bankTransaction.bankCardId = row.id;
       this.bankTransactionFormVisible = true;
     },
     pay(index, row) {
       this.bankTransaction_amount = true;
-      this.bankTransaction_bankProduct = false;
       this.bankTransaction_transferCard = false;
       this.dialogTitle = "支出";
-      this.bank = Object.assign({}, row);
+      this.bankIn = {};
+      this.bankOut = Object.assign({}, row);
+      this.bankOut.show = true;
       this.bankTransaction.transactionType = 2;
       this.bankTransaction.bankCardId = row.id;
       this.bankTransactionFormVisible = true;
     },
     cashInterestIncome(index, row) {
       this.bankTransaction_amount = true;
-      this.bankTransaction_bankProduct = false;
       this.bankTransaction_transferCard = false;
       this.dialogTitle = "活期利息收入";
-      this.bank = Object.assign({}, row);
+      this.bankIn = Object.assign({}, row);
+      this.bankIn.show = true;
+      this.bankOut = {};
       this.bankTransaction.transactionType = 4;
       this.bankTransaction.bankCardId = row.id;
       this.bankTransactionFormVisible = true;
     },
+    transferCard(value) {
+      this.banks.forEach(item => {
+        if (item.id === value) {
+          // 转账
+          if (this.bankTransaction.transactionType == 3) {
+            this.bankIn = Object.assign({}, item);
+          } else {
+            // this.bankOut = Object.assign({}, row);
+          }
+        }
+      });
+    }
   }
 };
 </script>
