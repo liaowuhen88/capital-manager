@@ -22,12 +22,12 @@
     </el-menu-item>
     <el-menu-item index="/bankMyProduct">
       <i class="el-icon-menu"></i>
-      <span slot="title">已购买理财产品</span>
+      <span slot="title">理财产品</span>
     </el-menu-item>
-    <el-menu-item index="/bankProducts">
+    <!-- <el-menu-item index="/bankProducts">
       <i class="el-icon-menu"></i>
       <span slot="title">理财产品列表</span>
-    </el-menu-item>
+    </el-menu-item> -->
     <el-menu-item index="/bankLog">
       <i class="el-icon-menu"></i>
       <span slot="title">账单</span>

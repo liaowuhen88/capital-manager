@@ -1,6 +1,25 @@
 <template>
   <div class="bankProduct-box">
-    <searchs @search="getMyBankProducts" />
+    <el-row>
+      <el-col :span="4">
+        <el-select v-model="param.name" clearable placeholder="请选择姓名">
+          <el-option v-for="item in names" :key="item.key" :label="item.lable" :value="item.key"></el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="4">
+        <el-select v-model="param.bank" clearable placeholder="请选择银行">
+          <el-option v-for="item in banks" :key="item.key" :label="item.lable" :value="item.key"></el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="4" :offset="1">
+        <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
+      </el-col>
+      <el-col :span="2" :offset="9">
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">买入理财</el-button>
+        <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
+      </el-col>
+    </el-row>
+
     <el-table
       :data="bankMyProducts"
       show-summary
@@ -8,23 +27,27 @@
       style="width: 100%"
     >
       <el-table-column type="selection"></el-table-column>
+
       <el-table-column prop="bank.name" label="姓名"></el-table-column>
       <el-table-column prop="bank.bankName" label="银行"></el-table-column>
-      <el-table-column prop="bank.bankCard" label="银行卡号"></el-table-column>
-      <el-table-column prop="bankProduct.productType" label="产品类型"></el-table-column>
-      <el-table-column prop="bankProduct.bankProduct" label="产品"></el-table-column>
+      <el-table-column prop="bank.bankCard" label="银行卡号" label-width="200px"></el-table-column>
+      <el-table-column prop="productType" label="产品类型"></el-table-column>
       <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
-      <el-table-column prop="bankProduct.expectedinterestRate" label="预期利率"></el-table-column>
-      <el-table-column prop="interestRate" label="实际利率"></el-table-column>
-      <el-table-column prop="bankProduct.interestPaymentMethod" label="付息方式"></el-table-column>
-      <el-table-column prop="profitDate" label="收利日期"></el-table-column>
-      <el-table-column prop="depositPeriod" label="存款期（日）"></el-table-column>
-      <el-table-column prop="bankProduct.expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column>
-      <el-table-column prop="bankProduct.expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
-      <el-table-column prop="totalEffectiveUnterestIncome" label="实际利息总收益"></el-table-column>
-      <el-table-column prop="principalAndInterestIncome" label="本息收益"></el-table-column>
+
       <el-table-column prop="buyingTime" label="买入时间"></el-table-column>
       <el-table-column prop="dueTime" label="到期时间"></el-table-column>
+      <el-table-column prop="interestStartTime" label="起息日期"></el-table-column>
+      <el-table-column prop="expectedInterestRate" label="预期利率"></el-table-column>
+      <el-table-column prop="interestRate" label="实际利率"></el-table-column>
+
+      <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
+      <el-table-column prop="profitDate" label="收利日期"></el-table-column>
+      <el-table-column prop="expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column>
+      <el-table-column prop="expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
+      <el-table-column prop="totalEffectiveUnterestIncome" label="实际利息总收益"></el-table-column>
+
+      <el-table-column prop="principalAndInterestIncome" label="本息收益"></el-table-column>
+      <el-table-column prop="down" label="产品说明下载"></el-table-column>
       <el-table-column prop="dueTime" label="当前时间"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200">
@@ -75,6 +98,67 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="400"
     ></el-pagination>
+
+    <el-dialog
+      :title="dialogTitle"
+      width="600px"
+      :visible.sync="buyBankProductFormVisible"
+      @close="resetForm('bankMyProductForm')"
+    >
+      <el-form :model="bankMyProduct" :rules="rules" ref="bankMyProductForm">
+        <el-form-item label="选择买入账户:" label-width="100px">
+          <el-select v-model="bankMyProduct.bankCardId" filterable clearable placeholder="选择买入账号">
+            <el-option
+              v-for="item in banks"
+              :key="item.id"
+              :label="item.selectName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="产品类型:" prop="productType" label-width="100px">
+          <el-input v-model="bankMyProduct.productType" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="投资金额:" prop="investmentAmount" label-width="100px">
+          <el-input v-model="bankMyProduct.investmentAmount" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="买入时间:" prop="buyingTime" label-width="100px">
+          <el-date-picker v-model="bankMyProduct.buyingTime" type="date" placeholder="买入时间"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="到期时间:" prop="dueTime" label-width="100px">
+          <el-date-picker v-model="bankMyProduct.dueTime" type="date" placeholder="到期时间"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="起息日期:" prop="interestStartTime" label-width="100px">
+          <el-date-picker v-model="bankMyProduct.interestStartTime" type="date" placeholder="起息日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="预期利率:" prop="expectedInterestRate" label-width="100px">
+          <el-input v-model="bankMyProduct.expectedInterestRate" placeholder="预期利率"></el-input>
+        </el-form-item>
+       
+
+        <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="100px">
+          <el-input v-model="bankMyProduct.interestPaymentMethod" placeholder="付息方式"></el-input>
+        </el-form-item>
+        <el-form-item label="收利日期:" prop="profitDate" label-width="100px">
+          <el-date-picker v-model="bankMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="利息预期收益(月):" prop="expectedInterestIncomeMonth" label-width="100px">
+          <el-input v-model="bankMyProduct.expectedInterestIncomeMonth" placeholder="利息预期收益(月)"></el-input>
+        </el-form-item>
+        <el-form-item label="利息预期收益:" prop="expectedInterestIncomeTotal" label-width="100px">
+          <el-input v-model="bankMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
+        </el-form-item>
+
+        <el-form-item label="备注:" prop="remark" label-width="100px">
+          <el-input v-model="bankMyProduct.remark" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="buyBankProductFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitMyBankProduct('bankMyProductForm')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -87,27 +171,28 @@ export default {
       currentPage: 1, //默认开始页面
       pageSize: 10,
       bankMyProducts: [],
+      bankNames: [],
       name: "",
       bank: "",
+      names: [
+        { key: "", lable: "全部" },
+        { key: "李杰", lable: "李杰" },
+        { key: "李艳", lable: "李艳" },
+        { key: "李凭跃", lable: "李凭跃" }
+      ],
+      banks: [],
       bankMyProduct: {
         bank: {
           name: "",
           bankName: "",
           bankCard: ""
         },
-        bankProduct: {
-          productType: "",
-          bankProduct: "",
-          interestPaymentMethod:"",
-          expectedInterestIncomeMonth:"",
-          expectedInterestIncomeTotal:"",
-          expectedinterestRate:""
-        },
-        id: "",
-        date: "",
-        name: "",
-        phone: "",
-        address: "",
+        productType: "",
+        bankProduct: "",
+        interestPaymentMethod: "",
+        expectedInterestIncomeMonth: "",
+        expectedInterestIncomeTotal: "",
+        expectedinterestRate: "",
         status: 0
       },
       bankInCome: {
@@ -118,9 +203,10 @@ export default {
         transferCard: "",
         remark: ""
       },
+      param: { name: "", bank: "", bankCard: "", times: "" },
       bankProductBackup: Object.assign({}, this.bankProduct),
       multipleSelection: [],
-      bankProductFormVisible: false,
+      buyBankProductFormVisible: false,
       dialogTitle: "",
       rowIndex: 9999,
       rules: {
@@ -133,6 +219,7 @@ export default {
   },
   mounted() {
     this.getMyBankProducts();
+    this.getBanks();
   },
   components: {
     searchs
@@ -153,6 +240,27 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.bankMyProducts = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getBanks(param) {
+      this.loading = true;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/banks/selectAll",
+        data: param
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.banks = res.data.data;
           } else {
             this.$message({
               showClose: true,
@@ -272,7 +380,7 @@ export default {
     handleAdd() {
       this.dialogTitle = "新增";
       this.bankProduct = Object.assign({}, this.bankProductBackup);
-      this.bankProductFormVisible = true;
+      this.buyBankProductFormVisible = true;
     }
   }
 };
