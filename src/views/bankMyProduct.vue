@@ -105,9 +105,9 @@
       :visible.sync="buyBankProductFormVisible"
       @close="resetForm('bankMyProductForm')"
     >
-      <el-form :model="bankMyProduct" :rules="rules" ref="bankMyProductForm">
+      <el-form :model="buyMyProduct" :rules="rules" ref="bankMyProductForm">
         <el-form-item label="选择买入账户:" label-width="100px">
-          <el-select v-model="bankMyProduct.bankCardId" filterable clearable placeholder="选择买入账号">
+          <el-select v-model="buyMyProduct.bankCardId" filterable clearable placeholder="选择买入账号">
             <el-option
               v-for="item in banks"
               :key="item.id"
@@ -117,46 +117,80 @@
           </el-select>
         </el-form-item>
         <el-form-item label="产品类型:" prop="productType" label-width="100px">
-          <el-input v-model="bankMyProduct.productType" autocomplete="off"></el-input>
+          <el-input v-model="buyMyProduct.productType" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="投资金额:" prop="investmentAmount" label-width="100px">
-          <el-input v-model="bankMyProduct.investmentAmount" autocomplete="off"></el-input>
+          <el-input v-model="buyMyProduct.investmentAmount" autocomplete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="买入时间:" prop="buyingTime" label-width="100px">
-          <el-date-picker v-model="bankMyProduct.buyingTime" type="date" placeholder="买入时间"></el-date-picker>
+          <el-date-picker v-model="buyMyProduct.buyingTime" type="date" placeholder="买入时间"></el-date-picker>
         </el-form-item>
         <el-form-item label="到期时间:" prop="dueTime" label-width="100px">
-          <el-date-picker v-model="bankMyProduct.dueTime" type="date" placeholder="到期时间"></el-date-picker>
+          <el-date-picker v-model="buyMyProduct.dueTime" type="date" placeholder="到期时间"></el-date-picker>
         </el-form-item>
         <el-form-item label="起息日期:" prop="interestStartTime" label-width="100px">
-          <el-date-picker v-model="bankMyProduct.interestStartTime" type="date" placeholder="起息日期"></el-date-picker>
+          <el-date-picker v-model="buyMyProduct.interestStartTime" type="date" placeholder="起息日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="预期利率:" prop="expectedInterestRate" label-width="100px">
-          <el-input v-model="bankMyProduct.expectedInterestRate" placeholder="预期利率"></el-input>
+          <el-input v-model="buyMyProduct.expectedInterestRate" placeholder="预期利率"></el-input>
         </el-form-item>
-       
 
         <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="100px">
-          <el-input v-model="bankMyProduct.interestPaymentMethod" placeholder="付息方式"></el-input>
+          <el-input v-model="buyMyProduct.interestPaymentMethod" placeholder="付息方式"></el-input>
         </el-form-item>
         <el-form-item label="收利日期:" prop="profitDate" label-width="100px">
-          <el-date-picker v-model="bankMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
+          <el-date-picker v-model="buyMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="利息预期收益(月):" prop="expectedInterestIncomeMonth" label-width="100px">
-          <el-input v-model="bankMyProduct.expectedInterestIncomeMonth" placeholder="利息预期收益(月)"></el-input>
+          <el-input v-model="buyMyProduct.expectedInterestIncomeMonth" placeholder="利息预期收益(月)"></el-input>
         </el-form-item>
         <el-form-item label="利息预期收益:" prop="expectedInterestIncomeTotal" label-width="100px">
-          <el-input v-model="bankMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
+          <el-input v-model="buyMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
         </el-form-item>
 
         <el-form-item label="备注:" prop="remark" label-width="100px">
-          <el-input v-model="bankMyProduct.remark" autocomplete="off"></el-input>
+          <el-input v-model="buyMyProduct.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="buyBankProductFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitMyBankProduct('bankMyProductForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      :title="dialogTitle"
+      width="600px"
+      :visible.sync="bankProductIncomeFormVisible"
+      @close="resetForm('bankTransactionForm')"
+    >
+      <el-form :model="bankInCome" :rules="bankTransactionRules" ref="bankTransactionForm">
+        <el-form-item label="收款方姓名:" prop="name" label-width="100px">
+          <el-input v-model="bankMyProduct.bank.name" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="收款方银行:" prop="bankName" label-width="100px">
+          <el-input v-model="bankMyProduct.bank.bankName" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="收款方卡号:" prop="bankCard" label-width="100px">
+          <el-input v-model="bankMyProduct.bank.bankCard" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="交易日期:" prop="bankCard" label-width="100px">
+          <el-date-picker v-model="bankInCome.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="下次收息日期:" prop="bankCard" label-width="100px">
+          <el-date-picker v-model="bankInCome.transactionTime" type="date" placeholder="下次收息日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="利息金额:" label-width="100px">
+          <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="备注:" label-width="100px">
+          <el-input v-model="bankInCome.remark" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="bankProductIncomeFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -173,7 +207,7 @@ export default {
       bankMyProducts: [],
       bankNames: [],
       name: "",
-      bank: "",
+      bankIn: "",
       names: [
         { key: "", lable: "全部" },
         { key: "李杰", lable: "李杰" },
@@ -182,6 +216,20 @@ export default {
       ],
       banks: [],
       bankMyProduct: {
+        bank: {
+          name: "",
+          bankName: "",
+          bankCard: ""
+        },
+        productType: "",
+        bankProduct: "",
+        interestPaymentMethod: "",
+        expectedInterestIncomeMonth: "",
+        expectedInterestIncomeTotal: "",
+        expectedinterestRate: "",
+        status: 0
+      },
+      buyMyProduct: {
         bank: {
           name: "",
           bankName: "",
@@ -207,13 +255,16 @@ export default {
       bankProductBackup: Object.assign({}, this.bankProduct),
       multipleSelection: [],
       buyBankProductFormVisible: false,
+      bankProductIncomeFormVisible: false,
       dialogTitle: "",
       rowIndex: 9999,
       rules: {
-        name: [
-          { required: true, message: "请输入姓名", trigger: "blur" },
-          { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" }
+       name: [
+      
         ]
+      },
+      bankTransactionRules: {
+      
       }
     };
   },
@@ -301,8 +352,8 @@ export default {
         });
     },
     income(index, row) {
-      this.bankProduct = Object.assign({}, row);
-      this.bankProductFormVisible = true;
+      this.bankMyProduct = Object.assign({}, row);
+      this.bankProductIncomeFormVisible = true;
       this.rowIndex = index;
       this.dialogTitle = "利息收入";
       this.bankInCome.bankCardId = row.id;
@@ -330,57 +381,16 @@ export default {
         }
       });
     },
-    handleDelete(index, row) {
-      this.$confirm(`确定删除用户 【${row.name}】 吗?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.bankProducts.splice(index, 1);
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-        })
-        .catch(() => {
-          console.log("取消删除");
-        });
-    },
-    resetForm(formName) {
-      this.$refs[formName].clearValidate();
-    },
-    mulDelete() {
-      let len = this.multipleSelection.length;
-      if (len === 0) {
-        this.$message({
-          type: "warning",
-          message: "请至少选择一项！"
-        });
-      } else {
-        this.$confirm(`确定删除选中的 ${len} 个用户吗？`, "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-          .then(() => {
-            this.$message({
-              type: "success",
-              message: `成功删除了${len}条数据！`
-            });
-          })
-          .catch(() => {
-            console.log("取消删除");
-          });
-      }
-    },
+
     selectChange(val) {
       this.multipleSelection = val;
     },
     handleAdd() {
-      this.dialogTitle = "新增";
-      this.bankProduct = Object.assign({}, this.bankProductBackup);
+      this.dialogTitle = "买入理财";
       this.buyBankProductFormVisible = true;
+    },
+    resetForm(formName) {
+      this.$refs[formName].clearValidate();
     }
   }
 };
