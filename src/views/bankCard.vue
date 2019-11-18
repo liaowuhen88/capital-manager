@@ -116,14 +116,6 @@
         <el-form-item v-if="bankIn.show" label="收款方卡号:" prop="bankCard" label-width="100px">
           <el-input v-model="bankIn.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-
-        <el-form-item label="选择日期:" prop="bankCard" label-width="100px">
-          <el-date-picker v-model="bankTransaction.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
-        </el-form-item>
-        <el-form-item v-if="bankTransaction_amount" label="交易金额:" label-width="100px">
-          <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
-        </el-form-item>
-
         <el-form-item v-if="bankTransaction_transferCard" label="转入账号:" label-width="100px">
           <el-select
             v-model="bankTransaction.transferCard"
@@ -140,6 +132,13 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="交易日期:" prop="bankCard" label-width="100px">
+          <el-date-picker v-model="bankTransaction.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item v-if="bankTransaction_amount" label="交易金额:" label-width="100px">
+          <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
+        </el-form-item>
+
         <el-form-item label="备注:" label-width="100px">
           <el-input v-model="bankTransaction.remark" autocomplete="off"></el-input>
         </el-form-item>
@@ -417,6 +416,7 @@ export default {
           // 转账
           if (this.bankTransaction.transactionType == 3) {
             this.bankIn = Object.assign({}, item);
+            this.bankIn.show = true;
           } else {
             // this.bankOut = Object.assign({}, row);
           }
