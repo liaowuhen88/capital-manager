@@ -44,7 +44,7 @@
       <el-table-column prop="profitDate" label="收利日期"></el-table-column>
       <el-table-column prop="expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column>
       <el-table-column prop="expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
-      <el-table-column prop="totalEffectiveUnterestIncome" label="实际利息总收益"></el-table-column>
+      <el-table-column prop="totalEffectiveInterestIncome" label="实际利息总收益"></el-table-column>
 
       <el-table-column prop="principalAndInterestIncome" label="本息收益"></el-table-column>
       <el-table-column prop="down" label="产品说明下载"></el-table-column>
@@ -103,9 +103,9 @@
       :title="dialogTitle"
       width="600px"
       :visible.sync="buyBankProductFormVisible"
-      @close="resetForm('bankMyProductForm')"
+      @close="resetForm('buyMyProductForm')"
     >
-      <el-form :model="buyMyProduct" :rules="rules" ref="bankMyProductForm">
+      <el-form :model="buyMyProduct" :rules="rules" ref="buyMyProductForm">
         <el-form-item label="选择买入账户:" label-width="100px">
           <el-select v-model="buyMyProduct.bankCardId" filterable clearable placeholder="选择买入账号">
             <el-option
@@ -155,7 +155,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="buyBankProductFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitMyBankProduct('bankMyProductForm')">确 定</el-button>
+        <el-button type="primary" @click="submitMyBankProduct('buyMyProductForm')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -165,7 +165,7 @@
       :visible.sync="bankProductIncomeFormVisible"
       @close="resetForm('bankTransactionForm')"
     >
-      <el-form :model="bankInCome" :rules="bankTransactionRules" ref="bankTransactionForm">
+      <el-form :model="bankBill" :rules="bankTransactionRules" ref="bankTransactionForm">
         <el-form-item label="收款方姓名:" prop="name" label-width="100px">
           <el-input v-model="bankMyProduct.bank.name" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
@@ -176,16 +176,16 @@
           <el-input v-model="bankMyProduct.bank.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="交易日期:" prop="bankCard" label-width="100px">
-          <el-date-picker v-model="bankInCome.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
+          <el-date-picker v-model="bankBill.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="下次收息日期:" prop="bankCard" label-width="100px">
-          <el-date-picker v-model="bankInCome.transactionTime" type="date" placeholder="下次收息日期"></el-date-picker>
+          <el-date-picker v-model="bankBill.transactionTime" type="date" placeholder="下次收息日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="利息金额:" label-width="100px">
-          <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
+          <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注:" label-width="100px">
-          <el-input v-model="bankInCome.remark" autocomplete="off"></el-input>
+          <el-input v-model="bankBill.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -230,11 +230,7 @@ export default {
         status: 0
       },
       buyMyProduct: {
-        bank: {
-          name: "",
-          bankName: "",
-          bankCard: ""
-        },
+        bankCardId: "",
         productType: "",
         bankProduct: "",
         interestPaymentMethod: "",
@@ -243,8 +239,9 @@ export default {
         expectedinterestRate: "",
         status: 0
       },
-      bankInCome: {
+      bankBill: {
         bankCardId: "",
+        myProductId:"",
         transactionTime: "",
         transactionType: "",
         transactionAmount: "",
@@ -259,13 +256,9 @@ export default {
       dialogTitle: "",
       rowIndex: 9999,
       rules: {
-       name: [
-      
-        ]
+        name: []
       },
-      bankTransactionRules: {
-      
-      }
+      bankTransactionRules: {}
     };
   },
   mounted() {
@@ -352,36 +345,72 @@ export default {
         });
     },
     income(index, row) {
-      this.bankMyProduct = Object.assign({}, row);
+      this.bankMyProduct= Object.assign({}, row);
       this.bankProductIncomeFormVisible = true;
       this.rowIndex = index;
       this.dialogTitle = "利息收入";
-      this.bankInCome.bankCardId = row.id;
-      this.bankInCome.transactionType = 1;
-      this.bankIncomeFormVisible = true;
+      this.bankBill.myProductId = row.id;
+      this.bankBill.bankCardId = this.bankMyProduct.id;
+      this.bankBill.transactionType = 6;
     },
-    submitbankProduct(formName) {
+    submitBankTransaction(bankTransactionForm) {
       // 表单验证
-      this.$refs[formName].validate(valid => {
+      this.$refs[bankTransactionForm].validate(valid => {
         if (valid) {
-          let id = this.bankProduct.id;
-          if (id) {
-            // id非空-修改
-            this.bankProducts.splice(this.rowIndex, 1, this.bankProduct);
-          } else {
-            // id为空-新增
-            this.bankProducts.id = this.bankProducts.length + 1;
-            this.bankProducts.unshift(this.bankProduct);
-          }
-          this.bankProductFormVisible = false;
-          this.$message({
-            type: "success",
-            message: id ? "修改成功！" : "新增成功！"
-          });
+          this.$http({
+            method: "post",
+            url: this.BASE_API + "/api/bankMyProducts/income",
+            data: this.bankBill
+          })
+            .then(res => {
+              if (res.data.code == 0) {
+                this.$message({
+                  type: "success",
+                  message: "新增成功！"
+                });
+                this.bankProductIncomeFormVisible = false;
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: res.data.msg
+                });
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
         }
       });
     },
-
+    submitMyBankProduct(buyMyProductForm) {
+      // 表单验证
+      this.$refs[buyMyProductForm].validate(valid => {
+        if (valid) {
+          this.$http({
+            method: "post",
+            url: this.BASE_API + "/api/bankMyProducts/buy",
+            data: this.buyMyProduct
+          })
+            .then(res => {
+              if (res.data.code == 0) {
+                this.$message({
+                  type: "success",
+                  message: "新增成功！"
+                });
+                this.buyBankProductFormVisible = false;
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: res.data.msg
+                });
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
+        }
+      });
+    },
     selectChange(val) {
       this.multipleSelection = val;
     },
