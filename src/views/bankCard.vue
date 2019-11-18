@@ -94,28 +94,39 @@
     <el-dialog
       :title="dialogTitle"
       width="600px"
-      :visible.sync="bankIncomeFormVisible"
-      @close="resetForm('bankIncomeForm')"
+      :visible.sync="bankTransactionFormVisible"
+      @close="resetForm('bankTransactionForm')"
     >
-      <el-form :model="bankInCome" :rules="bankInComeRules" ref="bankIncomeForm">
-        <el-form-item label="姓名:" prop="name" label-width="100px">
+      <el-form :model="bankTransaction" :rules="bankTransactionRules" ref="bankTransactionForm">
+        <el-form-item label="付款方姓名:" prop="name" label-width="100px">
           <el-input v-model="bank.name" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="银行:" prop="bankName" label-width="100px">
+        <el-form-item label="付款银行:" prop="bankName" label-width="100px">
           <el-input v-model="bank.bankName" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="卡号:" prop="bankCard" label-width="100px">
+        <el-form-item label="付款卡号:" prop="bankCard" label-width="100px">
           <el-input v-model="bank.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="选择日期:" prop="bankCard" label-width="100px">
-          <el-date-picker v-model="bankInCome.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
+         <el-form-item label="收款方姓名:" prop="name" label-width="100px">
+          <el-input v-model="bank.name" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item v-if="bankInCome_amount" label="交易金额:" label-width="100px">
-          <el-input v-model="bankInCome.transactionAmount" autocomplete="off"></el-input>
+        <el-form-item label="收款方银行:" prop="bankName" label-width="100px">
+          <el-input v-model="bank.bankName" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="收款方卡号:" prop="bankCard" label-width="100px">
+          <el-input v-model="bank.bankCard" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+      
+
+        <el-form-item label="选择日期:" prop="bankCard" label-width="100px">
+          <el-date-picker v-model="bankTransaction.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item v-if="bankTransaction_amount" label="交易金额:" label-width="100px">
+          <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item v-if="bankInCome_transferCard" label="转入账号:" label-width="100px">
-          <el-select v-model="bankInCome.transferCard" filterable clearable placeholder="选择转入账号">
+        <el-form-item v-if="bankTransaction_transferCard" label="转入账号:" label-width="100px">
+          <el-select v-model="bankTransaction.transferCard" filterable clearable placeholder="选择转入账号">
             <el-option
               v-for="item in banks"
               :key="item.id"
@@ -124,9 +135,9 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="bankInCome_bankProduct" label="理财产品:" label-width="100px">
+        <el-form-item v-if="bankTransaction_bankProduct" label="理财产品:" label-width="100px">
           <el-select
-            v-model="bankInCome.bankProduct"
+            v-model="bankTransaction.bankProduct"
             filterable
             remote
             :remote-method="getBankProducts"
@@ -142,12 +153,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="备注:" label-width="100px">
-          <el-input v-model="bankInCome.remark" autocomplete="off"></el-input>
+          <el-input v-model="bankTransaction.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="bankIncomeFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitBankIncome('bankIncomeForm')">确 定</el-button>
+        <el-button @click="bankTransactionFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -162,9 +173,9 @@ export default {
       bankLogs: [],
       bankProducts: [],
       bankNames: [],
-      bankInCome_amount: true,
-      bankInCome_bankProduct: false,
-      bankInCome_transferCard: false,
+      bankTransaction_amount: true,
+      bankTransaction_bankProduct: false,
+      bankTransaction_transferCard: false,
       bank: {
         id: "",
         name: "",
@@ -175,7 +186,7 @@ export default {
         accountBalance: ""
       },
       bankBackup: Object.assign({}, this.bank),
-      bankInCome: {
+      bankTransaction: {
         bankCardId: "",
         transactionTime: "",
         transactionType: "",
@@ -185,7 +196,7 @@ export default {
       },
       multipleSelection: [],
       bankFormVisible: false,
-      bankIncomeFormVisible: false,
+      bankTransactionFormVisible: false,
       bankLogsFormVisible: false,
       dialogTitle: "",
       rowIndex: 9999,
@@ -194,7 +205,7 @@ export default {
         bankName: [{ required: true, message: "请输入银行", trigger: "blur" }],
         bankCard: [{ required: true, message: "请输入卡号", trigger: "blur" }]
       },
-      bankInComeRules: {
+      bankTransactionRules: {
         transactionTime: [
           { required: true, message: "请选择时间", trigger: "blur" }
         ],
@@ -310,14 +321,14 @@ export default {
         }
       });
     },
-    submitBankIncome(bankIncomeForm) {
+    submitBankTransaction(bankTransactionForm) {
       // 表单验证
-      this.$refs[bankIncomeForm].validate(valid => {
+      this.$refs[bankTransactionForm].validate(valid => {
         if (valid) {
           this.$http({
             method: "post",
             url: this.BASE_API + "/api/bankBill/transaction",
-            data: this.bankInCome
+            data: this.bankTransaction
           })
             .then(res => {
               if (res.data.code == 0) {
@@ -325,7 +336,7 @@ export default {
                   type: "success",
                   message: "新增成功！"
                 });
-                this.bankIncomeFormVisible = false;
+                this.bankTransactionFormVisible = false;
               } else {
                 this.$message({
                   showClose: true,
@@ -348,56 +359,45 @@ export default {
       this.bankFormVisible = true;
     },
     income(index, row) {
-      this.bankInCome_amount = true;
-      this.bankInCome_bankProduct = false;
-      this.bankInCome_transferCard = false;
+      this.bankTransaction_amount = true;
+      this.bankTransaction_bankProduct = false;
+      this.bankTransaction_transferCard = false;
       this.dialogTitle = "收入";
       this.bank = Object.assign({}, row);
-      this.bankInCome.bankCardId = row.id;
-      this.bankInCome.transactionType = 1;
-      this.bankIncomeFormVisible = true;
+      this.bankTransaction.bankCardId = row.id;
+      this.bankTransaction.transactionType = 1;
+      this.bankTransactionFormVisible = true;
     },
     transfer(index, row) {
-      this.bankInCome_amount = true;
-      this.bankInCome_bankProduct = false;
-      this.bankInCome_transferCard = true;
+      this.bankTransaction_amount = true;
+      this.bankTransaction_bankProduct = false;
+      this.bankTransaction_transferCard = true;
       this.dialogTitle = "转账";
       this.bank = Object.assign({}, row);
-      this.bankInCome.transactionType = 3;
-      this.bankInCome.bankCardId = row.id;
-      this.bankIncomeFormVisible = true;
+      this.bankTransaction.transactionType = 3;
+      this.bankTransaction.bankCardId = row.id;
+      this.bankTransactionFormVisible = true;
     },
     pay(index, row) {
-      this.bankInCome_amount = true;
-      this.bankInCome_bankProduct = false;
-      this.bankInCome_transferCard = false;
+      this.bankTransaction_amount = true;
+      this.bankTransaction_bankProduct = false;
+      this.bankTransaction_transferCard = false;
       this.dialogTitle = "支出";
       this.bank = Object.assign({}, row);
-      this.bankInCome.transactionType = 2;
-      this.bankInCome.bankCardId = row.id;
-      this.bankIncomeFormVisible = true;
+      this.bankTransaction.transactionType = 2;
+      this.bankTransaction.bankCardId = row.id;
+      this.bankTransactionFormVisible = true;
     },
     cashInterestIncome(index, row) {
-      this.bankInCome_amount = true;
-      this.bankInCome_bankProduct = false;
-      this.bankInCome_transferCard = false;
+      this.bankTransaction_amount = true;
+      this.bankTransaction_bankProduct = false;
+      this.bankTransaction_transferCard = false;
       this.dialogTitle = "活期利息收入";
       this.bank = Object.assign({}, row);
-      this.bankInCome.transactionType = 4;
-      this.bankInCome.bankCardId = row.id;
-      this.bankIncomeFormVisible = true;
+      this.bankTransaction.transactionType = 4;
+      this.bankTransaction.bankCardId = row.id;
+      this.bankTransactionFormVisible = true;
     },
-    investment(index, row) {
-      this.bankInCome_amount = false;
-      this.bankInCome_bankProduct = true;
-      this.bankInCome_transferCard = false;
-      this.dialogTitle = "购买理财";
-      this.bank = Object.assign({}, row);
-      this.bankInCome.transactionType = 5;
-
-      this.bankInCome.bankCardId = row.id;
-      this.bankIncomeFormVisible = true;
-    }
   }
 };
 </script>

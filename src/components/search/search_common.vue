@@ -1,24 +1,19 @@
 <template>
   <el-row>
-    <el-col :span="3">
+    <el-col :span="4">
       <el-select v-model="param.name" clearable placeholder="请选择姓名">
         <el-option v-for="item in names" :key="item.key" :label="item.lable" :value="item.key"></el-option>
       </el-select>
     </el-col>
-    <el-col :span="3">
+    <el-col :span="4">
       <el-select v-model="param.bank" clearable placeholder="请选择银行">
         <el-option v-for="item in banks" :key="item.key" :label="item.lable" :value="item.key"></el-option>
       </el-select>
     </el-col>
-    <el-col :span="3">
-      <el-select v-model="param.bankCard" clearable placeholder="请选择银行卡">
-        <el-option v-for="item in bankCards" :key="item.key" :label="item.lable" :value="item.key"></el-option>
-      </el-select>
-    </el-col>
-    <el-col :span="2" :offset="4">
+    <el-col :span="4" :offset="1">
       <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
     </el-col>
-    <el-col :span="2" :offset="4">
+    <el-col :span="2" :offset="9">
       <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">新增</el-button>
       <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
     </el-col>
@@ -32,6 +27,7 @@ export default {
     return {
       currentPath: location.pathname,
       names: [
+         { key: "全部", lable: "全部" },
         { key: "李杰", lable: "李杰" },
         { key: "李艳", lable: "李艳" },
         { key: "李凭跃", lable: "李凭跃" }
