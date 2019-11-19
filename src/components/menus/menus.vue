@@ -32,10 +32,10 @@
       <i class="el-icon-menu"></i>
       <span slot="title">账单</span>
     </el-menu-item>
-    <el-menu-item index="/uploadFile">
+    <!-- <el-menu-item index="/uploadFile">
       <i class="el-icon-menu"></i>
       <span slot="title">上传资料</span>
-    </el-menu-item>
+    </el-menu-item> -->
     <el-menu-item index="/earningsStatistics">
       <i class="el-icon-menu"></i>
       <span slot="title">盈利统计</span>
