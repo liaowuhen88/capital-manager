@@ -132,10 +132,10 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="交易日期:" prop="bankCard" label-width="100px">
+        <el-form-item label="交易日期:" prop="transactionTime" label-width="100px">
           <el-date-picker v-model="bankTransaction.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
-        <el-form-item v-if="bankTransaction_amount" label="交易金额:" label-width="100px">
+        <el-form-item  label="交易金额:"  prop="transactionAmount" label-width="100px">
           <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
 
@@ -158,9 +158,7 @@ export default {
     return {
       banks: [],
       bankLogs: [],
-      bankProducts: [],
       bankNames: [],
-      bankTransaction_amount: true,
       bankTransaction_bankProduct: false,
       bankTransaction_transferCard: false,
       bank: {
@@ -216,7 +214,7 @@ export default {
         transactionTime: [
           { required: true, message: "请选择时间", trigger: "blur" }
         ],
-        accountBalance: [
+        transactionAmount: [
           { required: true, message: "请输入金额", trigger: "blur" }
         ]
       }
@@ -224,7 +222,7 @@ export default {
   },
   mounted() {
     this.getBanks();
-    this.getBankProducts();
+    this.getBankNames();
   },
   components: {
     searchsVue
@@ -241,26 +239,6 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.banks = res.data.data;
-          } else {
-            this.$message({
-              showClose: true,
-              message: res.data.msg
-            });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    },
-    getBankProducts(param) {
-      this.$http({
-        method: "post",
-        url: this.BASE_API + "/api/bankProducts/selectAll",
-        data: param
-      })
-        .then(res => {
-          if (res.data.code == 0) {
-            this.bankProducts = res.data.data;
           } else {
             this.$message({
               showClose: true,
@@ -366,7 +344,6 @@ export default {
       this.bankFormVisible = true;
     },
     income(index, row) {
-      this.bankTransaction_amount = true;
       this.bankTransaction_transferCard = false;
       this.dialogTitle = "收入";
       this.bankIn = Object.assign({}, row);
@@ -377,7 +354,6 @@ export default {
       this.bankTransactionFormVisible = true;
     },
     transfer(index, row) {
-      this.bankTransaction_amount = true;
       this.bankTransaction_transferCard = true;
       this.dialogTitle = "转账";
       this.bankOut = Object.assign({}, row);
@@ -389,7 +365,6 @@ export default {
       this.bankTransactionFormVisible = true;
     },
     pay(index, row) {
-      this.bankTransaction_amount = true;
       this.bankTransaction_transferCard = false;
       this.dialogTitle = "支出";
       this.bankIn = {};
@@ -400,7 +375,6 @@ export default {
       this.bankTransactionFormVisible = true;
     },
     cashInterestIncome(index, row) {
-      this.bankTransaction_amount = true;
       this.bankTransaction_transferCard = false;
       this.dialogTitle = "活期利息收入";
       this.bankIn = Object.assign({}, row);

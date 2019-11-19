@@ -42,7 +42,7 @@
 
       <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
       <el-table-column prop="profitDate" label="收利日期"></el-table-column>
-      <el-table-column prop="expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column>
+      <!-- <el-table-column prop="expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column> -->
       <el-table-column prop="expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
       <el-table-column prop="totalEffectiveInterestIncome" label="实际利息总收益"></el-table-column>
 
@@ -105,8 +105,8 @@
       :visible.sync="buyBankProductFormVisible"
       @close="resetForm('buyMyProductForm')"
     >
-      <el-form :model="buyMyProduct" :rules="rules" ref="buyMyProductForm">
-        <el-form-item label="选择买入账户:" label-width="100px">
+      <el-form :model="buyMyProduct" :rules="buyMyProductRules" ref="buyMyProductForm">
+        <el-form-item label="选择买入账户:" prop="bankCardId" label-width="100px">
           <el-select v-model="buyMyProduct.bankCardId" filterable clearable placeholder="选择买入账号">
             <el-option
               v-for="item in banks"
@@ -142,9 +142,9 @@
         <el-form-item label="收利日期:" prop="profitDate" label-width="100px">
           <el-date-picker v-model="buyMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="利息预期收益(月):" prop="expectedInterestIncomeMonth" label-width="100px">
+        <!-- <el-form-item label="利息预期收益(月):" prop="expectedInterestIncomeMonth" label-width="100px">
           <el-input v-model="buyMyProduct.expectedInterestIncomeMonth" placeholder="利息预期收益(月)"></el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="利息预期收益:" prop="expectedInterestIncomeTotal" label-width="100px">
           <el-input v-model="buyMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
         </el-form-item>
@@ -175,13 +175,13 @@
         <el-form-item label="收款方卡号:" prop="bankCard" label-width="100px">
           <el-input v-model="bankMyProduct.bank.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="交易日期:" prop="bankCard" label-width="100px">
+        <el-form-item label="交易日期:" prop="transactionTime" label-width="100px">
           <el-date-picker v-model="bankBill.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="下次收息日期:" prop="bankCard" label-width="100px">
-          <el-date-picker v-model="bankBill.transactionTime" type="date" placeholder="下次收息日期"></el-date-picker>
+        <el-form-item label="下次收息日期:" prop="nextProfitDate" label-width="100px">
+          <el-date-picker v-model="bankBill.nextProfitDate" type="date" placeholder="下次收息日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="利息金额:" label-width="100px">
+        <el-form-item label="利息金额:" prop="transactionAmount"  label-width="100px">
           <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注:" label-width="100px">
@@ -217,6 +217,7 @@ export default {
       banks: [],
       bankMyProduct: {
         bank: {
+          id:"",
           name: "",
           bankName: "",
           bankCard: ""
@@ -241,7 +242,7 @@ export default {
       },
       bankBill: {
         bankCardId: "",
-        myProductId:"",
+        myProductId: "",
         transactionTime: "",
         transactionType: "",
         transactionAmount: "",
@@ -255,10 +256,39 @@ export default {
       bankProductIncomeFormVisible: false,
       dialogTitle: "",
       rowIndex: 9999,
-      rules: {
-        name: []
+      buyMyProductRules: {
+        bankCardId: [{ required: true, message: "买入账号", trigger: "blur" }],
+        productType: [{ required: true, message: "产品类型", trigger: "blur" }],
+        investmentAmount: [
+          { required: true, message: "投资金额", trigger: "blur" }
+        ],
+        buyingTime: [{ required: true, message: "买入时间", trigger: "blur" }],
+        dueTime: [{ required: true, message: "到期时间", trigger: "blur" }],
+        interestStartTime: [
+          { required: true, message: "起息日期", trigger: "blur" }
+        ],
+        expectedInterestRate: [
+          { required: true, message: "预期利率", trigger: "blur" }
+        ],
+        interestPaymentMethod: [
+          { required: true, message: "付息方式", trigger: "blur" }
+        ],
+        profitDate: [{ required: true, message: "收利日期", trigger: "blur" }],
+        expectedInterestIncomeTotal: [
+          { required: true, message: "利息预期收益", trigger: "blur" }
+        ]
       },
-      bankTransactionRules: {}
+      bankTransactionRules: {
+        transactionTime: [
+          { required: true, message: "交易日期", trigger: "blur" }
+        ],
+        nextProfitDate: [
+          { required: true, message: "下次收息日期", trigger: "blur" }
+        ],
+        transactionAmount: [
+          { required: true, message: "利息金额", trigger: "blur" }
+        ]
+      }
     };
   },
   mounted() {
@@ -345,12 +375,12 @@ export default {
         });
     },
     income(index, row) {
-      this.bankMyProduct= Object.assign({}, row);
+      this.bankMyProduct = Object.assign({}, row);
       this.bankProductIncomeFormVisible = true;
       this.rowIndex = index;
       this.dialogTitle = "利息收入";
       this.bankBill.myProductId = row.id;
-      this.bankBill.bankCardId = this.bankMyProduct.id;
+      this.bankBill.bankCardId = this.bankMyProduct.bank.id;
       this.bankBill.transactionType = 6;
     },
     submitBankTransaction(bankTransactionForm) {
