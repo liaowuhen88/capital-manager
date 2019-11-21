@@ -2,17 +2,17 @@
   <div class="bankProduct-box">
     <el-row>
       <el-col :span="4">
-        <el-select v-model="param.name" clearable placeholder="请选择姓名">
-          <el-option v-for="item in names" :key="item.key" :label="item.lable" :value="item.key"></el-option>
+        <el-select v-model="param.userName" clearable placeholder="请选择姓名">
+          <el-option v-for="item in userNames" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-col>
       <el-col :span="4">
-        <el-select v-model="param.bank" clearable placeholder="请选择银行">
-          <el-option v-for="item in banks" :key="item.key" :label="item.lable" :value="item.key"></el-option>
+        <el-select v-model="param.bankName" clearable placeholder="请选择银行">
+          <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-col>
       <el-col :span="4" :offset="1">
-        <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="getMyBankProducts">搜索</el-button>
       </el-col>
       <el-col :span="2" :offset="9">
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">买入理财</el-button>
@@ -181,7 +181,7 @@
         <el-form-item label="下次收息日期:" prop="nextProfitDate" label-width="100px">
           <el-date-picker v-model="bankBill.nextProfitDate" type="date" placeholder="下次收息日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="利息金额:" prop="transactionAmount"  label-width="100px">
+        <el-form-item label="利息金额:" prop="transactionAmount" label-width="100px">
           <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注:" label-width="100px">
@@ -205,19 +205,15 @@ export default {
       currentPage: 1, //默认开始页面
       pageSize: 10,
       bankMyProducts: [],
+      userNames: [],
       bankNames: [],
+      param: { userName: "", bankName: "", bankCard: "" },
       name: "",
       bankIn: "",
-      names: [
-        { key: "", lable: "全部" },
-        { key: "李杰", lable: "李杰" },
-        { key: "李艳", lable: "李艳" },
-        { key: "李凭跃", lable: "李凭跃" }
-      ],
       banks: [],
       bankMyProduct: {
         bank: {
-          id:"",
+          id: "",
           name: "",
           bankName: "",
           bankCard: ""
@@ -294,12 +290,13 @@ export default {
   mounted() {
     this.getMyBankProducts();
     this.getBanks();
+    this.initBanks();
   },
   components: {
     searchs
   },
   methods: {
-    getMyBankProducts(param) {
+    getMyBankProducts() {
       let postData = this.$qs.stringify({
         page: this.currentPage,
         rows: this.pageSize,
@@ -308,8 +305,8 @@ export default {
       });
       this.$http({
         method: "post",
-        url: this.BASE_API + "/api/bankMyProducts/selectAll",
-        data: param
+        url: this.BASE_API + "/api/bankMyProducts/select",
+        data: this.param
       })
         .then(res => {
           if (res.data.code == 0) {
@@ -325,16 +322,36 @@ export default {
           console.error(err);
         });
     },
-    getBanks(param) {
+    initBanks() {
       this.loading = true;
       this.$http({
         method: "post",
-        url: this.BASE_API + "/api/banks/selectAll",
-        data: param
+        url: this.BASE_API + "/api/banks/selectAll"
       })
         .then(res => {
           if (res.data.code == 0) {
             this.banks = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getBanks() {
+      this.loading = true;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/banks/selectUserNamesAndBankNames"
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.userNames = res.data.data.userNames;
+            this.bankNames = res.data.data.bankNames;
           } else {
             this.$message({
               showClose: true,
