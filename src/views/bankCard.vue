@@ -135,7 +135,7 @@
         <el-form-item label="交易日期:" prop="transactionTime" label-width="100px">
           <el-date-picker v-model="bankTransaction.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
-        <el-form-item  label="交易金额:"  prop="transactionAmount" label-width="100px">
+        <el-form-item label="交易金额:" prop="transactionAmount" label-width="100px">
           <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
 
@@ -233,8 +233,8 @@ export default {
       this.loading = true;
       this.$http({
         method: "post",
-        url: this.BASE_API + "/api/banks/selectAll",
-        data: param
+        url: this.BASE_API + "/api/banks/select",
+        data: param ? param : {}
       })
         .then(res => {
           if (res.data.code == 0) {

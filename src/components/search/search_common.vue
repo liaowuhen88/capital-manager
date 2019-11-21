@@ -1,13 +1,13 @@
 <template>
   <el-row>
     <el-col :span="4">
-      <el-select v-model="param.name" clearable placeholder="请选择姓名">
-        <el-option v-for="item in names" :key="item.key" :label="item.lable" :value="item.key"></el-option>
+      <el-select v-model="param.userName" clearable placeholder="请选择姓名">
+        <el-option v-for="item in userNames" :key="item" :label="item" :value="item"></el-option>
       </el-select>
     </el-col>
     <el-col :span="4">
-      <el-select v-model="param.bank" clearable placeholder="请选择银行">
-        <el-option v-for="item in banks" :key="item.key" :label="item.lable" :value="item.key"></el-option>
+      <el-select v-model="param.bankName" clearable placeholder="请选择银行">
+        <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
       </el-select>
     </el-col>
     <el-col :span="4" :offset="1">
@@ -19,37 +19,46 @@
     </el-col>
   </el-row>
 </template>
-
 <script>
 export default {
   props: ["isCollapse"],
   data() {
     return {
       currentPath: location.pathname,
-      names: [
-         { key: "全部", lable: "全部" },
-        { key: "李杰", lable: "李杰" },
-        { key: "李艳", lable: "李艳" },
-        { key: "李凭跃", lable: "李凭跃" }
-      ],
-      banks: [
-        { key: "中国工商银行", lable: "中国工商银行" },
-        { key: "招商银行", lable: "招商银行" },
-        { key: "交通银行", lable: "交通银行" },
-        { key: "天津银行", lable: "天津银行" }
-      ],
-      bankCards: [
-        { key: "622100", lable: "622100" },
-        { key: "65554", lable: "65554" },
-        { key: "6333", lable: "6333" }
-      ],
-      param: { name: "", bank: "", bankCard: "", times: "" }
+      userNames: [],
+      bankNames: [],
+      param: { userName: "", bankName: "", bankCard: "" }
     };
+  },
+  mounted() {
+    this.getBanks();
   },
   methods: {
     search() {
       //console.log("search"+JSON.stringify(this.param) );
       this.$emit("search", this.param);
+    },
+    getBanks(param) {
+      this.loading = true;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/banks/selectUserNamesAndBankNames",
+        data: param
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.userNames = res.data.data.userNames;
+            this.bankNames = res.data.data.bankNames;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     },
     handleAdd() {
       console.log("handleAdd");
