@@ -87,14 +87,11 @@ export default {
     searchs
   },
   methods: {
-    getBankLogs(index, row) {
-      this.dialogTitle = "查看账单";
-      this.bankLogsFormVisible = true;
-      this.bank = Object.assign({}, row);
+    getBankLogs(param) {
       this.$http({
         method: "post",
         url: this.BASE_API+"/api/bankBill/query",
-        data: {}
+         data: param ? param : {}
       })
         .then(res => {
           if (res.data.code == 0) {
