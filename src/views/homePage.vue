@@ -3,29 +3,34 @@
     <el-row>
       <el-col :span="4">
         <p>
-          <font size="4" face="arial">总金额：</font>
+          <font size="4" face="arial">总金额：{{pageHomeVo.cashAmount+pageHomeVo.investmentAmount}}元</font>
         </p>
       </el-col>
       <el-col :span="4">
         <p>
-          <font size="4" face="arial">1000000元</font>
-        </p>
-      </el-col>
-      <el-col :span="16"></el-col>
-    </el-row>
-    <el-divider></el-divider>
-    <el-row>
-      <el-col :span="4">
-        <p>
-          <font size="4" face="arial">卡内余额：</font>
+          <font size="4" face="arial"></font>
         </p>
       </el-col>
       <el-col :span="4">
         <p>
-          <font size="4" face="arial">5000元</font>
+          <font size="4" face="arial">卡内余额：{{pageHomeVo.cashAmount}}</font>
         </p>
       </el-col>
-      <el-col :span="16"></el-col>
+      <el-col :span="4">
+        <p>
+          <font size="4" face="arial"></font>
+        </p>
+      </el-col>
+      <el-col :span="4">
+        <p>
+          <font size="4" face="arial">投资余额：{{pageHomeVo.investmentAmount}}</font>
+        </p>
+      </el-col>
+      <el-col :span="4">
+        <p>
+          <font size="4" face="arial"></font>
+        </p>
+      </el-col>
     </el-row>
     <el-divider></el-divider>
     <el-row>
@@ -113,20 +118,25 @@
 <script>
 export default {
   data() {
-    return { param: { userName: "", bankName: "", bankCard: "" } };
+    return {
+      param: { userName: "", bankName: "", bankCard: "" },
+      pageHomeVo: {}
+    };
   },
-  mounted() {},
+  mounted() {
+    this.getPageHome();
+  },
   methods: {
-    getBanks(param) {
+    getPageHome(param) {
       this.loading = true;
       this.$http({
         method: "post",
-        url: this.BASE_API + "/api/banks/select",
+        url: this.BASE_API + "/api/pageHome/getTotal",
         data: param ? param : {}
       })
         .then(res => {
           if (res.data.code == 0) {
-            this.banks = res.data.data;
+            this.pageHomeVo = res.data.data;
           } else {
             this.$message({
               showClose: true,
