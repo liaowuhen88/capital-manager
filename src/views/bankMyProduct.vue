@@ -42,8 +42,8 @@
 
       <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
       <el-table-column prop="profitDate" label="收利日期"></el-table-column>
-      <!-- <el-table-column prop="expectedInterestIncomeMonth" label="利息预期收益(月)"></el-table-column> -->
-      <el-table-column prop="expectedInterestIncomeTotal" label="利息预期收益"></el-table-column>
+      <el-table-column prop="expectedInterestIncomeMonth" label="收利日利息预期收益"></el-table-column>
+      <el-table-column prop="expectedInterestIncomeTotal" label="利息预期总收益"></el-table-column>
       <el-table-column prop="totalEffectiveInterestIncome" label="实际利息总收益"></el-table-column>
 
       <el-table-column prop="principalAndInterestIncome" label="本息收益"></el-table-column>
@@ -142,9 +142,9 @@
         <el-form-item label="收利日期:" prop="profitDate" label-width="100px">
           <el-date-picker v-model="buyMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
         </el-form-item>
-        <!-- <el-form-item label="利息预期收益(月):" prop="expectedInterestIncomeMonth" label-width="100px">
-          <el-input v-model="buyMyProduct.expectedInterestIncomeMonth" placeholder="利息预期收益(月)"></el-input>
-        </el-form-item>-->
+        <el-form-item label="收利日利息预期收益:" prop="expectedInterestIncomeMonth" label-width="100px">
+          <el-input v-model="buyMyProduct.expectedInterestIncomeMonth" placeholder="收利日利息预期收益"></el-input>
+        </el-form-item>
         <el-form-item label="利息预期收益:" prop="expectedInterestIncomeTotal" label-width="100px">
           <el-input v-model="buyMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
         </el-form-item>
@@ -270,6 +270,9 @@ export default {
           { required: true, message: "付息方式", trigger: "blur" }
         ],
         profitDate: [{ required: true, message: "收利日期", trigger: "blur" }],
+         expectedInterestIncomeMonth: [
+          { required: true, message: "利息预期收益", trigger: "blur" }
+        ],
         expectedInterestIncomeTotal: [
           { required: true, message: "利息预期收益", trigger: "blur" }
         ]

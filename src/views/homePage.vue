@@ -3,7 +3,10 @@
     <el-row>
       <el-col :span="4">
         <p>
-          <font size="4" face="arial">总金额：{{pageHomeVo.cashAmount+pageHomeVo.investmentAmount}}元</font>
+          <font
+            size="4"
+            face="arial"
+          >总金额：{{pageHomeVo.bankTotalVo.totalCashAmount+pageHomeVo.bankTotalVo.totalInvestmentAmount}}元</font>
         </p>
       </el-col>
       <el-col :span="4">
@@ -13,7 +16,7 @@
       </el-col>
       <el-col :span="4">
         <p>
-          <font size="4" face="arial">卡内余额：{{pageHomeVo.cashAmount}}</font>
+          <font size="4" face="arial">卡内余额：{{pageHomeVo.bankTotalVo.totalCashAmount}}</font>
         </p>
       </el-col>
       <el-col :span="4">
@@ -23,7 +26,7 @@
       </el-col>
       <el-col :span="4">
         <p>
-          <font size="4" face="arial">投资余额：{{pageHomeVo.investmentAmount}}</font>
+          <font size="4" face="arial">投资余额：{{pageHomeVo.bankTotalVo.totalInvestmentAmount}}</font>
         </p>
       </el-col>
       <el-col :span="4">
@@ -36,36 +39,26 @@
     <el-row>
       <el-col :span="4">
         <p>
-          <font size="4" face="arial">本年度利息收入：</font>
+          <font
+            size="4"
+            face="arial"
+          >本年度活期利息收入：{{pageHomeVo.integerBankBillTotalVoMap[4].totalTransactionAmount}}</font>
         </p>
       </el-col>
       <el-col :span="4">
         <p>
-          <font size="4" face="arial">500元</font>
+          <font
+            size="4"
+            face="arial"
+          >本年度理财利息收入：{{pageHomeVo.integerBankBillTotalVoMap[6].totalTransactionAmount}}</font>
         </p>
       </el-col>
       <el-col :span="4">
         <p>
-          <font size="4" face="arial"></font>
-        </p>
-      </el-col>
-      <el-col :span="12"></el-col>
-    </el-row>
-    <el-divider></el-divider>
-    <el-row>
-      <el-col :span="4">
-        <p>
-          <font size="4" face="arial">本年度支出：</font>
-        </p>
-      </el-col>
-      <el-col :span="4">
-        <p>
-          <font size="4" face="arial">500元</font>
-        </p>
-      </el-col>
-      <el-col :span="4">
-        <p>
-          <font size="4" face="arial"></font>
+          <font
+            size="4"
+            face="arial"
+          >本年度支出：{{pageHomeVo.integerBankBillTotalVoMap[2].totalTransactionAmount}}</font>
         </p>
       </el-col>
       <el-col :span="12"></el-col>
@@ -78,11 +71,13 @@
         </p>
       </el-col>
       <el-col :span="20">
-        <el-table :data="tableData" style="width: 100%">
-          <el-table-column prop="date" label="姓名" width="180"></el-table-column>
-          <el-table-column prop="name" label="银行" width="180"></el-table-column>
-          <el-table-column prop="address" label="到账金额"></el-table-column>
-          <el-table-column prop="address" label="日期"></el-table-column>
+        <el-table :data="pageHomeVo.expireProduct" style="width: 100%">
+          <el-table-column prop="bank.name" label="姓名" width="180"></el-table-column>
+          <el-table-column prop="bank.bankName" label="银行" width="180"></el-table-column>
+          <el-table-column prop="productType" label="产品类别" width="180"></el-table-column>
+          <el-table-column prop="investmentAmount" label="到账金额"></el-table-column>
+          <el-table-column prop="buyingTime" label="买入时间" width="180"></el-table-column>
+          <el-table-column prop="dueTime" label="产品到期时间"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -94,11 +89,13 @@
         </p>
       </el-col>
       <el-col :span="20">
-        <el-table :data="tableData" style="width: 100%">
-          <el-table-column prop="date" label="姓名" width="180"></el-table-column>
-          <el-table-column prop="name" label="银行" width="180"></el-table-column>
-          <el-table-column prop="address" label="到账金额"></el-table-column>
-          <el-table-column prop="address" label="日期"></el-table-column>
+        <el-table :data="pageHomeVo.expireInterest" style="width: 100%">
+          <el-table-column prop="bank.name" label="姓名" width="180"></el-table-column>
+          <el-table-column prop="bank.bankName" label="银行" width="180"></el-table-column>
+          <el-table-column prop="productType" label="产品类别" width="180"></el-table-column>
+          <el-table-column prop="expectedInterestIncomeMonth" label="利息预计到账金额"></el-table-column>
+
+          <el-table-column prop="profitDate" label="利息到期时间"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -137,6 +134,7 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.pageHomeVo = res.data.data;
+            console.log(this.pageHomeVo);
           } else {
             this.$message({
               showClose: true,
