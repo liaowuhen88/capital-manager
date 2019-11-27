@@ -3,66 +3,8 @@
     <searchsVue @search="getBanks" @handleAdd="handleAdd" />
 
     <el-table :stripe="true" :data="banks" show-summary style="width: 100%">
-      <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="bankName" label="银行"></el-table-column>
-      <el-table-column prop="bankCard" label="银行卡号" width="150"></el-table-column>
-      <el-table-column prop="cashAmount" label="现金金额"></el-table-column>
-      <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
-      <el-table-column prop="accountBalance" label="总金额"></el-table-column>
-      <el-table-column prop="updateTime" label="最近更新时间" width="180"></el-table-column>
-      <el-table-column label="当前时间" width="180">{{ Utils.getTime() }}</el-table-column>
-      <el-table-column label="操作" fixed="right" width="250">
-        <template slot-scope="scope">
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <el-button
-                size="mini"
-                type="primary"
-                plain
-                @click="income(scope.$index, scope.row)"
-              >收入</el-button>
-            </el-col>
-            <el-col :span="8">
-              <el-button size="mini" type="primary" plain @click="pay(scope.$index, scope.row)">支出</el-button>
-            </el-col>
-            <el-col :span="8">
-              <el-button
-                size="mini"
-                type="primary"
-                plain
-                @click="transfer(scope.$index, scope.row)"
-              >转账</el-button>
-            </el-col>
-          </el-row>
-
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-button
-                size="mini"
-                type="primary"
-                plain
-                @click="cashInterestIncome(scope.$index, scope.row)"
-              >活期利息收入</el-button>
-            </el-col>
-            <!-- <el-col :span="12">
-              <el-button
-                size="mini"
-                type="primary"
-                plain
-                @click="investment(scope.$index, scope.row)"
-              >买入理财</el-button>
-            </el-col>-->
-          </el-row>
-        </template>
-      </el-table-column>
+      <el-table-column prop="name" label="银行"></el-table-column>
     </el-table>
-    <el-pagination
-      background
-      :page-sizes="[10, 20, 30, 50]"
-      :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
-    ></el-pagination>
     <el-dialog
       :title="dialogTitle"
       width="600px"
@@ -90,69 +32,10 @@
         <el-button type="primary" @click="submitBank('bankForm')">确 定</el-button>
       </div>
     </el-dialog>
-
-    <el-dialog
-      :title="dialogTitle"
-      width="600px"
-      :visible.sync="bankTransactionFormVisible"
-      @close="resetForm('bankTransactionForm')"
-    >
-      <el-form :model="bankTransaction" :rules="bankTransactionRules" ref="bankTransactionForm">
-        <el-form-item v-if="bankOut.show" label="付款方姓名:" prop="name" label-width="100px">
-          <el-input v-model="bankOut.name" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item v-if="bankOut.show" label="付款银行:" prop="bankName" label-width="100px">
-          <el-input v-model="bankOut.bankName" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item v-if="bankOut.show" label="付款卡号:" prop="bankCard" label-width="100px">
-          <el-input v-model="bankOut.bankCard" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item v-if="bankIn.show" label="收款方姓名:" prop="name" label-width="100px">
-          <el-input v-model="bankIn.name" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item v-if="bankIn.show" label="收款方银行:" prop="bankName" label-width="100px">
-          <el-input v-model="bankIn.bankName" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item v-if="bankIn.show" label="收款方卡号:" prop="bankCard" label-width="100px">
-          <el-input v-model="bankIn.bankCard" :disabled="true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item v-if="bankTransaction_transferCard" label="转入账号:" label-width="100px">
-          <el-select
-            v-model="bankTransaction.transferCard"
-            filterable
-            clearable
-            placeholder="选择转入账号"
-            @change="transferCard"
-          >
-            <el-option
-              v-for="item in banks"
-              :key="item.id"
-              :label="item.selectName"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="交易日期:" prop="transactionTime" label-width="100px">
-          <el-date-picker v-model="bankTransaction.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="交易金额:" prop="transactionAmount" label-width="100px">
-          <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
-        </el-form-item>
-
-        <el-form-item label="备注:" label-width="100px">
-          <el-input v-model="bankTransaction.remark" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="bankTransactionFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import searchsVue from "@/components/search/search_common.vue";
 export default {
   data() {
     return {
@@ -169,35 +52,6 @@ export default {
         cashAmount: "",
         investmentAmount: "",
         accountBalance: ""
-      },
-      bankIn: {
-        id: "",
-        name: "",
-        bankName: "",
-        bankCard: "",
-        cashAmount: "",
-        investmentAmount: "",
-        show: false,
-        accountBalance: ""
-      },
-      bankOut: {
-        id: "",
-        name: "",
-        bankName: "",
-        bankCard: "",
-        cashAmount: "",
-        show: false,
-        investmentAmount: "",
-        accountBalance: ""
-      },
-      bankBackup: Object.assign({}, this.bank),
-      bankTransaction: {
-        bankCardId: "",
-        transactionTime: "",
-        transactionType: "",
-        transactionAmount: "",
-        transferCard: "",
-        remark: ""
       },
       multipleSelection: [],
       bankFormVisible: false,

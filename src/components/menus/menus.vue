@@ -12,10 +12,10 @@
       <i class="el-icon-location"></i>
       <span slot="title">主页</span>
     </el-menu-item>
-    <el-menu-item index="/bankNames">
+    <!-- <el-menu-item index="/bankNames">
       <i class="el-icon-menu"></i>
       <span slot="title">银行维护</span>
-    </el-menu-item>
+    </el-menu-item> -->
     <el-menu-item index="/bankCard">
       <i class="el-icon-menu"></i>
       <span slot="title">银行卡</span>

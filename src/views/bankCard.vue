@@ -75,8 +75,14 @@
         </el-form-item>
         <el-form-item label="银行:" prop="bankName" label-width="100px">
           <el-select v-model="bank.bankName" filterable clearable placeholder="选择转入账号">
-            <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
+            <el-option
+              v-for="item in bankNames"
+              :key="item.name"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
           </el-select>
+          <el-button size="mini" type="primary" plain @click="addBankName">新增银行</el-button>
         </el-form-item>
         <el-form-item label="卡号:" prop="bankCard" label-width="100px">
           <el-input v-model="bank.bankCard" autocomplete="off"></el-input>
@@ -148,6 +154,23 @@
         <el-button type="primary" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog
+      :title="dialogTitle"
+      width="600px"
+      :visible.sync="addBankNameFormVisible"
+      @close="resetForm('addBankNameForm')"
+    >
+      <el-form :model="bankName" :rules="addBankNameRules"  ref="addBankNameForm">
+        <el-form-item label="银行名称:" prop="name" label-width="100px">
+          <el-input v-model="bankName.name"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addBankNameFormVisible= false">取 消</el-button>
+        <el-button type="primary" @click="submitAddBankName('addBankNameForm')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -159,8 +182,12 @@ export default {
       banks: [],
       bankLogs: [],
       bankNames: [],
+      bankName: {
+        name:""
+      },
       bankTransaction_bankProduct: false,
       bankTransaction_transferCard: false,
+      addBankNameFormVisible: false,
       bank: {
         id: "",
         name: "",
@@ -217,6 +244,11 @@ export default {
         transactionAmount: [
           { required: true, message: "请输入金额", trigger: "blur" }
         ]
+      },
+      addBankNameRules: {
+        name: [
+          { required: true, message: "请输入银行名称", trigger: "blur" }
+        ]
       }
     };
   },
@@ -253,7 +285,7 @@ export default {
     getBankNames(param) {
       this.$http({
         method: "post",
-        url: this.BASE_API + "/api/banks/getBankName",
+        url: this.BASE_API + "/api/bankNames/getBankName",
         data: param
       })
         .then(res => {
@@ -394,6 +426,39 @@ export default {
           } else {
             // this.bankOut = Object.assign({}, row);
           }
+        }
+      });
+    },
+    addBankName() {
+      this.addBankNameFormVisible= true;
+    },
+    submitAddBankName(addBankNameForm) {
+     // 表单验证
+      this.$refs[addBankNameForm].validate(valid => {
+        if (valid) {
+          this.$http({
+            method: "post",
+            url: this.BASE_API + "/api/bankNames/addBankName",
+            data: this.bankName
+          })
+            .then(res => {
+              if (res.data.code == 0) {
+                this.$message({
+                  type: "success",
+                  message: "新增成功！"
+                });
+                this.addBankNameFormVisible = false;
+                 this.getBankNames();
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: res.data.msg
+                });
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
         }
       });
     }
