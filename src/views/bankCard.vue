@@ -74,7 +74,7 @@
           <el-input v-model="bank.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="银行:" prop="bankName" label-width="100px">
-          <el-select v-model="bank.bankName" filterable clearable placeholder="选择转入账号">
+          <el-select v-model="bank.bankName" filterable clearable placeholder="银行">
             <el-option
               v-for="item in bankNames"
               :key="item.name"
