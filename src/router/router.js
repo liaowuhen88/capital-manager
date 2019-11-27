@@ -5,7 +5,6 @@ import bankCard from '../views/bankCard.vue'
 import bankProducts from '../views/bankProducts.vue'
 import bankMyProduct from '../views/bankMyProduct.vue'
 import homePage from '../views/homePage.vue'
-import bankNames from '../views/bankNames.vue'
 import bankLog from '../views/bankLog.vue'
 import Login from '../views/Login.vue'
 import NotFound from '../views/NotFound.vue'
@@ -30,11 +29,6 @@ const router = new Router({
           path: '/homePage',
           name: 'homePage',
           component: homePage
-        },
-        {
-          path: '/bankNames',
-          name: 'bankNames',
-          component: bankNames
         },
         {
           path: '/bankCard',
