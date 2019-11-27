@@ -11,13 +11,18 @@
       </el-select>
     </el-col>
     <el-col :span="3">
-      <el-select v-model="param.bankCard" filterable  clearable placeholder="请选择银行卡">
+      <el-select v-model="param.bankCard" filterable clearable placeholder="请选择银行卡">
         <el-option v-for="item in bankCards" :key="item" :label="item" :value="item"></el-option>
       </el-select>
     </el-col>
     <el-col :span="3">
       <el-select v-model="param.transactionTypes" multiple clearable placeholder="交易类型">
-        <el-option v-for="item in transactionType" :key="item.key" :label="item.lable" :value="item.key"></el-option>
+        <el-option
+          v-for="item in transactionType"
+          :key="item.key"
+          :label="item.lable"
+          :value="item.key"
+        ></el-option>
       </el-select>
     </el-col>
     <el-col :span="3">
@@ -27,7 +32,8 @@
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
-      ></el-date-picker>
+        value-format="yyyy-MM-dd"
+      >></el-date-picker>
     </el-col>
     <el-col :span="2" :offset="2">
       <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
@@ -56,9 +62,9 @@ export default {
         { key: "4", lable: "活期利息收入" },
         { key: "5", lable: "买入理财" },
         { key: "6", lable: "理财利息收入" },
-        { key: "7", lable: "转账-转入" },
+        { key: "7", lable: "转账-转入" }
       ],
-      param: { userName: "", bankName: "", bankCard: "",transactionTypes:[] }
+      param: { userName: "", bankName: "", bankCard: "", transactionTypes: [] }
     };
   },
   mounted() {
@@ -80,7 +86,7 @@ export default {
           if (res.data.code == 0) {
             this.userNames = res.data.data.userNames;
             this.bankNames = res.data.data.bankNames;
-            this.bankCards =res.data.data.bankCards;
+            this.bankCards = res.data.data.bankCards;
           } else {
             this.$message({
               showClose: true,

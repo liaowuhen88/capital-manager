@@ -10,7 +10,7 @@ import Login from '../views/Login.vue'
 import NotFound from '../views/NotFound.vue'
 import uploadFile from '../views/uploadFile.vue'
 import earningsStatistics from '../views/earningsStatistics.vue'
-
+import echarts from '../views/echarts.vue'
 Vue.use(Router);
 
 const router = new Router({
@@ -66,11 +66,11 @@ const router = new Router({
         //   name: 'articles',
         //   component: Articles
         // },
-        // {
-        //   path: '/echarts',
-        //   name: 'echarts',
-        //   component: Echarts
-        // },
+        {
+          path: '/echarts',
+          name: 'echarts',
+          component: echarts
+        },
 
         {
           path: '/404',

@@ -36,10 +36,10 @@
       <i class="el-icon-menu"></i>
       <span slot="title">上传资料</span>
     </el-menu-item> -->
-    <el-menu-item index="/earningsStatistics">
+    <!-- <el-menu-item index="/earningsStatistics">
       <i class="el-icon-menu"></i>
       <span slot="title">盈利统计</span>
-    </el-menu-item>
+    </el-menu-item> -->
     <!-- <el-menu-item index="/articles">
       <i class="el-icon-document"></i>
       <span slot="title">文章</span>

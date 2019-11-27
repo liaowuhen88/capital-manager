@@ -5,37 +5,49 @@
 </template>
 
 <script>
-import echarts from 'echarts'
-import option from './../common/option'
+import option from "./../common/option";
 export default {
-  mounted () {
-    this.drawEcharts()
+  data() {
+    return { totalByMonthVo: {} };
+  },
+  mounted() {
+    this.getData();
   },
   methods: {
-    drawEcharts () {
-      let chart = echarts.init(document.getElementById('echarts'))
-
-      // 自定义工具事件
-      option.toolbox.feature.myTool.onclick = () => {
-        this.$message({
-          type: 'info',
-          message: '您刚刚点击了自定义工具按钮！'
-        })
-      }
-
+    drawEcharts() {
+      let chart = this.$echarts.init(document.getElementById("echarts"));
       // 设置配置项
-      chart.setOption(option)
-
-      // 绑定点击事件
-      chart.on('click', (param) => {
-        this.$message({
-          type: 'info',
-          message: `您点击了： ${param.name} - ${param.seriesName} - ${param.data}`
-        })
+      console.log(this.totalByMonthVo.series["1"]);
+      option.xAxis[0].data = this.totalByMonthVo.xaxis;
+      option.series[0].data = this.totalByMonthVo.series["1"];
+      option.series[1].data = this.totalByMonthVo.series["2"];
+      console.log(this.totalByMonthVo.series);
+      chart.setOption(option);
+    },
+    getData(param) {
+      this.loading = true;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankBill/totalByMonth",
+        data: param ? param : {}
       })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.totalByMonthVo = res.data.data;
+            this.drawEcharts();
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
