@@ -23,12 +23,17 @@ const router = new Router({
     },
     {
       path: '/',
-      component: homePage,
+      component: Index,
       children: [
         {
           path: '/homePage',
           name: 'homePage',
           component: homePage
+        },
+        {
+          path: '/Index',
+          name: 'Index',
+          component: Index
         },
         {
           path: '/bankCard',
