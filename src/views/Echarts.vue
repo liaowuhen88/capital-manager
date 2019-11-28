@@ -17,11 +17,8 @@ export default {
     drawEcharts() {
       let chart = this.$echarts.init(document.getElementById("echarts"));
       // 设置配置项
-      console.log(this.totalByMonthVo.series["1"]);
-      option.xAxis[0].data = this.totalByMonthVo.xaxis;
-      option.series[0].data = this.totalByMonthVo.series["1"];
-      option.series[1].data = this.totalByMonthVo.series["2"];
-      console.log(this.totalByMonthVo.series);
+      option.xAxis = this.totalByMonthVo.xaxis;
+      option.series = this.totalByMonthVo.series;
       chart.setOption(option);
     },
     getData(param) {
