@@ -23,7 +23,7 @@ const router = new Router({
     },
     {
       path: '/',
-      component: Index,
+      component: homePage,
       children: [
         {
           path: '/homePage',

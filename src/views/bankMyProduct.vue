@@ -126,10 +126,15 @@
         <el-form-item label="买入时间:" prop="buyingTime" label-width="100px">
           <el-date-picker v-model="buyMyProduct.buyingTime" type="date" placeholder="买入时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="到期时间:" prop="dueTime" label-width="100px">
+        <el-form-item label="到期时间:" value-format="yyyy-MM-dd" prop="dueTime" label-width="100px">
           <el-date-picker v-model="buyMyProduct.dueTime" type="date" placeholder="到期时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="起息日期:" prop="interestStartTime" label-width="100px">
+        <el-form-item
+          label="起息日期:"
+          value-format="yyyy-MM-dd"
+          prop="interestStartTime"
+          label-width="100px"
+        >
           <el-date-picker v-model="buyMyProduct.interestStartTime" type="date" placeholder="起息日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="预期利率:" prop="expectedInterestRate" label-width="100px">
@@ -139,13 +144,13 @@
         <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="100px">
           <el-input v-model="buyMyProduct.interestPaymentMethod" placeholder="付息方式"></el-input>
         </el-form-item>
-        <el-form-item label="收利日期:" prop="profitDate" label-width="100px">
+        <el-form-item label="收利日期:" value-format="yyyy-MM-dd" prop="profitDate" label-width="100px">
           <el-date-picker v-model="buyMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
         </el-form-item>
-        <el-form-item label="收利日利息预期收益:" prop="expectedInterestIncomeMonth" label-width="100px">
+        <el-form-item label="收利日预期利息收益:" prop="expectedInterestIncomeMonth" label-width="100px">
           <el-input v-model="buyMyProduct.expectedInterestIncomeMonth" placeholder="收利日利息预期收益"></el-input>
         </el-form-item>
-        <el-form-item label="利息预期收益:" prop="expectedInterestIncomeTotal" label-width="100px">
+        <el-form-item label="利息预期总收益:" prop="expectedInterestIncomeTotal" label-width="100px">
           <el-input v-model="buyMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
         </el-form-item>
 
@@ -175,11 +180,21 @@
         <el-form-item label="收款方卡号:" prop="bankCard" label-width="100px">
           <el-input v-model="bankMyProduct.bank.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="交易日期:" prop="transactionTime" label-width="100px">
-          <el-date-picker v-model="bankBill.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
+        <el-form-item label="本次收息日期:" prop="transactionTime" label-width="100px">
+          <el-date-picker
+            v-model="bankBill.transactionTime"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="下次收息日期:" prop="nextProfitDate" label-width="100px">
-          <el-date-picker v-model="bankBill.nextProfitDate" type="date" placeholder="下次收息日期"></el-date-picker>
+          <el-date-picker
+            v-model="bankBill.nextProfitDate"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="下次收息日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="利息金额:" prop="transactionAmount" label-width="100px">
           <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
@@ -270,7 +285,7 @@ export default {
           { required: true, message: "付息方式", trigger: "blur" }
         ],
         profitDate: [{ required: true, message: "收利日期", trigger: "blur" }],
-         expectedInterestIncomeMonth: [
+        expectedInterestIncomeMonth: [
           { required: true, message: "利息预期收益", trigger: "blur" }
         ],
         expectedInterestIncomeTotal: [

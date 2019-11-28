@@ -6,7 +6,7 @@
           <font
             size="4"
             face="arial"
-          >总金额：{{pageHomeVo.bankTotalVo.totalCashAmount+pageHomeVo.bankTotalVo.totalInvestmentAmount}}元</font>
+          >总金额：{{(pageHomeVo.bankTotalVo.totalCashAmount? 0:pageHomeVo.bankTotalVo.totalCashAmount)+pageHomeVo.bankTotalVo.totalInvestmentAmount}}元</font>
         </p>
       </el-col>
       <el-col :span="4">

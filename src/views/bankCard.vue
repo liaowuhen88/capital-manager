@@ -139,7 +139,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="交易日期:" prop="transactionTime" label-width="100px">
-          <el-date-picker v-model="bankTransaction.transactionTime" type="date" placeholder="选择日期"></el-date-picker>
+          <el-date-picker v-model="bankTransaction.transactionTime" type="date" value-format="yyyy-MM-dd" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="交易金额:" prop="transactionAmount" label-width="100px">
           <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
