@@ -1,7 +1,7 @@
 // Echarts图表配置对象
 let option = option = {
   title: {
-      text: '折线图堆叠'
+      text: '财务分析'
   },
   tooltip: {
       trigger: 'axis'

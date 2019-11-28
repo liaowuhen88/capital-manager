@@ -19,6 +19,8 @@ export default {
       // 设置配置项
       option.xAxis = this.totalByMonthVo.xaxis;
       option.series = this.totalByMonthVo.series;
+      option.legend = this.totalByMonthVo.legend;
+
       chart.setOption(option);
     },
     getData(param) {
