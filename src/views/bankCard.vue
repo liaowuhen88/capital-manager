@@ -6,9 +6,9 @@
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bankName" label="银行"></el-table-column>
       <el-table-column prop="bankCard" label="银行卡号" width="150"></el-table-column>
-      <el-table-column prop="cashAmount" label="现金金额"></el-table-column>
-      <el-table-column prop="investmentAmount" label="投资金额"></el-table-column>
-      <el-table-column prop="accountBalance" label="总金额"></el-table-column>
+      <el-table-column prop="cashAmount" label="现金金额/元" :formatter="formatter"></el-table-column>
+      <el-table-column prop="investmentAmount" label="投资金额/元" :formatter="formatter"></el-table-column>
+      <el-table-column prop="accountBalance" label="总金额/元" :formatter="formatter"></el-table-column>
       <el-table-column prop="updateTime" label="最近更新时间" width="180"></el-table-column>
       <el-table-column label="当前时间" width="180">{{ Utils.getTime() }}</el-table-column>
       <el-table-column label="操作" fixed="right" width="250">
@@ -139,7 +139,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="交易日期:" prop="transactionTime" label-width="100px">
-          <el-date-picker v-model="bankTransaction.transactionTime" type="date" value-format="yyyy-MM-dd" placeholder="选择日期"></el-date-picker>
+          <el-date-picker
+            v-model="bankTransaction.transactionTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="交易金额:" prop="transactionAmount" label-width="100px">
           <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
@@ -161,7 +166,7 @@
       :visible.sync="addBankNameFormVisible"
       @close="resetForm('addBankNameForm')"
     >
-      <el-form :model="bankName" :rules="addBankNameRules"  ref="addBankNameForm">
+      <el-form :model="bankName" :rules="addBankNameRules" ref="addBankNameForm">
         <el-form-item label="银行名称:" prop="name" label-width="100px">
           <el-input v-model="bankName.name"></el-input>
         </el-form-item>
@@ -183,7 +188,7 @@ export default {
       bankLogs: [],
       bankNames: [],
       bankName: {
-        name:""
+        name: ""
       },
       bankTransaction_bankProduct: false,
       bankTransaction_transferCard: false,
@@ -246,9 +251,7 @@ export default {
         ]
       },
       addBankNameRules: {
-        name: [
-          { required: true, message: "请输入银行名称", trigger: "blur" }
-        ]
+        name: [{ required: true, message: "请输入银行名称", trigger: "blur" }]
       }
     };
   },
@@ -319,6 +322,7 @@ export default {
               .then(res => {
                 if (res.data.code == 0) {
                   this.banks = res.data.data;
+                  this.getBanks();
                 } else {
                   this.$message({
                     showClose: true,
@@ -430,10 +434,13 @@ export default {
       });
     },
     addBankName() {
-      this.addBankNameFormVisible= true;
+      this.addBankNameFormVisible = true;
+    },
+    formatter(row, column) {
+      return row[column.property] + "元";
     },
     submitAddBankName(addBankNameForm) {
-     // 表单验证
+      // 表单验证
       this.$refs[addBankNameForm].validate(valid => {
         if (valid) {
           this.$http({
@@ -448,7 +455,7 @@ export default {
                   message: "新增成功！"
                 });
                 this.addBankNameFormVisible = false;
-                 this.getBankNames();
+                this.getBankNames();
               } else {
                 this.$message({
                   showClose: true,

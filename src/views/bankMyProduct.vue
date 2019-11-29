@@ -23,6 +23,7 @@
     <el-table
       :data="bankMyProducts"
       show-summary
+      stripe
       @selection-change="selectChange"
       style="width: 100%"
     >
@@ -138,7 +139,7 @@
           <el-date-picker v-model="buyMyProduct.interestStartTime" type="date" placeholder="起息日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="预期利率:" prop="expectedInterestRate" label-width="100px">
-          <el-input v-model="buyMyProduct.expectedInterestRate" placeholder="预期利率"></el-input>
+          <el-input v-model="buyMyProduct.expectedInterestRate" placeholder="预期利率,不需要%"></el-input>
         </el-form-item>
 
         <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="100px">
@@ -463,6 +464,7 @@ export default {
                   message: "新增成功！"
                 });
                 this.buyBankProductFormVisible = false;
+                this.getMyBankProducts();
               } else {
                 this.$message({
                   showClose: true,
