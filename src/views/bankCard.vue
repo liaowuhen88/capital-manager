@@ -87,7 +87,7 @@
         <el-form-item label="卡号:" prop="bankCard" label-width="100px">
           <el-input v-model="bank.bankCard" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="现金金额:" label-width="100px">
+        <el-form-item label="现金金额:" prop="cashAmount" label-width="100px">
           <el-input v-model="bank.cashAmount" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -240,7 +240,8 @@ export default {
       rules: {
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         bankName: [{ required: true, message: "请输入银行", trigger: "blur" }],
-        bankCard: [{ required: true, message: "请输入卡号", trigger: "blur" }]
+        bankCard: [{ required: true, message: "请输入卡号", trigger: "blur" }],
+        cashAmount: [{ required: true, message: "请输入金额", trigger: "blur" }]
       },
       bankTransactionRules: {
         transactionTime: [
@@ -357,6 +358,7 @@ export default {
                   type: "success",
                   message: "新增成功！"
                 });
+                this.getBanks();
                 this.bankTransactionFormVisible = false;
               } else {
                 this.$message({

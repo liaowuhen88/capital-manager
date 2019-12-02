@@ -102,7 +102,7 @@
 
     <el-dialog
       :title="dialogTitle"
-      width="600px"
+      width="700px"
       :visible.sync="buyBankProductFormVisible"
       @close="resetForm('buyMyProductForm')"
     >
@@ -189,7 +189,7 @@
             placeholder="选择日期"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="下次收息日期:" prop="nextProfitDate" label-width="100px">
+        <el-form-item label="下次收息日期:" v-if="income_show" prop="nextProfitDate" label-width="100px">
           <el-date-picker
             v-model="bankBill.nextProfitDate"
             value-format="yyyy-MM-dd"
@@ -197,6 +197,10 @@
             placeholder="下次收息日期"
           ></el-date-picker>
         </el-form-item>
+        <el-form-item label="赎回本金:" prop="investmentAmount" v-if="investmentAmount_show" label-width="100px">
+          <el-input v-model="bankMyProduct.investmentAmount" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
         <el-form-item label="利息金额:" prop="transactionAmount" label-width="100px">
           <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
@@ -227,6 +231,8 @@ export default {
       name: "",
       bankIn: "",
       banks: [],
+      income_show: false,
+      investmentAmount_show: false,
       bankMyProduct: {
         bank: {
           id: "",
@@ -395,25 +401,35 @@ export default {
       });
     },
     redeem(index, row) {
-      this.$confirm(`确定要赎回 【${row.productType}】 吗?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "赎回成功!"
-          });
-        })
-        .catch(() => {
-          console.log("赎回失败");
-        });
+      this.bankMyProduct = Object.assign({}, row);
+      this.bankProductIncomeFormVisible = true;
+      this.rowIndex = index;
+      this.dialogTitle = "理财赎回";
+      this.investmentAmount_show = true;
+      this.bankBill.myProductId = row.id;
+      this.bankBill.bankCardId = this.bankMyProduct.bank.id;
+      this.bankBill.transactionType = 9;
+
+      // this.$confirm(`确定要赎回 【${row.productType}】 吗?`, "提示", {
+      //   confirmButtonText: "确定",
+      //   cancelButtonText: "取消",
+      //   type: "warning"
+      // })
+      //   .then(() => {
+      //     this.$message({
+      //       type: "success",
+      //       message: "赎回成功!"
+      //     });
+      //   })
+      //   .catch(() => {
+      //     console.log("赎回失败");
+      //   });
     },
     income(index, row) {
       this.bankMyProduct = Object.assign({}, row);
       this.bankProductIncomeFormVisible = true;
       this.rowIndex = index;
+      this.income_show = true;
       this.dialogTitle = "利息收入";
       this.bankBill.myProductId = row.id;
       this.bankBill.bankCardId = this.bankMyProduct.bank.id;
@@ -435,6 +451,9 @@ export default {
                   message: "新增成功！"
                 });
                 this.bankProductIncomeFormVisible = false;
+                this.income_show = false;
+                this.investmentAmount_show = false;
+                
               } else {
                 this.$message({
                   showClose: true,
