@@ -52,7 +52,7 @@
       <el-table-column prop="dueTime" label="当前时间"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.state == 1">
           <el-row :gutter="20">
             <el-col :span="12">
               <el-button
@@ -89,6 +89,13 @@
               >设置提醒规则</el-button>
             </el-col>
           </el-row>
+        </template>
+        <template slot-scope="scope" v-if="scope.row.state == 2">
+           <el-row :gutter="20">
+            <el-col :span="24">
+              已赎回
+            </el-col>
+           </el-row>
         </template>
       </el-table-column>
     </el-table>
@@ -197,7 +204,12 @@
             placeholder="下次收息日期"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="赎回本金:" prop="investmentAmount" v-if="investmentAmount_show" label-width="100px">
+        <el-form-item
+          label="赎回本金:"
+          prop="investmentAmount"
+          v-if="investmentAmount_show"
+          label-width="100px"
+        >
           <el-input v-model="bankMyProduct.investmentAmount" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
 
@@ -246,7 +258,7 @@ export default {
         expectedInterestIncomeMonth: "",
         expectedInterestIncomeTotal: "",
         expectedinterestRate: "",
-        status: 0
+        state: 0
       },
       buyMyProduct: {
         bankCardId: "",
@@ -256,7 +268,7 @@ export default {
         expectedInterestIncomeMonth: "",
         expectedInterestIncomeTotal: "",
         expectedinterestRate: "",
-        status: 0
+        state: 0
       },
       bankBill: {
         bankCardId: "",
@@ -453,7 +465,6 @@ export default {
                 this.bankProductIncomeFormVisible = false;
                 this.income_show = false;
                 this.investmentAmount_show = false;
-                
               } else {
                 this.$message({
                   showClose: true,
