@@ -91,11 +91,9 @@
           </el-row>
         </template>
         <template slot-scope="scope" v-if="scope.row.state == 2">
-           <el-row :gutter="20">
-            <el-col :span="24">
-              已赎回
-            </el-col>
-           </el-row>
+          <el-row :gutter="20">
+            <el-col :span="24">已赎回</el-col>
+          </el-row>
         </template>
       </el-table-column>
     </el-table>
@@ -128,9 +126,13 @@
           <el-input v-model="buyMyProduct.productType" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="投资金额:" prop="investmentAmount" label-width="100px">
-          <el-input v-model="buyMyProduct.investmentAmount" autocomplete="off"></el-input>
+          <font size="4" face="arial">{{this.Amountunit}}</font>
+          <el-input
+            v-model="buyMyProduct.investmentAmount"
+            @input="amountChange"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-
         <el-form-item label="买入时间:" prop="buyingTime" label-width="100px">
           <el-date-picker v-model="buyMyProduct.buyingTime" type="date" placeholder="买入时间"></el-date-picker>
         </el-form-item>
@@ -237,6 +239,7 @@ export default {
       currentPage: 1, //默认开始页面
       pageSize: 10,
       bankMyProducts: [],
+      Amountunit: "",
       userNames: [],
       bankNames: [],
       param: { userName: "", bankName: "", bankCard: "" },
@@ -378,6 +381,9 @@ export default {
         .catch(err => {
           console.error(err);
         });
+    },
+    amountChange(amount) {
+      this.Amountunit = this.Utils.transform(amount);
     },
     getBanks() {
       this.loading = true;

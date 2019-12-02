@@ -443,9 +443,8 @@ export default {
     amountChange(amount) {
       this.Amountunit = this.Utils.transform(amount);      
     },
-
     formatter(row, column) {
-      return row[column.property] + "元";
+      return this.Utils.toMoney(row[column.property]) + "元";
     },
     submitAddBankName(addBankNameForm) {
       // 表单验证
