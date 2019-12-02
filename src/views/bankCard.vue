@@ -88,7 +88,8 @@
           <el-input v-model="bank.bankCard" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="现金金额:" prop="cashAmount" label-width="100px">
-          <el-input v-model="bank.cashAmount" autocomplete="off"></el-input>
+          <font size="4" face="arial">{{this.Amountunit}}</font>
+          <el-input v-model="bank.cashAmount" @input="amountChange"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -184,6 +185,7 @@ import searchsVue from "@/components/search/search_common.vue";
 export default {
   data() {
     return {
+      Amountunit: "",
       banks: [],
       bankLogs: [],
       bankNames: [],
@@ -438,6 +440,10 @@ export default {
     addBankName() {
       this.addBankNameFormVisible = true;
     },
+    amountChange(amount) {
+      this.Amountunit = this.Utils.transform(amount);      
+    },
+
     formatter(row, column) {
       return row[column.property] + "元";
     },
