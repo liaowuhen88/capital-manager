@@ -33,7 +33,7 @@
           <font
             size="4"
             face="arial"
-          >本年度活期利息收入：{{this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[4].totalTransactionAmount) }}</font>
+          >本年度活期利息收入：{{pageHomeVo.integerBankBillTotalVoMap[4]?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[4].totalTransactionAmount):0 }}</font>
         </p>
       </el-col>
       <el-col :span="8">
@@ -41,7 +41,7 @@
           <font
             size="4"
             face="arial"
-          >本年度理财利息收入：{{this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[6].totalTransactionAmount)}}</font>
+          >本年度理财利息收入：{{pageHomeVo.integerBankBillTotalVoMap[4]?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[6].totalTransactionAmount):0}}</font>
         </p>
       </el-col>
       <el-col :span="8">
@@ -49,7 +49,7 @@
           <font
             size="4"
             face="arial"
-          >本年度支出：{{this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[2].totalTransactionAmount) }}</font>
+          >本年度支出：{{pageHomeVo.integerBankBillTotalVoMap[2]?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[2].totalTransactionAmount):0 }}</font>
         </p>
       </el-col>
     </el-row>
