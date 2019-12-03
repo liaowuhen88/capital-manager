@@ -6,7 +6,7 @@
           <font
             size="4"
             face="arial"
-          >总金额：{{this.Utils.toMoney(pageHomeVo.bankTotalVo.totalAccountBalance)}}元</font>
+          >总金额：{{this.Utils.toMoney(pageHomeVo.bankTotalVo.totalAccountBalance)}}</font>
         </p>
       </el-col>
       <el-col :span="8">

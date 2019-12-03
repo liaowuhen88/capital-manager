@@ -68,7 +68,7 @@ export default {
   props: ["isCollapse"],
   data() {
     return {
-      currentPath: location.pathname
+      currentPath: "/homePage"
     };
   }
 };
