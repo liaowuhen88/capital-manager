@@ -6,7 +6,7 @@
           <font
             size="4"
             face="arial"
-          >总金额：{{this.Utils.toMoney(pageHomeVo.bankTotalVo.totalAccountBalance)}}</font>
+          >总金额：{{pageHomeVo.bankTotalVo?this.Utils.toMoney(pageHomeVo.bankTotalVo.totalAccountBalance):0}}</font>
         </p>
       </el-col>
       <el-col :span="8">
@@ -14,7 +14,7 @@
           <font
             size="4"
             face="arial"
-          >卡内金额：{{this.Utils.toMoney(pageHomeVo.bankTotalVo.totalCashAmount)}}</font>
+          >卡内金额：{{pageHomeVo.bankTotalVo?this.Utils.toMoney(pageHomeVo.bankTotalVo.totalCashAmount):0}}</font>
         </p>
       </el-col>
       <el-col :span="8">
@@ -22,7 +22,7 @@
           <font
             size="4"
             face="arial"
-          >投资金额：{{this.Utils.toMoney(pageHomeVo.bankTotalVo.totalInvestmentAmount)}}</font>
+          >投资金额：{{pageHomeVo.bankTotalVo?this.Utils.toMoney(pageHomeVo.bankTotalVo.totalInvestmentAmount):0}}</font>
         </p>
       </el-col>
     </el-row>
