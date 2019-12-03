@@ -35,7 +35,7 @@
         value-format="yyyy-MM-dd"
       >></el-date-picker>
     </el-col>
-    <el-col :span="2" :offset="2">
+    <el-col :span="2" :offset="4">
       <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
     </el-col>
     <el-col :span="2" :offset="3">
