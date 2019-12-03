@@ -1,67 +1,57 @@
 <template >
   <div class="console">
     <el-row>
-      <el-col :span="4">
+      <el-col :span="8">
         <p>
           <font
             size="4"
             face="arial"
-          >总金额：{{(pageHomeVo.bankTotalVo.totalCashAmount? 0:pageHomeVo.bankTotalVo.totalCashAmount)+pageHomeVo.bankTotalVo.totalInvestmentAmount}}元</font>
+          >总金额：{{this.Utils.toMoney(pageHomeVo.bankTotalVo.totalAccountBalance)}}元</font>
         </p>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="8">
         <p>
-          <font size="4" face="arial"></font>
+          <font
+            size="4"
+            face="arial"
+          >卡内金额：{{this.Utils.toMoney(pageHomeVo.bankTotalVo.totalCashAmount)}}</font>
         </p>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="8">
         <p>
-          <font size="4" face="arial">卡内余额：{{pageHomeVo.bankTotalVo.totalCashAmount}}</font>
-        </p>
-      </el-col>
-      <el-col :span="4">
-        <p>
-          <font size="4" face="arial"></font>
-        </p>
-      </el-col>
-      <el-col :span="4">
-        <p>
-          <font size="4" face="arial">投资余额：{{pageHomeVo.bankTotalVo.totalInvestmentAmount}}</font>
-        </p>
-      </el-col>
-      <el-col :span="4">
-        <p>
-          <font size="4" face="arial"></font>
+          <font
+            size="4"
+            face="arial"
+          >投资金额：{{this.Utils.toMoney(pageHomeVo.bankTotalVo.totalInvestmentAmount)}}</font>
         </p>
       </el-col>
     </el-row>
     <el-divider></el-divider>
     <el-row>
-      <el-col :span="4">
+      <el-col :span="8">
         <p>
           <font
             size="4"
             face="arial"
-          >本年度活期利息收入：{{pageHomeVo.integerBankBillTotalVoMap[4].totalTransactionAmount}}</font>
+          >本年度活期利息收入：{{this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[4].totalTransactionAmount) }}</font>
         </p>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="8">
         <p>
           <font
             size="4"
             face="arial"
-          >本年度理财利息收入：{{pageHomeVo.integerBankBillTotalVoMap[6].totalTransactionAmount}}</font>
+          >本年度理财利息收入：{{this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[6].totalTransactionAmount)}}</font>
         </p>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="8">
         <p>
           <font
             size="4"
             face="arial"
-          >本年度支出：{{pageHomeVo.integerBankBillTotalVoMap[2].totalTransactionAmount}}</font>
+          >本年度支出：{{this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[2].totalTransactionAmount) }}</font>
         </p>
       </el-col>
-      <el-col :span="12"></el-col>
     </el-row>
     <el-divider></el-divider>
     <el-row>
@@ -134,7 +124,6 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.pageHomeVo = res.data.data;
-            console.log(this.pageHomeVo);
           } else {
             this.$message({
               showClose: true,

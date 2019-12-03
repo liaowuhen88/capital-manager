@@ -88,8 +88,8 @@
           <el-input v-model="bank.bankCard" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="现金金额:" prop="cashAmount" label-width="100px">
-          <font size="4" face="arial">{{this.Amountunit}}</font>
-          <el-input v-model="bank.cashAmount" @input="amountChange"></el-input>
+          <font size="4" face="arial">{{this.Utils.transform(bank.cashAmount) }}</font>
+          <el-input v-model="bank.cashAmount"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -148,6 +148,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="交易金额:" prop="transactionAmount" label-width="100px">
+          <font size="4" face="arial">{{this.Utils.transform(bankTransaction.transactionAmount) }}</font>
           <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
 
@@ -185,7 +186,6 @@ import searchsVue from "@/components/search/search_common.vue";
 export default {
   data() {
     return {
-      Amountunit: "",
       banks: [],
       bankLogs: [],
       bankNames: [],
@@ -312,36 +312,30 @@ export default {
       // 表单验证
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let id = this.bank.id;
-          if (id) {
-            // id非空-修改
-            this.banks.splice(this.rowIndex, 1, this.bank);
-          } else {
-            this.$http({
-              method: "post",
-              url: this.BASE_API + "/api/banks/insert",
-              data: this.bank
+          this.$http({
+            method: "post",
+            url: this.BASE_API + "/api/banks/insert",
+            data: this.bank
+          })
+            .then(res => {
+              if (res.data.code == 0) {
+                this.banks = res.data.data;
+                this.bankFormVisible = false;
+                this.$message({
+                  type: "success",
+                  message: id ? "修改成功！" : "新增成功！"
+                });
+                this.getBanks();
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: res.data.msg
+                });
+              }
             })
-              .then(res => {
-                if (res.data.code == 0) {
-                  this.banks = res.data.data;
-                  this.getBanks();
-                } else {
-                  this.$message({
-                    showClose: true,
-                    message: res.data.msg
-                  });
-                }
-              })
-              .catch(err => {
-                console.error(err);
-              });
-          }
-          this.bankFormVisible = false;
-          this.$message({
-            type: "success",
-            message: id ? "修改成功！" : "新增成功！"
-          });
+            .catch(err => {
+              console.error(err);
+            });
         }
       });
     },
@@ -360,6 +354,7 @@ export default {
                   type: "success",
                   message: "新增成功！"
                 });
+                this.resetForm(bankTransactionForm);
                 this.getBanks();
                 this.bankTransactionFormVisible = false;
               } else {
@@ -376,7 +371,7 @@ export default {
       });
     },
     resetForm(formName) {
-      this.$refs[formName].clearValidate();
+      this.$refs[formName].resetFields();
     },
     handleAdd() {
       this.dialogTitle = "新增";
@@ -439,9 +434,6 @@ export default {
     },
     addBankName() {
       this.addBankNameFormVisible = true;
-    },
-    amountChange(amount) {
-      this.Amountunit = this.Utils.transform(amount);      
     },
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";

@@ -36,24 +36,39 @@
       <el-table-column prop="investmentAmount" :formatter="formatter" width="150px" label="投资金额"></el-table-column>
 
       <el-table-column prop="buyingTime" label="买入时间" width="100px"></el-table-column>
-      <el-table-column prop="dueTime" label="到期时间" width="100px" ></el-table-column>
+      <el-table-column prop="dueTime" label="到期时间" width="100px"></el-table-column>
       <el-table-column prop="interestStartTime" width="100px" label="起息日期"></el-table-column>
       <el-table-column prop="expectedInterestRate" label="预期利率"></el-table-column>
       <el-table-column prop="interestRate" label="实际利率"></el-table-column>
 
       <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
-      <el-table-column prop="profitDate" label="收利日期" width="100px" ></el-table-column>
-      <el-table-column prop="expectedInterestIncomeMonth" width="150px" :formatter="formatter" label="收利日利息预期收益"></el-table-column>
-      <el-table-column prop="expectedInterestIncomeTotal" width="150px" :formatter="formatter" label="利息预期总收益"></el-table-column>
-      <el-table-column prop="totalEffectiveInterestIncome" width="150px" :formatter="formatter" label="实际利息总收益"></el-table-column>
+      <el-table-column prop="profitDate" label="收利日期" width="100px"></el-table-column>
+      <el-table-column
+        prop="expectedInterestIncomeMonth"
+        width="150px"
+        :formatter="formatter"
+        label="收利日利息预期收益"
+      ></el-table-column>
+      <el-table-column
+        prop="expectedInterestIncomeTotal"
+        width="150px"
+        :formatter="formatter"
+        label="利息预期总收益"
+      ></el-table-column>
+      <el-table-column
+        prop="totalEffectiveInterestIncome"
+        width="150px"
+        :formatter="formatter"
+        label="实际利息总收益"
+      ></el-table-column>
 
       <el-table-column prop="principalAndInterestIncome" :formatter="formatter" label="本息收益"></el-table-column>
       <el-table-column prop="down" label="产品说明下载"></el-table-column>
       <el-table-column prop="dueTime" label="当前时间"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
       <el-table-column label="操作" fixed="right" width="200">
-        <template slot-scope="scope" v-if="scope.row.state == 1">
-          <el-row :gutter="20">
+        <template slot-scope="scope">
+          <el-row :gutter="20" v-if="scope.row.state == 1">
             <el-col :span="12">
               <el-button
                 size="mini"
@@ -71,7 +86,7 @@
               >理财赎回</el-button>
             </el-col>
           </el-row>
-          <el-row :gutter="20">
+          <el-row :gutter="20" v-if="scope.row.state == 1">
             <el-col :span="12">
               <el-button
                 size="mini"
@@ -89,9 +104,8 @@
               >设置提醒规则</el-button>
             </el-col>
           </el-row>
-        </template>
-        <template slot-scope="scope" v-if="scope.row.state == 2">
-          <el-row :gutter="20">
+
+          <el-row :gutter="20" v-if="scope.row.state == 2">
             <el-col :span="24">已赎回</el-col>
           </el-row>
         </template>
@@ -126,12 +140,8 @@
           <el-input v-model="buyMyProduct.productType" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="投资金额:" prop="investmentAmount" label-width="100px">
-          <font size="4" face="arial">{{this.Amountunit}}</font>
-          <el-input
-            v-model="buyMyProduct.investmentAmount"
-            @input="amountChange"
-            autocomplete="off"
-          ></el-input>
+          <font size="4" face="arial">{{this.Utils.transform(buyMyProduct.investmentAmount) }}</font>
+          <el-input v-model="buyMyProduct.investmentAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="买入时间:" prop="buyingTime" label-width="100px">
           <el-date-picker v-model="buyMyProduct.buyingTime" type="date" placeholder="买入时间"></el-date-picker>
@@ -158,9 +168,17 @@
           <el-date-picker v-model="buyMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="收利日预期利息收益:" prop="expectedInterestIncomeMonth" label-width="100px">
+          <font
+            size="4"
+            face="arial"
+          >{{this.Utils.transform(buyMyProduct.expectedInterestIncomeMonth) }}</font>
           <el-input v-model="buyMyProduct.expectedInterestIncomeMonth" placeholder="收利日利息预期收益"></el-input>
         </el-form-item>
         <el-form-item label="利息预期总收益:" prop="expectedInterestIncomeTotal" label-width="100px">
+          <font
+            size="4"
+            face="arial"
+          >{{this.Utils.transform(buyMyProduct.expectedInterestIncomeTotal) }}</font>
           <el-input v-model="buyMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
         </el-form-item>
 
@@ -216,6 +234,7 @@
         </el-form-item>
 
         <el-form-item label="利息金额:" prop="transactionAmount" label-width="100px">
+          <font size="4" face="arial">{{this.Utils.transform(bankBill.transactionAmount) }}</font>
           <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注:" label-width="100px">
@@ -239,7 +258,6 @@ export default {
       currentPage: 1, //默认开始页面
       pageSize: 10,
       bankMyProducts: [],
-      Amountunit: "",
       userNames: [],
       bankNames: [],
       param: { userName: "", bankName: "", bankCard: "" },
@@ -382,9 +400,6 @@ export default {
           console.error(err);
         });
     },
-    amountChange(amount) {
-      this.Amountunit = this.Utils.transform(amount);
-    },
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";
     },
@@ -474,6 +489,7 @@ export default {
                 this.bankProductIncomeFormVisible = false;
                 this.income_show = false;
                 this.investmentAmount_show = false;
+                 this.getMyBankProducts();
               } else {
                 this.$message({
                   showClose: true,
@@ -504,6 +520,7 @@ export default {
                 });
                 this.buyBankProductFormVisible = false;
                 this.getMyBankProducts();
+                this.resetForm(buyMyProductForm);
               } else {
                 this.$message({
                   showClose: true,
@@ -525,7 +542,7 @@ export default {
       this.buyBankProductFormVisible = true;
     },
     resetForm(formName) {
-      this.$refs[formName].clearValidate();
+      this.$refs[formName].resetFields();
     }
   }
 };
