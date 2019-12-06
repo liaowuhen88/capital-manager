@@ -70,7 +70,7 @@
         width="150px"
       ></el-table-column>
       <el-table-column prop="down" label="产品说明下载"></el-table-column>
-      <el-table-column prop="dueTime" label="当前时间"></el-table-column>
+      <el-table-column prop="dueTime" label="到期时间"></el-table-column>
       <!-- <el-table-column prop="remark" label="备注"></el-table-column> -->
       <el-table-column label="操作" fixed="right" width="200">
         <template slot-scope="scope">
@@ -459,7 +459,7 @@ export default {
           sums[index] = "总价";
           return;
         }
-        if (index === 9 || index === 10 || index === 13 || index === 11) {
+        if (index === 3 || index === 9 || index === 10 || index === 13 || index === 11) {
           sums[index] = "";
           return;
         }
