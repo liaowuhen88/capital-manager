@@ -2,7 +2,7 @@
   <div class="bank-box">
     <searchsVue @search="getBanks" @handleAdd="handleAdd" />
 
-    <el-table :stripe="true" :data="banks" show-summary style="width: 100%">
+    <el-table :stripe="true" :data="banks" show-summary :summary-method="getSummaries" style="width: 100%">
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bankName" label="银行"></el-table-column>
       <el-table-column prop="bankCard" label="银行卡号" width="150"></el-table-column>
@@ -437,6 +437,32 @@ export default {
     },
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";
+    },
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = "总价";
+          return;
+        }
+        const values = data.map(item => Number(item[column.property]));
+        if (!values.every(value => isNaN(value))) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] = this.Utils.toMoney(sums[index]) + "元";
+        } else {
+          sums[index] = "";
+        }
+      });
+
+      return sums;
     },
     submitAddBankName(addBankNameForm) {
       // 表单验证

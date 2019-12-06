@@ -121,13 +121,28 @@
           <el-input v-model="bankMyProduct.investmentAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="收利日期:" prop="profitDate" label-width="100px">
-          <el-date-picker v-model="bankMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
+          <el-date-picker
+            v-model="bankMyProduct.profitDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="收利日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="买入时间:" prop="buyingTime" label-width="100px">
-          <el-date-picker v-model="bankMyProduct.buyingTime" type="date" placeholder="买入时间"></el-date-picker>
+          <el-date-picker
+            v-model="bankMyProduct.buyingTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="买入时间"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="到期时间:" prop="dueTime" label-width="100px">
-          <el-date-picker v-model="bankMyProduct.dueTime" type="date" placeholder="到期时间"></el-date-picker>
+          <el-date-picker
+            v-model="bankMyProduct.dueTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="到期时间"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="备注:" prop="remark" label-width="100px">
           <el-input v-model="bankMyProduct.remark" autocomplete="off"></el-input>

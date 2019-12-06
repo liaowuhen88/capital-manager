@@ -23,6 +23,7 @@
     <el-table
       :data="bankMyProducts"
       show-summary
+      :summary-method="getSummaries"
       stripe
       @selection-change="selectChange"
       style="width: 100%"
@@ -62,7 +63,12 @@
         label="实际利息总收益"
       ></el-table-column>
 
-      <el-table-column prop="principalAndInterestIncome" :formatter="formatter" label="本息收益"></el-table-column>
+      <el-table-column
+        prop="principalAndInterestIncome"
+        :formatter="formatter"
+        label="本息收益"
+        width="150px"
+      ></el-table-column>
       <el-table-column prop="down" label="产品说明下载"></el-table-column>
       <el-table-column prop="dueTime" label="当前时间"></el-table-column>
       <!-- <el-table-column prop="remark" label="备注"></el-table-column> -->
@@ -144,18 +150,28 @@
           <el-input v-model="buyMyProduct.investmentAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="买入时间:" prop="buyingTime" label-width="100px">
-          <el-date-picker v-model="buyMyProduct.buyingTime" type="date" placeholder="买入时间"></el-date-picker>
+          <el-date-picker
+            v-model="buyMyProduct.buyingTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="买入时间"
+          ></el-date-picker>
         </el-form-item>
-        <el-form-item label="到期时间:" value-format="yyyy-MM-dd" prop="dueTime" label-width="100px">
-          <el-date-picker v-model="buyMyProduct.dueTime" type="date" placeholder="到期时间"></el-date-picker>
+        <el-form-item label="到期时间:" prop="dueTime" label-width="100px">
+          <el-date-picker
+            v-model="buyMyProduct.dueTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="到期时间"
+          ></el-date-picker>
         </el-form-item>
-        <el-form-item
-          label="起息日期:"
-          value-format="yyyy-MM-dd"
-          prop="interestStartTime"
-          label-width="100px"
-        >
-          <el-date-picker v-model="buyMyProduct.interestStartTime" type="date" placeholder="起息日期"></el-date-picker>
+        <el-form-item label="起息日期:" prop="interestStartTime" label-width="100px">
+          <el-date-picker
+            v-model="buyMyProduct.interestStartTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="起息日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="预期利率:" prop="expectedInterestRate" label-width="100px">
           <el-input v-model="buyMyProduct.expectedInterestRate" placeholder="预期利率,不需要%"></el-input>
@@ -164,8 +180,13 @@
         <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="100px">
           <el-input v-model="buyMyProduct.interestPaymentMethod" placeholder="付息方式"></el-input>
         </el-form-item>
-        <el-form-item label="收利日期:" value-format="yyyy-MM-dd" prop="profitDate" label-width="100px">
-          <el-date-picker v-model="buyMyProduct.profitDate" type="date" placeholder="收利日期"></el-date-picker>
+        <el-form-item label="收利日期:" prop="profitDate" label-width="100px">
+          <el-date-picker
+            v-model="buyMyProduct.profitDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="收利日期"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="收利日预期利息收益:" prop="expectedInterestIncomeMonth" label-width="100px">
           <font
@@ -184,7 +205,7 @@
 
         <!-- <el-form-item label="备注:" prop="remark" label-width="100px">
           <el-input v-model="buyMyProduct.remark" autocomplete="off"></el-input>
-        </el-form-item> -->
+        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="buyBankProductFormVisible = false">取 消</el-button>
@@ -430,6 +451,36 @@ export default {
         message: "目前不支持编辑,待提供"
       });
     },
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = "总价";
+          return;
+        }
+        if (index === 9 || index === 10 || index === 13) {
+          sums[index] = "";
+          return;
+        }
+        const values = data.map(item => Number(item[column.property]));
+        if (!values.every(value => isNaN(value))) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] = this.Utils.toMoney(sums[index]) + "元";
+        } else {
+          sums[index] = "";
+        }
+      });
+
+      return sums;
+    },
     reminderRule(index, row) {
       this.$message({
         type: "success",
@@ -489,7 +540,7 @@ export default {
                 this.bankProductIncomeFormVisible = false;
                 this.income_show = false;
                 this.investmentAmount_show = false;
-                 this.getMyBankProducts();
+                this.getMyBankProducts();
               } else {
                 this.$message({
                   showClose: true,
