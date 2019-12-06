@@ -459,7 +459,7 @@ export default {
           sums[index] = "总价";
           return;
         }
-        if (index === 9 || index === 10 || index === 13) {
+        if (index === 9 || index === 10 || index === 13 || index === 11) {
           sums[index] = "";
           return;
         }
