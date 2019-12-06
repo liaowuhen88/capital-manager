@@ -10,7 +10,7 @@
       <el-table-column prop="investmentAmount" label="投资金额/元" :formatter="formatter"></el-table-column>
       <el-table-column prop="accountBalance" label="总金额/元" :formatter="formatter"></el-table-column>
       <el-table-column prop="updateTime" label="最近更新时间" width="180"></el-table-column>
-      <el-table-column label="当前时间" width="180">{{ Utils.getTime() }}</el-table-column>
+      <!-- <el-table-column label="当前时间" width="180">{{ Utils.getTime() }}</el-table-column> -->
       <el-table-column label="操作" fixed="right" width="250">
         <template slot-scope="scope">
           <el-row :gutter="20">

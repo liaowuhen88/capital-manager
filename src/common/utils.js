@@ -36,30 +36,6 @@ export default class Utils {
     }
   }
 
-  static toMoney(num) {
-    if (num) {
-      if (isNaN(num)) {
-        alert('金额中含有不能识别的字符');
-        return;
-      }
-      num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
-      num = num.toFixed(2); // 保留两位
-      //console.log(num)
-      num = parseFloat(num); // 转成数字
-      num = num.toLocaleString(); // 转成金额显示模式
-      // 判断是否有小数
-      if (num.indexOf('.') === -1) {
-        num = '￥' + num + '.00';
-      } else {
-        console.log(num.split('.')[1].length)
-        // num = num.split('.')[1].length < 2 ? '￥' + num + '0' : '￥' + num;
-      }
-      return num; // 返回的是字符串23,245.12保留2位小数
-    } else {
-      return 0;
-    }
-  }
-
   // 拆分整数与小数
   static splits(tranvalue) {
     var value = new Array('', '');
@@ -70,13 +46,68 @@ export default class Utils {
     return value;
   }
 
+  static toMoney(num) {
+    var dw2 = new Array("", "", "", "", "千", "万", "十万", "百万", "千万", "亿", "十亿", "百亿", "千亿");// 大单位
+    if (num) {
+      if (isNaN(num)) {
+        alert('金额中含有不能识别的字符');
+        return;
+      }
+      var source = this.splits(Math.abs(num).toString());
+      //console.log(Math.abs(num).toString(), source[0],source[0].length);
+      var len = source[0].length;// 整数的长度
+
+      num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
+      num = num.toFixed(2); // 保留两位
+      num = parseFloat(num); // 转成数字
+      num = num.toString(); // 转成金额显示模式
+      if (len > 3) {
+        num = num + '(' + dw2[len] + ')';
+      }
+
+      return num; // 返回的是字符串23,245.12保留2位小数
+    } else {
+      return 0;
+    }
+  }
+
+  // static toMoney(num) {
+  //   var dw2 = new Array("","", "", "", "千", "万", "十万", "百万", "千万", "亿", "十亿", "百亿", "千亿");// 大单位
+  //   if (num) {
+  //     if (isNaN(num)) {
+  //       alert('金额中含有不能识别的字符');
+  //       return;
+  //     }
+  //     var source = this.splits(Math.abs(num).toString());
+  //     console.log(Math.abs(num).toString(), source[0],source[0].length);
+  //     var len = source[0].length;// 整数的长度
+
+  //     num = typeof num == 'string' ? parseFloat(num) : num // 判断是否是字符串如果是字符串转成数字
+  //     num = num.toFixed(2); // 保留两位
+  //     num = parseFloat(num); // 转成数字
+  //     num = num.toLocaleString(); // 转成金额显示模式
+
+  //     // 判断是否有小数
+  //     if (num.indexOf('.') === -1) {
+  //       num = '￥' + num + '.00' + '(' + dw2[len] + ')';
+  //     } else {
+  //       num = num.split('.')[1].length < 2 ? '￥' + num + '0' + '(' + dw2[len] + ')' : '￥' + num + '(' + dw2[len] + ')';
+  //     }
+  //     return num; // 返回的是字符串23,245.12保留2位小数
+  //   } else {
+  //     return 0;
+  //   }
+  // }
+
+
+
   static transform(tranvalue) {
     // 如果为空，直接返回
     if (tranvalue) {
       var i = 1;
       var dw2 = new Array("", "万", "亿");// 大单位
-      var dw1 = new Array("拾", "佰", "仟");// 小单位
-      var dw = new Array("零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖");// 整数部分用
+      var dw1 = new Array("十", "百", "千");// 小单位
+      var dw = new Array("零", "一", "二", "三", "四", "五", "六", "七", "八", "九");// 整数部分用
       // 以下是小写转换成大写显示在合计大写的文本框中     
       // 分离整数与小数
       var source = this.splits(tranvalue);

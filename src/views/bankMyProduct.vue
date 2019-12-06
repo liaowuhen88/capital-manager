@@ -65,7 +65,7 @@
       <el-table-column prop="principalAndInterestIncome" :formatter="formatter" label="本息收益"></el-table-column>
       <el-table-column prop="down" label="产品说明下载"></el-table-column>
       <el-table-column prop="dueTime" label="当前时间"></el-table-column>
-      <el-table-column prop="remark" label="备注"></el-table-column>
+      <!-- <el-table-column prop="remark" label="备注"></el-table-column> -->
       <el-table-column label="操作" fixed="right" width="200">
         <template slot-scope="scope">
           <el-row :gutter="20" v-if="scope.row.state == 1">
@@ -182,9 +182,9 @@
           <el-input v-model="buyMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
         </el-form-item>
 
-        <el-form-item label="备注:" prop="remark" label-width="100px">
+        <!-- <el-form-item label="备注:" prop="remark" label-width="100px">
           <el-input v-model="buyMyProduct.remark" autocomplete="off"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="buyBankProductFormVisible = false">取 消</el-button>
