@@ -41,7 +41,7 @@
           <font
             size="4"
             face="arial"
-          >本年度理财利息收入：{{pageHomeVo.integerBankBillTotalVoMap[4]?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[6].totalTransactionAmount):0}}</font>
+          >本年度理财利息收入：{{pageHomeVo.integerBankBillTotalVoMap[6]?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[6].totalTransactionAmount):0}}</font>
         </p>
       </el-col>
       <el-col :span="8">
