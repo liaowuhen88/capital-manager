@@ -9,6 +9,7 @@
       :summary-method="getSummaries"
       style="width: 100%"
     >
+      <el-table-column prop="id" label="编号"></el-table-column>
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bankName" label="银行"></el-table-column>
       <el-table-column prop="bankCard" label="银行卡号" width="150"></el-table-column>
@@ -295,7 +296,7 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.banks = res.data.data;
-            this.pagination.total=res.data.total;
+            this.pagination.total = res.data.total;
           } else {
             this.$message({
               showClose: true,

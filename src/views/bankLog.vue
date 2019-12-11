@@ -2,7 +2,7 @@
   <div class="bankLog-box">
     <searchs ref="searchs" @search="getBankLogs" />
     <el-table :data="bankLogs" @selection-change="selectChange" style="width: 100%">
-      <el-table-column type="selection"></el-table-column>
+      <el-table-column prop="id" label="编号"></el-table-column>
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bankName" label="银行"></el-table-column>
       <el-table-column prop="bankCard" width="200px" label="银行卡号"></el-table-column>
