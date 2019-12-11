@@ -11,6 +11,12 @@
           <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-col>
+      <el-col :span="4">
+        <el-select v-model="param.state" clearable placeholder="产品状态">
+          <el-option v-for="item in states" :key="item" :label="item.label" :value="item.value"></el-option>
+        </el-select>
+      </el-col>
+
       <el-col :span="4" :offset="1">
         <el-button type="primary" icon="el-icon-search" @click="getMyBankProducts">搜索</el-button>
       </el-col>
@@ -281,7 +287,8 @@ export default {
       bankMyProducts: [],
       userNames: [],
       bankNames: [],
-      param: { userName: "", bankName: "", bankCard: "" },
+      states: [{ value: 2, label: "已赎回" }, { value: 1, label: "合约中" }],
+      param: { name: "", bank: "", bankCard: "", times: "", state: 1 },
       name: "",
       bankIn: "",
       banks: [],
@@ -321,7 +328,6 @@ export default {
         transferCard: "",
         remark: ""
       },
-      param: { name: "", bank: "", bankCard: "", times: "" },
       bankProductBackup: Object.assign({}, this.bankProduct),
       multipleSelection: [],
       buyBankProductFormVisible: false,
@@ -459,7 +465,13 @@ export default {
           sums[index] = "总价";
           return;
         }
-        if (index === 3 || index === 9 || index === 10 || index === 13 || index === 11) {
+        if (
+          index === 3 ||
+          index === 9 ||
+          index === 10 ||
+          index === 13 ||
+          index === 11
+        ) {
           sums[index] = "";
           return;
         }

@@ -1,8 +1,14 @@
 <template>
   <div class="bank-box">
-    <searchsVue @search="getBanks" @handleAdd="handleAdd" />
+    <searchsVue ref="searchsVue" @search="getBanks" @handleAdd="handleAdd" />
 
-    <el-table :stripe="true" :data="banks" show-summary :summary-method="getSummaries" style="width: 100%">
+    <el-table
+      :stripe="true"
+      :data="banks"
+      show-summary
+      :summary-method="getSummaries"
+      style="width: 100%"
+    >
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bankName" label="银行"></el-table-column>
       <el-table-column prop="bankCard" label="银行卡号" width="150"></el-table-column>
@@ -57,11 +63,14 @@
       </el-table-column>
     </el-table>
     <el-pagination
+      @next-click="nextClick"
+      @prev-click="prevClick"
+      @current-change="currentChange"
       background
       :page-sizes="[10, 20, 30, 50]"
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="pagination.total"
     ></el-pagination>
     <el-dialog
       :title="dialogTitle"
@@ -187,6 +196,11 @@ export default {
   data() {
     return {
       banks: [],
+      pagination: {
+        pageSize: 10,
+        currentPage: 1,
+        total: 0
+      },
       bankLogs: [],
       bankNames: [],
       bankName: {
@@ -268,15 +282,20 @@ export default {
   props: ["param"],
   methods: {
     getBanks(param) {
+      param = param ? param : this.$refs.searchsVue.param;
+      param.page = this.pagination.currentPage;
+      param.pageSize = this.pagination.pageSize;
+
       this.loading = true;
       this.$http({
         method: "post",
         url: this.BASE_API + "/api/banks/select",
-        data: param ? param : {}
+        data: param
       })
         .then(res => {
           if (res.data.code == 0) {
             this.banks = res.data.data;
+            this.pagination.total=res.data.total;
           } else {
             this.$message({
               showClose: true,
@@ -431,6 +450,21 @@ export default {
           }
         }
       });
+    },
+    nextClick() {
+      this.pagination.currentPage = this.pagination.currentPage + 1;
+      this.getBanks();
+    },
+    prevClick() {
+      if (this.pagination.currentPage < 1) {
+        return;
+      }
+      this.pagination.currentPage = this.pagination.currentPage - 1;
+      this.getBanks();
+    },
+    currentChange(page) {
+      this.pagination.currentPage = page;
+      this.getBanks();
     },
     addBankName() {
       this.addBankNameFormVisible = true;

@@ -39,7 +39,7 @@
       <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
     </el-col>
     <el-col :span="2" :offset="3">
-      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">新增</el-button>
+      <!-- <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">新增</el-button> -->
       <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
     </el-col>
   </el-row>
