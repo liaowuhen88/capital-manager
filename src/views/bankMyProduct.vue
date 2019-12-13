@@ -11,6 +11,9 @@
           <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-col>
+       <el-col :span="4">
+         <el-input v-model="param.productType" autocomplete="off" placeholder="产品类型"></el-input>
+      </el-col>
       <el-col :span="4">
         <el-select v-model="param.state" clearable placeholder="产品状态">
           <el-option
@@ -233,16 +236,16 @@
       @close="resetForm('bankTransactionForm')"
     >
       <el-form :model="bankBill" :rules="bankTransactionRules" ref="bankTransactionForm">
-        <el-form-item label="收款方姓名:" prop="name" label-width="100px">
+        <el-form-item label="收款方姓名:" prop="name" label-width="150px">
           <el-input v-model="bankMyProduct.bank.name" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="收款方银行:" prop="bankName" label-width="100px">
+        <el-form-item label="收款方银行:" prop="bankName" label-width="150px">
           <el-input v-model="bankMyProduct.bank.bankName" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="收款方卡号:" prop="bankCard" label-width="100px">
+        <el-form-item label="收款方卡号:" prop="bankCard" label-width="150px">
           <el-input v-model="bankMyProduct.bank.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="本次收息日期:" prop="transactionTime" label-width="100px">
+        <el-form-item label="本次收息日期:" prop="transactionTime" label-width="150px">
           <el-date-picker
             v-model="bankBill.transactionTime"
             value-format="yyyy-MM-dd"
@@ -250,7 +253,7 @@
             placeholder="选择日期"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="下次收息日期:" v-if="income_show" prop="nextProfitDate" label-width="100px">
+        <el-form-item label="下次收息日期:" v-if="income_show" prop="nextProfitDate" label-width="150px">
           <el-date-picker
             v-model="bankBill.nextProfitDate"
             value-format="yyyy-MM-dd"
@@ -262,16 +265,16 @@
           label="赎回本金:"
           prop="investmentAmount"
           v-if="investmentAmount_show"
-          label-width="100px"
+          label-width="150px"
         >
           <el-input v-model="bankMyProduct.investmentAmount" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="利息金额:" prop="transactionAmount" label-width="100px">
+        <el-form-item label="利息金额:" prop="transactionAmount" label-width="150px">
           <font size="4" face="arial">{{this.Utils.transform(bankBill.transactionAmount) }}</font>
           <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="备注:" label-width="100px">
+        <el-form-item label="备注:" label-width="150px">
           <el-input v-model="bankBill.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -299,7 +302,7 @@ export default {
       userNames: [],
       bankNames: [],
       states: [{ value: 2, label: "已赎回" }, { value: 1, label: "合约中" }],
-      param: { name: "", bank: "", bankCard: "", times: "", state: 1 },
+      param: { name: "", bank: "", bankCard: "", times: "", state: 1,productType:"" },
       name: "",
       bankIn: "",
       banks: [],

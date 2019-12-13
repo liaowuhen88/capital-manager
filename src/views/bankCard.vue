@@ -163,7 +163,7 @@
           <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="备注:" label-width="100px">
+        <el-form-item label="备注:" prop="remark" label-width="100px">
           <el-input v-model="bankTransaction.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -374,9 +374,9 @@ export default {
                   type: "success",
                   message: "新增成功！"
                 });
+                this.bankTransactionFormVisible = false;
                 this.resetForm(bankTransactionForm);
                 this.getBanks();
-                this.bankTransactionFormVisible = false;
               } else {
                 this.$message({
                   showClose: true,
