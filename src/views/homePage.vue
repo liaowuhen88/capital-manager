@@ -66,12 +66,13 @@
           @cell-dblclick="cellDblclick"
           style="width: 100%"
         >
+          <el-table-column prop="id" label="编号"></el-table-column>
           <el-table-column prop="bank.name" label="姓名" width="180"></el-table-column>
           <el-table-column prop="bank.bankName" label="银行" width="180"></el-table-column>
           <el-table-column prop="productType" label="产品类别" width="180"></el-table-column>
           <el-table-column prop="buyingTime" label="买入时间" width="180"></el-table-column>
-          <el-table-column prop="investmentAmount" label="到账金额"></el-table-column>
-          
+          <el-table-column prop="investmentAmount" :formatter="formatter" label="到账金额"></el-table-column>
+
           <el-table-column prop="dueTime" label="产品到期时间"></el-table-column>
           <el-table-column prop="remark" label="备注"></el-table-column>
         </el-table>
@@ -90,11 +91,16 @@
           @cell-dblclick="cellDblclick"
           style="width: 100%"
         >
+          <el-table-column prop="id" label="编号"></el-table-column>
           <el-table-column prop="bank.name" label="姓名" width="180"></el-table-column>
           <el-table-column prop="bank.bankName" label="银行" width="180"></el-table-column>
           <el-table-column prop="productType" label="产品类别" width="180"></el-table-column>
           <el-table-column prop="buyingTime" label="买入时间" width="180"></el-table-column>
-          <el-table-column prop="expectedInterestIncomeMonth" label="利息预计到账金额"></el-table-column>
+          <el-table-column
+            prop="expectedInterestIncomeMonth"
+            :formatter="formatter"
+            label="利息预计到账金额"
+          ></el-table-column>
           <el-table-column prop="profitDate" label="利息到期时间"></el-table-column>
           <el-table-column prop="remark" label="备注"></el-table-column>
         </el-table>
@@ -152,6 +158,9 @@ export default {
         .catch(err => {
           console.error(err);
         });
+    },
+    formatter(row, column) {
+      return this.Utils.toMoney(row[column.property]) + "元";
     },
     cellDblclick(val) {
       console.log(val);
