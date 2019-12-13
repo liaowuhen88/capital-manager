@@ -13,7 +13,7 @@
       </el-col>
       <el-col :span="4">
         <el-select v-model="param.state" clearable placeholder="产品状态">
-          <el-option v-for="item in states" :key="item" :label="item.label" :value="item.value"></el-option>
+          <el-option v-for="item in states" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-col>
 
@@ -275,7 +275,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="账单" :visible.sync="bankLog_show" width="100%">
+    <el-dialog  :visible.sync="bankLog_show" width="100%">
      
     </el-dialog>
   </div>
