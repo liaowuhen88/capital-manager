@@ -25,7 +25,7 @@
         ></el-option>
       </el-select>
     </el-col>
-    <el-col :span="3">
+    <el-col :span="5">
       <el-date-picker
         v-model="param.times"
         type="daterange"
@@ -33,14 +33,10 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         value-format="yyyy-MM-dd"
-      >></el-date-picker>
+      ></el-date-picker>
     </el-col>
-    <el-col :span="2" :offset="4">
+    <el-col :span="5" :offset="4">
       <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
-    </el-col>
-    <el-col :span="2" :offset="3">
-      <!-- <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">新增</el-button> -->
-      <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
     </el-col>
   </el-row>
 </template>

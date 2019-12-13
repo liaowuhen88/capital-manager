@@ -13,14 +13,19 @@
       </el-col>
       <el-col :span="4">
         <el-select v-model="param.state" clearable placeholder="产品状态">
-          <el-option v-for="item in states" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          <el-option
+            v-for="item in states"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
         </el-select>
       </el-col>
 
       <el-col :span="4" :offset="1">
         <el-button type="primary" icon="el-icon-search" @click="getMyBankProducts">搜索</el-button>
       </el-col>
-      <el-col :span="2" :offset="9">
+      <el-col :span="2" :offset="5">
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">买入理财</el-button>
         <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
       </el-col>
@@ -31,6 +36,7 @@
       show-summary
       :summary-method="getSummaries"
       stripe
+      height="600px"
       @selection-change="selectChange"
       @cell-dblclick="cellDblclick"
       style="width: 100%"
@@ -124,13 +130,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
+    <!-- <el-pagination
       background
       :page-sizes="[10, 20, 30, 50]"
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
       :total="400"
-    ></el-pagination>
+    ></el-pagination>-->
 
     <el-dialog
       :title="dialogTitle"
@@ -275,14 +281,11 @@
       </div>
     </el-dialog>
 
-    <el-dialog  :visible.sync="bankLog_show" width="100%">
-     
-    </el-dialog>
+    <el-dialog :visible.sync="bankLog_show" width="100%"></el-dialog>
   </div>
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -383,9 +386,7 @@ export default {
     this.getBanks();
     this.initBanks();
   },
-  components: {
-  
-  },
+  components: {},
   methods: {
     getMyBankProducts() {
       let postData = this.$qs.stringify({
@@ -631,6 +632,9 @@ export default {
   }
   .el-pagination {
     margin-top: 20px;
+  }
+  .el-table {
+    overflow: visible !important;
   }
 }
 </style>

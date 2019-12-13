@@ -5,6 +5,7 @@
     <el-table
       :stripe="true"
       :data="banks"
+      height="600px"
       show-summary
       :summary-method="getSummaries"
       style="width: 100%"
@@ -546,6 +547,9 @@ export default {
   }
   .el-pagination {
     margin-top: 20px;
+  }
+  .el-table {
+    overflow: visible !important;
   }
 }
 </style>
