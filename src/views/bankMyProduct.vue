@@ -611,7 +611,7 @@ export default {
       this.multipleSelection = val;
     },
     cellDblclick(val) {
-      console.log(val.id);
+      //console.log(val.id);
       this.bankLog_show = true;
       this.$nextTick(function() {
         this.$refs.commonBankLogVueRef.searchMyProductId(val);

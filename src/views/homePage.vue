@@ -169,7 +169,6 @@ export default {
       return this.Utils.toMoney(row[column.property]) + "元";
     },
     cellDblclick(val) {
-      console.log(val);
       this.bankLog_show = true;
       this.$nextTick(function() {
         this.$refs.commonBankLogVueRef.searchMyProductId(val);
