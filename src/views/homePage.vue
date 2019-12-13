@@ -33,7 +33,7 @@
           <font
             size="4"
             face="arial"
-          >本年度活期利息收入：{{pageHomeVo.integerBankBillTotalVoMap[4]?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[4].totalTransactionAmount):0 }}</font>
+          >本年度活期利息收入：{{pageHomeVo.integerBankBillTotalVoMap.cashInterestIncome?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap.cashInterestIncome.totalTransactionAmount):0 }}</font>
         </p>
       </el-col>
       <el-col :span="8">
@@ -41,7 +41,7 @@
           <font
             size="4"
             face="arial"
-          >本年度理财利息收入：{{pageHomeVo.integerBankBillTotalVoMap[6]?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[6].totalTransactionAmount):0}}</font>
+          >本年度理财利息收入：{{pageHomeVo.integerBankBillTotalVoMap.investmentIncome?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap.investmentIncome.totalTransactionAmount):0}}</font>
         </p>
       </el-col>
       <el-col :span="8">
@@ -49,7 +49,7 @@
           <font
             size="4"
             face="arial"
-          >本年度支出：{{pageHomeVo.integerBankBillTotalVoMap[2]?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap[2].totalTransactionAmount):0 }}</font>
+          >本年度支出：{{pageHomeVo.integerBankBillTotalVoMap.pay?this.Utils.toMoney(pageHomeVo.integerBankBillTotalVoMap.pay.totalTransactionAmount):0 }}</font>
         </p>
       </el-col>
     </el-row>
@@ -130,7 +130,13 @@ export default {
     return {
       bankLog_show: false,
       param: { userName: "", bankName: "", bankCard: "" },
-      pageHomeVo: {}
+      pageHomeVo: {
+        integerBankBillTotalVoMap: {
+          cashInterestIncome: {},
+          investmentIncome: {},
+          pay: {}
+        }
+      }
     };
   },
   mounted() {
