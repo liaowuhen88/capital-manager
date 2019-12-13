@@ -281,11 +281,14 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="bankLog_show" width="100%"></el-dialog>
+    <el-dialog :visible.sync="bankLog_show" width="80%">
+      <commonBankLogVue ref="commonBankLogVueRef" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import commonBankLogVue from "@/components/commonBankLog";
 export default {
   data() {
     return {
@@ -386,7 +389,7 @@ export default {
     this.getBanks();
     this.initBanks();
   },
-  components: {},
+  components: { commonBankLogVue },
   methods: {
     getMyBankProducts() {
       let postData = this.$qs.stringify({
@@ -610,6 +613,9 @@ export default {
     cellDblclick(val) {
       console.log(val.id);
       this.bankLog_show = true;
+      this.$nextTick(function() {
+        this.$refs.commonBankLogVueRef.searchMyProductId(val);
+      });
     },
 
     handleAdd() {
