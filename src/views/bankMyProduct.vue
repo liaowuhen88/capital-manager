@@ -32,9 +32,10 @@
       :summary-method="getSummaries"
       stripe
       @selection-change="selectChange"
+      @cell-dblclick="cellDblclick"
       style="width: 100%"
     >
-      <el-table-column type="selection"></el-table-column>
+      <el-table-column prop="id" label="编号"></el-table-column>
 
       <el-table-column prop="bank.name" label="姓名"></el-table-column>
       <el-table-column prop="bank.bankName" label="银行"></el-table-column>
@@ -273,11 +274,15 @@
         <el-button type="primary" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :title="账单" :visible.sync="bankLog_show" width="100%">
+     
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import searchs from "@/components/search/search";
+
 export default {
   data() {
     return {
@@ -294,6 +299,7 @@ export default {
       banks: [],
       income_show: false,
       investmentAmount_show: false,
+      bankLog_show: false,
       bankMyProduct: {
         bank: {
           id: "",
@@ -378,7 +384,7 @@ export default {
     this.initBanks();
   },
   components: {
-    searchs
+  
   },
   methods: {
     getMyBankProducts() {
@@ -600,6 +606,11 @@ export default {
     selectChange(val) {
       this.multipleSelection = val;
     },
+    cellDblclick(val) {
+      console.log(val.id);
+      this.bankLog_show = true;
+    },
+
     handleAdd() {
       this.dialogTitle = "买入理财";
       this.buyBankProductFormVisible = true;
