@@ -340,11 +340,10 @@ export default {
           })
             .then(res => {
               if (res.data.code == 0) {
-                this.banks = res.data.data;
                 this.bankFormVisible = false;
                 this.$message({
                   type: "success",
-                  message: id ? "修改成功！" : "新增成功！"
+                  message: "修改成功！"
                 });
                 this.getBanks();
               } else {

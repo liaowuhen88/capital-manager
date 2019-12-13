@@ -129,7 +129,7 @@ export default {
     },
     searchMyProductId(bankMyProduct) {
       this.bankMyProduct = bankMyProduct;
-      this.param.myProductId = bankMyProduct.myProductId;
+      this.param.myProductId = bankMyProduct.id;
       this.getBankLogs();
     },
     formatter(row, column) {
