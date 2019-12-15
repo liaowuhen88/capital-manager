@@ -35,7 +35,7 @@
       </el-col>
     </el-row>
     <el-table :data="bankLogs" @selection-change="selectChange" height="600px" style="width: 100%">
-      <el-table-column prop="id" label="编号"></el-table-column>
+      <el-table-column prop="id" label="流水编号"></el-table-column>
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bankName" label="银行"></el-table-column>
       <el-table-column prop="bankCard" width="200px" label="银行卡号"></el-table-column>

@@ -11,8 +11,8 @@
           <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-col>
-       <el-col :span="4">
-         <el-input v-model="param.productType" autocomplete="off" placeholder="产品类型"></el-input>
+      <el-col :span="4">
+        <el-input v-model="param.productType" autocomplete="off" placeholder="产品类型"></el-input>
       </el-col>
       <el-col :span="4">
         <el-select v-model="param.state" clearable placeholder="产品状态">
@@ -86,7 +86,7 @@
         width="150px"
       ></el-table-column>
       <el-table-column prop="down" label="产品说明下载"></el-table-column>
-      <el-table-column prop="dueTime" label="到期时间"></el-table-column>
+      <!-- <el-table-column prop="dueTime" label="到期时间"></el-table-column> -->
       <!-- <el-table-column prop="remark" label="备注"></el-table-column> -->
       <el-table-column label="操作" fixed="right" width="200">
         <template slot-scope="scope">
@@ -149,7 +149,13 @@
     >
       <el-form :model="buyMyProduct" :rules="buyMyProductRules" ref="buyMyProductForm">
         <el-form-item label="选择买入账户:" prop="bankCardId" label-width="100px">
-          <el-select v-model="buyMyProduct.bankCardId" filterable clearable placeholder="选择买入账号">
+          <el-select
+            v-model="buyMyProduct.bankCardId"
+            filterable
+            clearable
+            placeholder="选择买入账号"
+            @change="bankChange"
+          >
             <el-option
               v-for="item in banks"
               :key="item.id"
@@ -157,6 +163,10 @@
               :value="item.id"
             ></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="卡内余额:" label-width="100px">
+          <font size="4" face="arial">{{this.Utils.transform(bank.cashAmount.toString()) }}</font>
+          <el-input v-model="bank.cashAmount" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="产品类型:" prop="productType" label-width="100px">
           <el-input v-model="buyMyProduct.productType" autocomplete="off"></el-input>
@@ -302,10 +312,18 @@ export default {
       userNames: [],
       bankNames: [],
       states: [{ value: 2, label: "已赎回" }, { value: 1, label: "合约中" }],
-      param: { name: "", bank: "", bankCard: "", times: "", state: 1,productType:"" },
+      param: {
+        name: "",
+        bank: "",
+        bankCard: "",
+        times: "",
+        state: 1,
+        productType: ""
+      },
       name: "",
       bankIn: "",
       banks: [],
+      bank: { cashAmount: "" },
       income_show: false,
       investmentAmount_show: false,
       bankLog_show: false,
@@ -443,6 +461,17 @@ export default {
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";
     },
+    bankChange(val) {
+      for (var i = 0; i < this.banks.length; i++) {
+        console.log(val);
+        console.log(this.banks[i].id);
+
+        if (val === this.banks[i].id) {
+          this.bank = this.banks[i];
+          return;
+        }
+      }
+    },
     getBanks() {
       this.loading = true;
       this.$http({
@@ -517,6 +546,7 @@ export default {
       this.bankProductIncomeFormVisible = true;
       this.rowIndex = index;
       this.dialogTitle = "理财赎回";
+      this.income_show = false;
       this.investmentAmount_show = true;
       this.bankBill.myProductId = row.id;
       this.bankBill.bankCardId = this.bankMyProduct.bank.id;
@@ -539,13 +569,31 @@ export default {
     },
     income(index, row) {
       this.bankMyProduct = Object.assign({}, row);
-      this.bankProductIncomeFormVisible = true;
       this.rowIndex = index;
       this.income_show = true;
       this.dialogTitle = "利息收入";
       this.bankBill.myProductId = row.id;
       this.bankBill.bankCardId = this.bankMyProduct.bank.id;
+      this.bankBill.transactionTime = row.profitDate;
       this.bankBill.transactionType = 6;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankBill/queryLaste",
+        data: { myProductId: this.bankMyProduct.id, transactionTypes: [6] }
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            if (res.data.data) {
+              this.bankBill.transactionAmount = res.data.data.transactionAmount.toString();
+            }
+            this.bankProductIncomeFormVisible = true;
+          } else {
+            this.bankProductIncomeFormVisible = true;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     },
     submitBankTransaction(bankTransactionForm) {
       // 表单验证
@@ -623,6 +671,7 @@ export default {
 
     handleAdd() {
       this.dialogTitle = "买入理财";
+      //this.bank = {};
       this.buyBankProductFormVisible = true;
     },
     resetForm(formName) {

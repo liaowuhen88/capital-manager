@@ -66,7 +66,7 @@
           @cell-dblclick="cellDblclick"
           style="width: 100%"
         >
-          <el-table-column prop="id" label="编号"></el-table-column>
+          <el-table-column prop="id" label="理财编号"></el-table-column>
           <el-table-column prop="bank.name" label="姓名" width="180"></el-table-column>
           <el-table-column prop="bank.bankName" label="银行" width="180"></el-table-column>
           <el-table-column prop="productType" label="产品类别" width="180"></el-table-column>
@@ -91,7 +91,7 @@
           @cell-dblclick="cellDblclick"
           style="width: 100%"
         >
-          <el-table-column prop="id" label="编号"></el-table-column>
+          <el-table-column prop="id" label="理财编号"></el-table-column>
           <el-table-column prop="bank.name" label="姓名" width="180"></el-table-column>
           <el-table-column prop="bank.bankName" label="银行" width="180"></el-table-column>
           <el-table-column prop="productType" label="产品类别" width="180"></el-table-column>
