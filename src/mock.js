@@ -5,7 +5,7 @@ const Random = Mock.Random
 // 登录
 Mock.mock('/api/login', 'post', (option) => {
   let { username, password } = JSON.parse(option.body)
-  return (username === 'admin' && password === 'admin')
+  return (username === 'tmhy' && password === 'tmhy8520')
 })
 
 // 用户数据

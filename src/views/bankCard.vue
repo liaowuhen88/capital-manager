@@ -14,9 +14,9 @@
       <el-table-column prop="name" label="姓名"></el-table-column>
       <el-table-column prop="bankName" label="银行"></el-table-column>
       <el-table-column prop="bankCard" label="银行卡号" width="150"></el-table-column>
-      <el-table-column prop="cashAmount" label="现金金额/元" :formatter="formatter"></el-table-column>
-      <el-table-column prop="investmentAmount" label="投资金额/元" :formatter="formatter"></el-table-column>
-      <el-table-column prop="accountBalance" label="总金额/元" :formatter="formatter"></el-table-column>
+      <el-table-column prop="cashAmount" sortable label="现金金额/元" :formatter="formatter"></el-table-column>
+      <el-table-column prop="investmentAmount" sortable label="投资金额/元" :formatter="formatter"></el-table-column>
+      <el-table-column prop="accountBalance" sortable label="总金额/元" :formatter="formatter"></el-table-column>
       <el-table-column prop="updateTime" label="最近更新时间" width="180"></el-table-column>
       <!-- <el-table-column label="当前时间" width="180">{{ Utils.getTime() }}</el-table-column> -->
       <el-table-column label="操作" fixed="right" width="250">
@@ -64,7 +64,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
+    <!-- <el-pagination
       @next-click="nextClick"
       @prev-click="prevClick"
       @current-change="currentChange"
@@ -73,7 +73,7 @@
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
       :total="pagination.total"
-    ></el-pagination>
+    ></el-pagination> -->
     <el-dialog
       :title="dialogTitle"
       width="600px"
@@ -485,7 +485,7 @@ export default {
           sums[index] = "总价";
           return;
         }
-        if (index === 2 || index === 1) {
+        if (index === 2 || index === 1 || index === 3) {
           sums[index] = "";
           return;
         }

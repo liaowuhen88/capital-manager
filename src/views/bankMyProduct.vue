@@ -50,32 +50,35 @@
       <el-table-column prop="bank.bankName" label="银行"></el-table-column>
       <el-table-column prop="bank.bankCard" label="银行卡号" label-width="200px"></el-table-column>
       <el-table-column prop="productType" label="产品类型"></el-table-column>
-      <el-table-column prop="investmentAmount" :formatter="formatter" width="150px" label="投资金额"></el-table-column>
+      <el-table-column prop="investmentAmount" sortable :formatter="formatter" width="150px" label="投资金额"></el-table-column>
 
-      <el-table-column prop="buyingTime" label="买入时间" width="100px"></el-table-column>
-      <el-table-column prop="dueTime" label="到期时间" width="100px"></el-table-column>
-      <el-table-column prop="interestStartTime" width="100px" label="起息日期"></el-table-column>
-      <el-table-column prop="expectedInterestRate" label="预期利率"></el-table-column>
-      <el-table-column prop="interestRate" label="实际利率"></el-table-column>
+      <el-table-column prop="buyingTime" sortable label="买入时间" width="100px"></el-table-column>
+      <el-table-column prop="dueTime" sortable label="到期时间" width="100px"></el-table-column>
+      <el-table-column prop="interestStartTime" sortable width="100px" label="起息日期"></el-table-column>
+      <el-table-column prop="expectedInterestRate" sortable label="预期利率"></el-table-column>
+      <el-table-column prop="interestRate" sortable label="实际利率"></el-table-column>
 
-      <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
-      <el-table-column prop="profitDate" label="收利日期" width="100px"></el-table-column>
+      <el-table-column prop="interestPaymentMethod" sortable label="付息方式"></el-table-column>
+      <el-table-column prop="profitDate" sortable label="收利日期" width="100px"></el-table-column>
       <el-table-column
         prop="expectedInterestIncomeMonth"
         width="150px"
         :formatter="formatter"
+        sortable
         label="收利日利息预期收益"
       ></el-table-column>
       <el-table-column
         prop="expectedInterestIncomeTotal"
         width="150px"
         :formatter="formatter"
+        sortable
         label="利息预期总收益"
       ></el-table-column>
       <el-table-column
         prop="totalEffectiveInterestIncome"
         width="150px"
         :formatter="formatter"
+        sortable
         label="实际利息总收益"
       ></el-table-column>
 
@@ -83,6 +86,7 @@
         prop="principalAndInterestIncome"
         :formatter="formatter"
         label="本息收益"
+        sortable
         width="150px"
       ></el-table-column>
       <el-table-column prop="down" label="产品说明下载"></el-table-column>
