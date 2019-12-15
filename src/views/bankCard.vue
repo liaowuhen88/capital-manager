@@ -116,25 +116,29 @@
       @close="resetForm('bankTransactionForm')"
     >
       <el-form :model="bankTransaction" :rules="bankTransactionRules" ref="bankTransactionForm">
-        <el-form-item v-if="bankOut.show" label="付款方姓名:" prop="name" label-width="100px">
+        <el-form-item v-if="bankOut.show" label="付款方姓名:" prop="name" label-width="150px">
           <el-input v-model="bankOut.name" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item v-if="bankOut.show" label="付款银行:" prop="bankName" label-width="100px">
+        <el-form-item v-if="bankOut.show" label="付款银行:" prop="bankName" label-width="150px">
           <el-input v-model="bankOut.bankName" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item v-if="bankOut.show" label="付款卡号:" prop="bankCard" label-width="100px">
+        <el-form-item v-if="bankOut.show" label="付款卡号:" prop="bankCard" label-width="150px">
           <el-input v-model="bankOut.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item v-if="bankIn.show" label="收款方姓名:" prop="name" label-width="100px">
+        <el-form-item v-if="bankOut.show" label="付款卡卡内余额:" prop="cashAmount" label-width="150px">
+          <font size="4" face="arial">{{this.Utils.toMoney(bankOut.cashAmount) }}</font>
+          <!-- <el-input v-model="bankOut.cashAmount" :disabled="true" autocomplete="off"></el-input> -->
+        </el-form-item>
+        <el-form-item v-if="bankIn.show" label="收款方姓名:" prop="name" label-width="150px">
           <el-input v-model="bankIn.name" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item v-if="bankIn.show" label="收款方银行:" prop="bankName" label-width="100px">
+        <el-form-item v-if="bankIn.show" label="收款方银行:" prop="bankName" label-width="150px">
           <el-input v-model="bankIn.bankName" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item v-if="bankIn.show" label="收款方卡号:" prop="bankCard" label-width="100px">
+        <el-form-item v-if="bankIn.show" label="收款方卡号:" prop="bankCard" label-width="150px">
           <el-input v-model="bankIn.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item v-if="bankTransaction_transferCard" label="转入账号:" label-width="100px">
+        <el-form-item v-if="bankTransaction_transferCard" label="转入账号:" label-width="150px">
           <el-select
             v-model="bankTransaction.transferCard"
             filterable
@@ -150,7 +154,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="交易日期:" prop="transactionTime" label-width="100px">
+        <el-form-item label="交易日期:" prop="transactionTime" label-width="150px">
           <el-date-picker
             v-model="bankTransaction.transactionTime"
             type="date"
@@ -158,12 +162,12 @@
             placeholder="选择日期"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="交易金额:" prop="transactionAmount" label-width="100px">
+        <el-form-item label="交易金额:" prop="transactionAmount" label-width="150px">
           <font size="4" face="arial">{{this.Utils.transform(bankTransaction.transactionAmount) }}</font>
           <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="备注:" prop="remark" label-width="100px">
+        <el-form-item label="备注:" prop="remark" label-width="150px">
           <el-input v-model="bankTransaction.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>

@@ -165,8 +165,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="卡内余额:" label-width="100px">
-          <font size="4" face="arial">{{this.Utils.transform(bank.cashAmount.toString()) }}</font>
-          <el-input v-model="bank.cashAmount" :disabled="true" autocomplete="off"></el-input>
+          <font size="4" face="arial">{{this.Utils.toMoney(bank.cashAmount) }}</font>
+          <!-- <el-input v-model="bank.cashAmount" :disabled="true" autocomplete="off"></el-input> -->
         </el-form-item>
         <el-form-item label="产品类型:" prop="productType" label-width="100px">
           <el-input v-model="buyMyProduct.productType" autocomplete="off"></el-input>
