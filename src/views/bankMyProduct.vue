@@ -25,10 +25,10 @@
         </el-select>
       </el-col>
 
-      <el-col :span="4" :offset="1">
+      <el-col :span="3" :offset="1">
         <el-button type="primary" icon="el-icon-search" @click="getMyBankProducts">搜索</el-button>
       </el-col>
-      <el-col :span="2" :offset="5">
+      <el-col :span="3" :offset="1">
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">买入理财</el-button>
         <!-- <el-button type="danger" icon="el-icon-delete" size="small" @click="mulDelete">批量删除</el-button> -->
       </el-col>
