@@ -1,17 +1,17 @@
 <template>
   <div class="bankProduct-box">
     <el-row>
-      <el-col :span="4">
+      <el-col :span="3">
         <el-select v-model="param.userName" clearable placeholder="请选择姓名">
           <el-option v-for="item in userNames" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="3">
         <el-select v-model="param.bankName" clearable placeholder="请选择银行">
           <el-option v-for="item in bankNames" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="3">
         <el-input v-model="param.productType" autocomplete="off" placeholder="产品类型"></el-input>
       </el-col>
       <el-col :span="4">
@@ -22,6 +22,12 @@
             :label="item.label"
             :value="item.value"
           ></el-option>
+        </el-select>
+      </el-col>
+
+      <el-col :span="3">
+        <el-select v-model="param.interestPaymentMethod" clearable placeholder="付息方式">
+          <el-option v-for="item in interestPaymentMethods" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-col>
 
@@ -50,7 +56,13 @@
       <el-table-column prop="bank.bankName" label="银行"></el-table-column>
       <el-table-column prop="bank.bankCard" label="银行卡号" label-width="200px"></el-table-column>
       <el-table-column prop="productType" label="产品类型"></el-table-column>
-      <el-table-column prop="investmentAmount" sortable :formatter="formatter" width="150px" label="投资金额"></el-table-column>
+      <el-table-column
+        prop="investmentAmount"
+        sortable
+        :formatter="formatter"
+        width="150px"
+        label="投资金额"
+      ></el-table-column>
 
       <el-table-column prop="buyingTime" sortable label="买入时间" width="100px"></el-table-column>
       <el-table-column prop="dueTime" sortable label="到期时间" width="100px"></el-table-column>
@@ -315,6 +327,7 @@ export default {
       bankMyProducts: [],
       userNames: [],
       bankNames: [],
+      interestPaymentMethods: [],
       states: [{ value: 2, label: "已赎回" }, { value: 1, label: "合约中" }],
       param: {
         name: "",
@@ -322,7 +335,8 @@ export default {
         bankCard: "",
         times: "",
         state: 1,
-        productType: ""
+        productType: "",
+        interestPaymentMethod: ""
       },
       name: "",
       bankIn: "",
@@ -413,6 +427,7 @@ export default {
     this.getMyBankProducts();
     this.getBanks();
     this.initBanks();
+    this.getInterestPaymentMethods();
   },
   components: { commonBankLogVue },
   methods: {
@@ -486,6 +501,26 @@ export default {
           if (res.data.code == 0) {
             this.userNames = res.data.data.userNames;
             this.bankNames = res.data.data.bankNames;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getInterestPaymentMethods() {
+      this.loading = true;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankMyProducts/selectInterestPaymentMethod"
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.interestPaymentMethods = res.data.data;
           } else {
             this.$message({
               showClose: true,
