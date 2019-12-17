@@ -65,13 +65,14 @@
       ></el-table-column>
 
       <el-table-column prop="buyingTime" sortable label="买入时间" width="100px"></el-table-column>
-      <el-table-column prop="dueTime" sortable label="到期时间" width="100px"></el-table-column>
       <el-table-column prop="interestStartTime" sortable width="100px" label="起息日期"></el-table-column>
+      <el-table-column prop="profitDate" sortable label="收利日期" width="100px"></el-table-column>
+      <el-table-column prop="dueTime" sortable label="到期时间" width="100px"></el-table-column>
       <el-table-column prop="expectedInterestRate" sortable label="预期利率"></el-table-column>
       <el-table-column prop="interestRate" sortable label="实际利率"></el-table-column>
 
       <el-table-column prop="interestPaymentMethod" sortable label="付息方式"></el-table-column>
-      <el-table-column prop="profitDate" sortable label="收利日期" width="100px"></el-table-column>
+
       <el-table-column
         prop="expectedInterestIncomeMonth"
         width="150px"
@@ -188,7 +189,7 @@
           <el-input v-model="buyMyProduct.productType" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="投资金额:" prop="investmentAmount" label-width="100px">
-          <font size="4" face="arial">{{this.Utils.transform(buyMyProduct.investmentAmount) }}</font>
+          <font size="4" face="arial">{{this.Utils.toMoney(buyMyProduct.investmentAmount) }}</font>
           <el-input v-model="buyMyProduct.investmentAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="买入时间:" prop="buyingTime" label-width="100px">
@@ -199,14 +200,6 @@
             placeholder="买入时间"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="到期时间:" prop="dueTime" label-width="100px">
-          <el-date-picker
-            v-model="buyMyProduct.dueTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="到期时间"
-          ></el-date-picker>
-        </el-form-item>
         <el-form-item label="起息日期:" prop="interestStartTime" label-width="100px">
           <el-date-picker
             v-model="buyMyProduct.interestStartTime"
@@ -214,13 +207,6 @@
             value-format="yyyy-MM-dd"
             placeholder="起息日期"
           ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="预期利率:" prop="expectedInterestRate" label-width="100px">
-          <el-input v-model="buyMyProduct.expectedInterestRate" placeholder="预期利率,不需要%"></el-input>
-        </el-form-item>
-
-        <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="100px">
-          <el-input v-model="buyMyProduct.interestPaymentMethod" placeholder="付息方式"></el-input>
         </el-form-item>
         <el-form-item label="收利日期:" prop="profitDate" label-width="100px">
           <el-date-picker
@@ -230,18 +216,39 @@
             placeholder="收利日期"
           ></el-date-picker>
         </el-form-item>
+        <el-form-item label="到期时间:" prop="dueTime" label-width="100px">
+          <el-date-picker
+            v-model="buyMyProduct.dueTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="到期时间"
+          ></el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="预期利率:" prop="expectedInterestRate" label-width="100px">
+          <el-input v-model="buyMyProduct.expectedInterestRate" placeholder="预期利率,不需要%"></el-input>
+        </el-form-item>
+
+        <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="100px">
+          <el-input
+            v-model="buyMyProduct.interestPaymentMethod"
+            @blur="calculateInterest"
+            placeholder="付息方式"
+          ></el-input>
+        </el-form-item>
+
         <el-form-item label="收利日预期利息收益:" prop="expectedInterestIncomeMonth" label-width="100px">
           <font
             size="4"
             face="arial"
-          >{{this.Utils.transform(buyMyProduct.expectedInterestIncomeMonth) }}</font>
+          >{{this.Utils.toMoney(buyMyProduct.expectedInterestIncomeMonth) }}</font>
           <el-input v-model="buyMyProduct.expectedInterestIncomeMonth" placeholder="收利日利息预期收益"></el-input>
         </el-form-item>
         <el-form-item label="利息预期总收益:" prop="expectedInterestIncomeTotal" label-width="100px">
           <font
             size="4"
             face="arial"
-          >{{this.Utils.transform(buyMyProduct.expectedInterestIncomeTotal) }}</font>
+          >{{this.Utils.toMoney(buyMyProduct.expectedInterestIncomeTotal) }}</font>
           <el-input v-model="buyMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
         </el-form-item>
 
@@ -297,7 +304,7 @@
         </el-form-item>
 
         <el-form-item label="利息金额:" prop="transactionAmount" label-width="150px">
-          <font size="4" face="arial">{{this.Utils.transform(bankBill.transactionAmount) }}</font>
+          <font size="4" face="arial">{{this.Utils.toMoney(bankBill.transactionAmount) }}</font>
           <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注:" label-width="150px">
@@ -480,6 +487,18 @@ export default {
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";
     },
+    calculateInterest() {
+      var day = this.Utils.getDaysBetween(
+        this.buyMyProduct.interestStartTime,
+        this.buyMyProduct.dueTime
+      );
+      var money =
+        ((this.buyMyProduct.expectedInterestRate * day) / 365 / 100) *
+        this.buyMyProduct.investmentAmount;
+      console.log(money.toFixed(2));
+      this.buyMyProduct.expectedInterestIncomeTotal = money.toFixed(2);
+    },
+
     bankChange(val) {
       for (var i = 0; i < this.banks.length; i++) {
         console.log(val);

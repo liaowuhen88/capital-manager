@@ -71,6 +71,17 @@ export default class Utils {
     }
   }
 
+  static getDaysBetween(dateString1, dateString2) {
+    if (dateString1 && dateString2) {
+      var startDate = Date.parse(dateString1);
+      var endDate = Date.parse(dateString2);
+      var days = (endDate - startDate) / (1 * 24 * 60 * 60 * 1000);
+      // alert(days);
+      return days;
+    }
+    return 0;
+  }
+
   // static toMoney(num) {
   //   var dw2 = new Array("","", "", "", "千", "万", "十万", "百万", "千万", "亿", "十亿", "百亿", "千亿");// 大单位
   //   if (num) {

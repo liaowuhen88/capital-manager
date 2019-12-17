@@ -99,7 +99,7 @@
           <el-input v-model="bank.bankCard" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="现金金额:" prop="cashAmount" label-width="100px">
-          <font size="4" face="arial">{{this.Utils.transform(bank.cashAmount) }}</font>
+          <font size="4" face="arial">{{this.Utils.toMoney(bank.cashAmount) }}</font>
           <el-input v-model="bank.cashAmount"></el-input>
         </el-form-item>
       </el-form>
@@ -163,7 +163,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="交易金额:" prop="transactionAmount" label-width="150px">
-          <font size="4" face="arial">{{this.Utils.transform(bankTransaction.transactionAmount) }}</font>
+          <font size="4" face="arial">{{this.Utils.toMoney(bankTransaction.transactionAmount) }}</font>
           <el-input v-model="bankTransaction.transactionAmount" autocomplete="off"></el-input>
         </el-form-item>
 
