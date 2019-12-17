@@ -8,7 +8,7 @@
       <el-table-column prop="bankCard" width="200px" label="银行卡号"></el-table-column>
       <el-table-column prop="realTransactionAmount" :formatter="formatter" label="交易金额"></el-table-column>
       <el-table-column prop="transactionTypeMsg" label="交易类型"></el-table-column>
-      <el-table-column prop="transactionParty" label="交易方"></el-table-column>
+      <el-table-column prop="myProductId" label="理财产品编号"></el-table-column>
       <el-table-column prop="transactionCard" label="交易卡号"></el-table-column>
       <el-table-column prop="transactionTime" label="交易日期" width="180"></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>

@@ -25,6 +25,9 @@
         ></el-option>
       </el-select>
     </el-col>
+     <el-col :span="3">
+     <el-input v-model="param.myProductId" autocomplete="off" placeholder="理财产品编号"></el-input>
+    </el-col>
     <el-col :span="5">
       <el-date-picker
         v-model="param.times"
@@ -35,7 +38,7 @@
         value-format="yyyy-MM-dd"
       ></el-date-picker>
     </el-col>
-    <el-col :span="5" :offset="4">
+    <el-col :span="5" :offset="1">
       <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
     </el-col>
   </el-row>
@@ -60,7 +63,7 @@ export default {
         { key: "6", lable: "理财利息收入" },
         { key: "7", lable: "转账-转入" }
       ],
-      param: { userName: "", bankName: "", bankCard: "", transactionTypes: [] }
+      param: { userName: "", bankName: "", bankCard: "", transactionTypes: [],myProductId:"" }
     };
   },
   mounted() {
