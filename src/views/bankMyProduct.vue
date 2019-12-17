@@ -230,11 +230,7 @@
         </el-form-item>
 
         <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="100px">
-          <el-input
-            v-model="buyMyProduct.interestPaymentMethod"
-            @blur="calculateInterest"
-            placeholder="付息方式"
-          ></el-input>
+          <el-input v-model="buyMyProduct.interestPaymentMethod" placeholder="付息方式"></el-input>
         </el-form-item>
 
         <el-form-item label="收利日预期利息收益:" prop="expectedInterestIncomeMonth" label-width="100px">
@@ -250,6 +246,7 @@
             face="arial"
           >{{this.Utils.toMoney(buyMyProduct.expectedInterestIncomeTotal) }}</font>
           <el-input v-model="buyMyProduct.expectedInterestIncomeTotal" placeholder="利息预期收益"></el-input>
+          <el-button size="mini" type="primary" plain @click="calculateInterest">获取预估值</el-button>
         </el-form-item>
 
         <!-- <el-form-item label="备注:" prop="remark" label-width="100px">
@@ -495,8 +492,9 @@ export default {
       var money =
         ((this.buyMyProduct.expectedInterestRate * day) / 365 / 100) *
         this.buyMyProduct.investmentAmount;
-      console.log(money.toFixed(2));
-      this.buyMyProduct.expectedInterestIncomeTotal = money.toFixed(2);
+      if (money.toFixed(2)) {
+        this.buyMyProduct.expectedInterestIncomeTotal = money.toFixed(2);
+      }
     },
 
     bankChange(val) {
