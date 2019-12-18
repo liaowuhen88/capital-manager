@@ -163,6 +163,7 @@
       width="700px"
       :visible.sync="buyBankProductFormVisible"
       @close="resetForm('buyMyProductForm')"
+      @open="submitButtonDisabled = false"
     >
       <el-form :model="buyMyProduct" :rules="buyMyProductRules" ref="buyMyProductForm">
         <el-form-item label="选择买入账户:" prop="bankCardId" label-width="150px">
@@ -256,7 +257,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="buyBankProductFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitMyBankProduct('buyMyProductForm')">确 定</el-button>
+        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitMyBankProduct('buyMyProductForm')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -265,6 +266,7 @@
       width="600px"
       :visible.sync="bankProductIncomeFormVisible"
       @close="resetForm('bankTransactionForm')"
+      @open="submitButtonDisabled = false"
     >
       <el-form :model="bankBill" :rules="bankTransactionRules" ref="bankTransactionForm">
         <el-form-item label="收款方姓名:" prop="name" label-width="150px">
@@ -311,7 +313,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="bankProductIncomeFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
+        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -350,6 +352,7 @@ export default {
       income_show: false,
       investmentAmount_show: false,
       bankLog_show: false,
+      submitButtonDisabled: false,
       bankMyProduct: {
         bank: {
           id: "",
@@ -668,6 +671,8 @@ export default {
       // 表单验证
       this.$refs[bankTransactionForm].validate(valid => {
         if (valid) {
+          this.submitButtonDisabled = true;
+
           this.$http({
             method: "post",
             url: this.BASE_API + "/api/bankMyProducts/income",
@@ -684,6 +689,8 @@ export default {
                 this.investmentAmount_show = false;
                 this.getMyBankProducts();
               } else {
+                this.submitButtonDisabled = false;
+
                 this.$message({
                   showClose: true,
                   message: res.data.msg
@@ -700,6 +707,8 @@ export default {
       // 表单验证
       this.$refs[buyMyProductForm].validate(valid => {
         if (valid) {
+          this.submitButtonDisabled = true;
+
           this.$http({
             method: "post",
             url: this.BASE_API + "/api/bankMyProducts/buy",
@@ -715,6 +724,8 @@ export default {
                 this.getMyBankProducts();
                 this.resetForm(buyMyProductForm);
               } else {
+                this.submitButtonDisabled = false;
+
                 this.$message({
                   showClose: true,
                   message: res.data.msg

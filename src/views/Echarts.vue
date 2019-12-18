@@ -1,6 +1,23 @@
 <template>
-  <div class="echarts-box">
-    <div class="echarts" id="echarts"></div>
+  <div>
+    <el-row>
+      <el-col :span="5">
+        <el-date-picker
+          v-model="param.times"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+        ></el-date-picker>
+      </el-col>
+      <el-col :span="5" :offset="1">
+        <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
+      </el-col>
+    </el-row>
+    <div class="echarts-box">
+      <div class="echarts" id="echarts"></div>
+    </div>
   </div>
 </template>
 
@@ -8,7 +25,16 @@
 import option from "./../common/option";
 export default {
   data() {
-    return { totalByMonthVo: {} };
+    return {
+      totalByMonthVo: {},
+      param: {
+        userName: "",
+        bankName: "",
+        bankCard: "",
+        transactionTypes: [],
+        myProductId: ""
+      }
+    };
   },
   mounted() {
     this.getData();
@@ -44,6 +70,9 @@ export default {
         .catch(err => {
           console.error(err);
         });
+    },
+    search() {
+      this.getData(this.param);
     }
   }
 };

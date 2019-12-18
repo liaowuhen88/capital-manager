@@ -73,12 +73,13 @@
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
       :total="pagination.total"
-    ></el-pagination> -->
+    ></el-pagination>-->
     <el-dialog
       :title="dialogTitle"
       width="600px"
       :visible.sync="bankFormVisible"
       @close="resetForm('bankForm')"
+      @open="submitButtonDisabled = false"
     >
       <el-form :model="bank" :rules="rules" ref="bankForm">
         <el-form-item label="姓名:" prop="name" label-width="100px">
@@ -105,7 +106,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="bankFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitBank('bankForm')">确 定</el-button>
+        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitBank('bankForm')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -114,6 +115,7 @@
       width="600px"
       :visible.sync="bankTransactionFormVisible"
       @close="resetForm('bankTransactionForm')"
+      @open="submitButtonDisabled = false"
     >
       <el-form :model="bankTransaction" :rules="bankTransactionRules" ref="bankTransactionForm">
         <el-form-item v-if="bankOut.show" label="付款方姓名:" prop="name" label-width="150px">
@@ -173,7 +175,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="bankTransactionFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
+        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -182,6 +184,7 @@
       width="600px"
       :visible.sync="addBankNameFormVisible"
       @close="resetForm('addBankNameForm')"
+      @open="submitButtonDisabled = false"
     >
       <el-form :model="bankName" :rules="addBankNameRules" ref="addBankNameForm">
         <el-form-item label="银行名称:" prop="name" label-width="100px">
@@ -190,7 +193,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addBankNameFormVisible= false">取 消</el-button>
-        <el-button type="primary" @click="submitAddBankName('addBankNameForm')">确 定</el-button>
+        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitAddBankName('addBankNameForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -215,6 +218,7 @@ export default {
       bankTransaction_bankProduct: false,
       bankTransaction_transferCard: false,
       addBankNameFormVisible: false,
+      submitButtonDisabled: false,
       bank: {
         id: "",
         name: "",
@@ -337,6 +341,7 @@ export default {
       // 表单验证
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.submitButtonDisabled = true;
           this.$http({
             method: "post",
             url: this.BASE_API + "/api/banks/insert",
@@ -351,6 +356,7 @@ export default {
                 });
                 this.getBanks();
               } else {
+                this.submitButtonDisabled = false;
                 this.$message({
                   showClose: true,
                   message: res.data.msg
@@ -367,6 +373,8 @@ export default {
       // 表单验证
       this.$refs[bankTransactionForm].validate(valid => {
         if (valid) {
+          this.submitButtonDisabled = true;
+
           this.$http({
             method: "post",
             url: this.BASE_API + "/api/bankBill/transaction",
@@ -382,6 +390,8 @@ export default {
                 this.resetForm(bankTransactionForm);
                 this.getBanks();
               } else {
+                this.submitButtonDisabled = false;
+
                 this.$message({
                   showClose: true,
                   message: res.data.msg
@@ -511,6 +521,8 @@ export default {
       // 表单验证
       this.$refs[addBankNameForm].validate(valid => {
         if (valid) {
+          this.submitButtonDisabled = true;
+
           this.$http({
             method: "post",
             url: this.BASE_API + "/api/bankNames/addBankName",
@@ -525,6 +537,8 @@ export default {
                 this.addBankNameFormVisible = false;
                 this.getBankNames();
               } else {
+                this.submitButtonDisabled = false;
+
                 this.$message({
                   showClose: true,
                   message: res.data.msg
