@@ -71,7 +71,7 @@
       <el-table-column prop="expectedInterestRate" sortable label="预期利率"></el-table-column>
       <el-table-column prop="interestRate" sortable label="实际利率"></el-table-column>
 
-      <el-table-column prop="interestPaymentMethod" sortable label="付息方式"></el-table-column>
+      <el-table-column prop="interestPaymentMethod" label="付息方式"></el-table-column>
 
       <el-table-column
         prop="expectedInterestIncomeMonth"
@@ -583,7 +583,6 @@ export default {
           index === 3 ||
           index === 9 ||
           index === 10 ||
-          index === 13 ||
           index === 11
         ) {
           sums[index] = "";
