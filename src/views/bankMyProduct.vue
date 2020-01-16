@@ -257,7 +257,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="buyBankProductFormVisible = false">取 消</el-button>
-        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitMyBankProduct('buyMyProductForm')">确 定</el-button>
+        <el-button
+          type="primary"
+          :disabled="submitButtonDisabled"
+          @click="submitMyBankProduct('buyMyProductForm')"
+        >确 定</el-button>
       </div>
     </el-dialog>
 
@@ -313,7 +317,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="bankProductIncomeFormVisible = false">取 消</el-button>
-        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
+        <el-button
+          type="primary"
+          :disabled="submitButtonDisabled"
+          @click="submitBankTransaction('bankTransactionForm')"
+        >确 定</el-button>
       </div>
     </el-dialog>
 
@@ -322,7 +330,7 @@
     </el-dialog>
 
     <!--编辑 -->
-     <el-dialog
+    <el-dialog
       :title="dialogTitle"
       width="600px"
       :visible.sync="editMyProductFormVisible"
@@ -330,9 +338,9 @@
       @open="submitButtonDisabled = false"
     >
       <el-form :model="editMyProduct" ref="editMyProductForm">
-         <el-form-item label="买入时间:" prop="buyingTime" label-width="150px">
+        <el-form-item label="买入时间:" prop="buyingTime" label-width="150px">
           <el-date-picker
-            v-model="buyMyProduct.buyingTime"
+            v-model="editMyProduct.buyingTime"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="买入时间"
@@ -340,7 +348,7 @@
         </el-form-item>
         <el-form-item label="起息日期:" prop="interestStartTime" label-width="150px">
           <el-date-picker
-            v-model="buyMyProduct.interestStartTime"
+            v-model="editMyProduct.interestStartTime"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="起息日期"
@@ -348,7 +356,7 @@
         </el-form-item>
         <el-form-item label="收利日期:" prop="profitDate" label-width="150px">
           <el-date-picker
-            v-model="buyMyProduct.profitDate"
+            v-model="editMyProduct.profitDate"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="收利日期"
@@ -356,20 +364,22 @@
         </el-form-item>
         <el-form-item label="到期时间:" prop="dueTime" label-width="150px">
           <el-date-picker
-            v-model="buyMyProduct.dueTime"
+            v-model="editMyProduct.dueTime"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="到期时间"
           ></el-date-picker>
         </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editMyProductFormVisible = false">取 消</el-button>
-        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitEditMyProductForm('editMyProductForm')">确 定</el-button>
+        <el-button
+          type="primary"
+          :disabled="submitButtonDisabled"
+          @click="submitEditMyProductForm('editMyProductForm')"
+        >确 定</el-button>
       </div>
     </el-dialog>
-    
   </div>
 </template>
 
@@ -429,10 +439,10 @@ export default {
         state: 0
       },
       editMyProduct: {
-        interestPaymentMethod: "",
-        expectedInterestIncomeMonth: "",
-        expectedInterestIncomeTotal: "",
-        expectedinterestRate: "",
+        dueTime: "",
+        buyingTime: "",
+        interestStartTime: "",
+        profitDate: ""
       },
       bankBill: {
         bankCardId: "",
@@ -447,6 +457,7 @@ export default {
       multipleSelection: [],
       buyBankProductFormVisible: false,
       bankProductIncomeFormVisible: false,
+      editMyProductFormVisible: false,
       dialogTitle: "",
       rowIndex: 9999,
       buyMyProductRules: {
@@ -604,27 +615,28 @@ export default {
     getInterestPaymentMethods() {
       this.loading = true;
       this.$http({
-        method: 'post',
-        url: this.BASE_API + '/api/bankMyProducts/selectInterestPaymentMethod'
+        method: "post",
+        url: this.BASE_API + "/api/bankMyProducts/selectInterestPaymentMethod"
       })
         .then(res => {
           // eslint-disable-next-line eqeqeq
           if (res.data.code == 0) {
-            this.interestPaymentMethods = res.data.data
+            this.interestPaymentMethods = res.data.data;
           } else {
             this.$message({
               showClose: true,
               message: res.data.msg
-            })
+            });
           }
         })
         .catch(err => {
-          console.error(err)
-        })
+          console.error(err);
+        });
     },
-    handleEdit (index, row) {
-      this.dialogTitle = '修改'
-      this.editMyProductFormVisible = true
+    handleEdit(index, row) {
+      this.dialogTitle = "修改";
+      this.editMyProductFormVisible = true;
+      this.editMyProduct = Object.assign({}, row);
     },
     getSummaries(param) {
       const { columns, data } = param;
@@ -634,12 +646,7 @@ export default {
           sums[index] = "总价";
           return;
         }
-        if (
-          index === 3 ||
-          index === 9 ||
-          index === 10 ||
-          index === 11
-        ) {
+        if (index === 3 || index === 9 || index === 10 || index === 11) {
           sums[index] = "";
           return;
         }
@@ -780,6 +787,40 @@ export default {
               } else {
                 this.submitButtonDisabled = false;
 
+                this.$message({
+                  showClose: true,
+                  message: res.data.msg
+                });
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
+        }
+      });
+    },
+    submitEditMyProductForm(editMyProductForm) {
+      // 表单验证
+      this.$refs[editMyProductForm].validate(valid => {
+        if (valid) {
+          this.submitButtonDisabled = true;
+
+          this.$http({
+            method: "post",
+            url: this.BASE_API + "/api/bankMyProducts/buy",
+            data: this.buyMyProduct
+          })
+            .then(res => {
+              if (res.data.code == 0) {
+                this.$message({
+                  type: "success",
+                  message: "新增成功！"
+                });
+                this.editMyProductFormVisible = false;
+                this.getMyBankProducts();
+                this.resetForm(editMyProductForm);
+              } else {
+                this.submitButtonDisabled = false;
                 this.$message({
                   showClose: true,
                   message: res.data.msg
