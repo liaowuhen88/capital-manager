@@ -28,17 +28,19 @@
      <el-col :span="3">
      <el-input v-model="param.myProductId" autocomplete="off" placeholder="理财产品编号"></el-input>
     </el-col>
-    <el-col :span="5">
-      <el-date-picker
-        v-model="param.times"
-        type="daterange"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        value-format="yyyy-MM-dd"
-      ></el-date-picker>
-    </el-col>
-    <el-col :span="5" :offset="1">
+
+     <el-col :span="3">
+        <el-date-picker v-model="param.startTime" type="date" placeholder="开始日期" value-format="yyyy-MM-dd"></el-date-picker>
+      </el-col>
+       <el-col :span="1">
+         <p>
+          <font size="3" face="arial">至</font>
+        </p>
+      </el-col>
+      <el-col :span="3">
+        <el-date-picker v-model="param.endTime" type="date" placeholder="结束日期" value-format="yyyy-MM-dd"></el-date-picker>
+      </el-col>
+    <el-col :span="2" :offset="2">
       <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
     </el-col>
   </el-row>
@@ -63,8 +65,8 @@ export default {
         { key: "6", lable: "理财利息收入" },
         { key: "7", lable: "转账-转入" }
       ],
-      param: { userName: "", bankName: "", bankCard: "", transactionTypes: [],myProductId:"" }
-    };
+      param: { userName: '', bankName: '', bankCard: '', transactionTypes: [], myProductId: '', startTime: '', endTime: '' }
+    }
   },
   mounted() {
     this.getBanks();

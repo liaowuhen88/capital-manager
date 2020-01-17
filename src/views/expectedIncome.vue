@@ -54,7 +54,7 @@ export default {
       this.loading = true;
       this.$http({
         method: "post",
-        url: this.BASE_API + "/api/bankBill/totalByMonth",
+        url: this.BASE_API + "/api/bankMyProducts/expectedIncome",
         data: param ? param : {}
       })
         .then(res => {

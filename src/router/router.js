@@ -11,6 +11,7 @@ import NotFound from '../views/NotFound.vue'
 import uploadFile from '../views/uploadFile.vue'
 import earningsStatistics from '../views/earningsStatistics.vue'
 import echarts from '../views/echarts.vue'
+import expectedIncome from '../views/expectedIncome.vue'
 Vue.use(Router);
 
 const router = new Router({
@@ -65,12 +66,11 @@ const router = new Router({
           name: 'earningsStatistics',
           component: earningsStatistics
         },
-
-        // {
-        //   path: '/articles',
-        //   name: 'articles',
-        //   component: Articles
-        // },
+        {
+          path: '/expectedIncome',
+          name: 'expectedIncome',
+          component: expectedIncome
+        },
         {
           path: '/echarts',
           name: 'echarts',

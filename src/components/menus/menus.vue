@@ -60,6 +60,10 @@
       <i class="el-icon-share"></i>
       <span slot="title">图表</span>
     </el-menu-item>
+    <el-menu-item index="/expectedIncome">
+      <i class="el-icon-share"></i>
+      <span slot="title">预期收益</span>
+    </el-menu-item>
   </el-menu>
 </template>
 
