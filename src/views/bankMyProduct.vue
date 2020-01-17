@@ -634,9 +634,9 @@ export default {
         });
     },
     handleEdit(index, row) {
+      this.editMyProduct = Object.assign({}, row);
       this.dialogTitle = "修改";
       this.editMyProductFormVisible = true;
-      this.editMyProduct = Object.assign({}, row);
     },
     getSummaries(param) {
       const { columns, data } = param;
@@ -807,8 +807,8 @@ export default {
 
           this.$http({
             method: "post",
-            url: this.BASE_API + "/api/bankMyProducts/buy",
-            data: this.buyMyProduct
+            url: this.BASE_API + "/api/bankMyProducts/update",
+            data: this.editMyProduct
           })
             .then(res => {
               if (res.data.code == 0) {
