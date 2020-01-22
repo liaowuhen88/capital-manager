@@ -14,7 +14,7 @@
       <el-col :span="3">
         <el-input v-model="param.productType" autocomplete="off" placeholder="产品类型"></el-input>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="2">
         <el-select v-model="param.state" clearable placeholder="产品状态">
           <el-option
             v-for="item in states"
@@ -33,6 +33,9 @@
 
       <el-col :span="3" :offset="1">
         <el-button type="primary" icon="el-icon-search" @click="getMyBankProducts">搜索</el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button type="primary" icon="el-icon-download" @click="downloanMyBankProducts">下载</el-button>
       </el-col>
       <el-col :span="3" :offset="1">
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">买入理财</el-button>
@@ -395,7 +398,10 @@ export default {
       userNames: [],
       bankNames: [],
       interestPaymentMethods: [],
-      states: [{ value: 2, label: "已赎回" }, { value: 1, label: "合约中" }],
+      states: [
+        { value: 2, label: "已赎回" },
+        { value: 1, label: "合约中" }
+      ],
       param: {
         name: "",
         bank: "",
@@ -554,6 +560,11 @@ export default {
     },
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";
+    },
+    downloanMyBankProducts () {
+      let a = document.createElement('a')
+      a.href = this.BASE_API + '/excel/excelExport'
+      a.click()
     },
     calculateInterestTotal() {
       var day = this.Utils.getDaysBetween(
