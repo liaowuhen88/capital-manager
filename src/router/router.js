@@ -12,6 +12,8 @@ import uploadFile from '../views/uploadFile.vue'
 import earningsStatistics from '../views/earningsStatistics.vue'
 import echarts from '../views/echarts.vue'
 import expectedIncome from '../views/expectedIncome.vue'
+import expectedIncomeTotal from '../views/expectedIncomeTotal.vue'
+
 Vue.use(Router);
 
 const router = new Router({
@@ -70,6 +72,11 @@ const router = new Router({
           path: '/expectedIncome',
           name: 'expectedIncome',
           component: expectedIncome
+        },
+        {
+          path: '/expectedIncomeTotal',
+          name: 'expectedIncomeTotal',
+          component: expectedIncomeTotal
         },
         {
           path: '/echarts',
