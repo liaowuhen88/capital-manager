@@ -234,7 +234,14 @@
         </el-form-item>
 
         <el-form-item label="付息方式:" prop="interestPaymentMethod" label-width="150px">
-          <el-input v-model="buyMyProduct.interestPaymentMethod" placeholder="付息方式"></el-input>
+          <el-select v-model="buyMyProduct.interestPaymentMethod" clearable placeholder="付息方式">
+            <el-option
+              v-for="item in interestPaymentMethodOption"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item label="收利日预期利息收益:" prop="expectedInterestIncomeMonth" label-width="150px">
@@ -402,6 +409,13 @@ export default {
         { value: 2, label: "已赎回" },
         { value: 1, label: "合约中" }
       ],
+      interestPaymentMethodOption: [
+        { value: "月付", label: "月付" },
+        { value: "一次性", label: "一次性" },
+        { value: "半年付", label: "半年付" },
+        { value: "季付", label: "季付" },
+        { value: "年付", label: "年付" }
+      ],
       param: {
         name: "",
         bank: "",
@@ -561,10 +575,10 @@ export default {
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";
     },
-    downloanMyBankProducts () {
-      let a = document.createElement('a')
-      a.href = this.BASE_API + '/excel/excelExport'
-      a.click()
+    downloanMyBankProducts() {
+      let a = document.createElement("a");
+      a.href = this.BASE_API + "/excel/excelExport";
+      a.click();
     },
     calculateInterestTotal() {
       var day = this.Utils.getDaysBetween(
