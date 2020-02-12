@@ -106,7 +106,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="bankFormVisible = false">取 消</el-button>
-        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitBank('bankForm')">确 定</el-button>
+        <el-button
+          type="primary"
+          :disabled="submitButtonDisabled"
+          @click="submitBank('bankForm')"
+        >确 定</el-button>
       </div>
     </el-dialog>
 
@@ -149,7 +153,7 @@
             @change="transferCard"
           >
             <el-option
-              v-for="item in banks"
+              v-for="item in bankAll"
               :key="item.id"
               :label="item.selectName"
               :value="item.id"
@@ -175,7 +179,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="bankTransactionFormVisible = false">取 消</el-button>
-        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitBankTransaction('bankTransactionForm')">确 定</el-button>
+        <el-button
+          type="primary"
+          :disabled="submitButtonDisabled"
+          @click="submitBankTransaction('bankTransactionForm')"
+        >确 定</el-button>
       </div>
     </el-dialog>
 
@@ -193,7 +201,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addBankNameFormVisible= false">取 消</el-button>
-        <el-button type="primary" :disabled="submitButtonDisabled" @click="submitAddBankName('addBankNameForm')">确 定</el-button>
+        <el-button
+          type="primary"
+          :disabled="submitButtonDisabled"
+          @click="submitAddBankName('addBankNameForm')"
+        >确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -205,6 +217,7 @@ export default {
   data() {
     return {
       banks: [],
+      bankAll: [],
       pagination: {
         pageSize: 10,
         currentPage: 1,
@@ -284,6 +297,7 @@ export default {
   },
   mounted() {
     this.getBanks();
+    this.getBankAll();
     this.getBankNames();
   },
   components: {
@@ -326,6 +340,25 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.bankNames = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getBankAll() {
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/banks/selectAll"
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.bankAll = res.data.data;
           } else {
             this.$message({
               showClose: true,
