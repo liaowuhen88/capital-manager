@@ -2,23 +2,36 @@
   <div>
     <el-row>
       <el-col :span="5">
-        <el-date-picker v-model="param.startTime" type="date" placeholder="开始日期" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-date-picker
+          v-model="param.startTime"
+          type="date"
+          placeholder="开始日期"
+          value-format="yyyy-MM-dd"
+        ></el-date-picker>
       </el-col>
-       <el-col :span="1">
-         <p>
+      <el-col :span="1">
+        <p>
           <font size="4" face="arial">至</font>
         </p>
       </el-col>
       <el-col :span="5">
-        <el-date-picker v-model="param.endTime" type="date" placeholder="结束日期" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-date-picker
+          v-model="param.endTime"
+          type="date"
+          placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+        ></el-date-picker>
       </el-col>
       <el-col :span="5" :offset="5">
         <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
       </el-col>
     </el-row>
-    <div class="echarts-box">
-      <div class="echarts" id="echarts"></div>
-    </div>
+
+    <table>
+      <tr v-for="tr in totalByMonthTableVo">
+        <td v-for="td in tr">{{ td }}</td>
+      </tr>
+    </table>
   </div>
 </template>
 
@@ -28,6 +41,7 @@ export default {
   data() {
     return {
       totalByMonthVo: {},
+      totalByMonthTableVo: {},
       param: {
         startTime: "",
         endTime: "",
@@ -38,7 +52,8 @@ export default {
     };
   },
   mounted() {
-    this.getData();
+    //this.getData();
+    this.getDataTable();
   },
   methods: {
     drawEcharts() {
@@ -72,8 +87,29 @@ export default {
           console.error(err);
         });
     },
+    getDataTable(param) {
+      this.loading = true;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankMyProducts/expectedIncomeTable",
+        data: param ? param : {}
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.totalByMonthTableVo = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
     search() {
-      this.getData(this.param);
+      this.getDataTable(this.param);
     }
   }
 };
@@ -86,5 +122,40 @@ export default {
     width: 98%;
     height: 500px;
   }
+}
+
+table {
+  border-collapse: collapse;
+
+  margin: 0 auto;
+
+  text-align: center;
+
+  margin-top: 30px;
+
+  width: 100%;
+}
+
+table td,
+table th {
+  border: 1px solid #cad9ea;
+
+  color: #666;
+
+  height: 30px;
+}
+
+table thead th {
+  background-color: #cce8eb;
+
+  width: 100px;
+}
+
+table tr:nth-child(odd) {
+  background: #fff;
+}
+
+table tr:nth-child(even) {
+  background: #f5fafa;
 }
 </style>

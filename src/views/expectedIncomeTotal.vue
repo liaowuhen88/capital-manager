@@ -6,7 +6,7 @@
           v-model="param.startTime"
           type="month"
           placeholder="开始日期"
-          value-format="yyyy-MM"
+          value-format="yyyy-MM-dd"
         ></el-date-picker>
       </el-col>
       <el-col :span="1">
@@ -19,7 +19,7 @@
           v-model="param.endTime"
           type="month"
           placeholder="结束日期"
-          value-format="yyyy-MM"
+          value-format="yyyy-MM-dd"
         ></el-date-picker>
       </el-col>
       <el-col :span="5" :offset="5">
@@ -27,21 +27,15 @@
       </el-col>
     </el-row>
 
-  <div class="echarts-box">
+    <div class="echarts-box">
       <div class="echarts" id="echarts"></div>
     </div>
 
-    <el-table
-      :data="totalByMonthTableVo"
-      style="width:400px"
-      show-summary
-      :summary-method="getSummaries"
-    >
-      <el-table-column prop="profitDate" label="月份"></el-table-column>
-      <el-table-column :formatter="formatter" prop="expectedInterestIncomeMonth" label="预期收益"></el-table-column>
-    </el-table>
-
-  
+    <table>
+      <tr v-for="tr in totalByMonthTableVo">
+        <td v-for="td in tr">{{ td }}</td>
+      </tr>
+    </table>
   </div>
 </template>
 
@@ -162,5 +156,40 @@ export default {
     width: 98%;
     height: 500px;
   }
+}
+
+table {
+  border-collapse: collapse;
+
+  margin: 0 auto;
+
+  text-align: center;
+
+  margin-top: 30px;
+
+  width: 100%;
+}
+
+table td,
+table th {
+  border: 1px solid #cad9ea;
+
+  color: #666;
+
+  height: 30px;
+}
+
+table thead th {
+  background-color: #cce8eb;
+
+  width: 100px;
+}
+
+table tr:nth-child(odd) {
+  background: #fff;
+}
+
+table tr:nth-child(even) {
+  background: #f5fafa;
 }
 </style>
