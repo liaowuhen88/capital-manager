@@ -2,15 +2,25 @@
   <div>
     <el-row>
       <el-col :span="5">
-        <el-date-picker v-model="param.startTime" type="date" placeholder="开始日期" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-date-picker
+          v-model="param.startTime"
+          type="date"
+          placeholder="开始日期"
+          value-format="yyyy-MM-dd"
+        ></el-date-picker>
       </el-col>
-       <el-col :span="1">
-         <p>
+      <el-col :span="1">
+        <p>
           <font size="4" face="arial">至</font>
         </p>
       </el-col>
       <el-col :span="5">
-        <el-date-picker v-model="param.endTime" type="date" placeholder="结束日期" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-date-picker
+          v-model="param.endTime"
+          type="date"
+          placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+        ></el-date-picker>
       </el-col>
       <el-col :span="5" :offset="5">
         <el-button type="primary" icon="el-icon-search" @click="search()">搜索</el-button>
@@ -29,8 +39,8 @@ export default {
     return {
       totalByMonthVo: {},
       param: {
-        startTime: "",
-        endTime: "",
+        startTime: this.Utils.getFirstDayOfYear(new Date()),
+        endTime: this.Utils.timeFormat(new Date()),
         bankCard: "",
         transactionTypes: [],
         myProductId: ""

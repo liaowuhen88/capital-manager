@@ -4,7 +4,7 @@
       <el-col :span="5">
         <el-date-picker
           v-model="param.startTime"
-          type="month"
+          type="date"
           placeholder="开始日期"
           value-format="yyyy-MM-dd"
         ></el-date-picker>
@@ -17,7 +17,7 @@
       <el-col :span="5">
         <el-date-picker
           v-model="param.endTime"
-          type="month"
+          type="date"
           placeholder="结束日期"
           value-format="yyyy-MM-dd"
         ></el-date-picker>
@@ -47,8 +47,8 @@ export default {
       totalByMonthVo: {},
       totalByMonthTableVo: {},
       param: {
-        startTime: "",
-        endTime: "",
+        startTime: this.Utils.getFirstDayOfYear(new Date()),
+        endTime: this.Utils.timeFormat(new Date()),
         bankCard: "",
         transactionTypes: [],
         myProductId: ""

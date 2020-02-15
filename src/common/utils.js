@@ -21,6 +21,27 @@ export default class Utils {
     let ss = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
     return yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
   }
+
+  //日期格式化，返回值形式为yy-mm-dd
+  static timeFormat(date) {
+    if (!date || typeof (date) === "string") {
+      this.error("参数异常，请检查...")
+    }
+    var y = date.getFullYear() //年
+    var m = date.getMonth() + 1 //月
+    var d = date.getDate() //日
+
+    return y + '-' + m + '-' + d
+  }
+
+
+  //获取当年第一天
+  static getFirstDayOfYear(date) {
+    date.setDate(1)
+    date.setMonth(0)
+    return this.timeFormat(date)
+  }
+
   // 浏览器全屏
   static fullScreen() {
     let isFull = document.isFullScreen || document.mozIsFullScreen || document.webkitIsFullScreen

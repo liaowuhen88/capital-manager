@@ -43,8 +43,8 @@ export default {
       totalByMonthVo: {},
       totalByMonthTableVo: {},
       param: {
-        startTime: "",
-        endTime: "",
+        startTime: this.Utils.getFirstDayOfYear(new Date()),
+        endTime: this.Utils.timeFormat(new Date()),
         bankCard: "",
         transactionTypes: [],
         myProductId: ""
