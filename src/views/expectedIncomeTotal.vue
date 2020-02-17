@@ -31,11 +31,21 @@
       <div class="echarts" id="echarts"></div>
     </div>
 
-    <table>
-      <tr v-for="tr in totalByMonthTableVo">
-        <td v-for="td in tr">{{ td }}</td>
-      </tr>
-    </table>
+    <!-- <div>
+      <table>
+        <tr v-for="tr in totalByMonthTableVo">
+          <td v-for="td in tr">{{ td }}</td>
+        </tr>
+      </table>
+    </div>-->
+
+    <el-table :data="analysisTotalVos" show-summary :summary-method="getSummaries" stripe>
+      <el-table-column prop="time" label="时间"></el-table-column>
+      <el-table-column prop="expectedInterestIncome" label="预期利息收入"></el-table-column>
+      <el-table-column prop="investmentIncome" :formatter="formatter" label="实际利息收入"></el-table-column>
+      <el-table-column prop="investmentAmount" :formatter="formatter" label="预期赎回本金"></el-table-column>
+      <el-table-column prop="investmentRedeemPrincipal" :formatter="formatter" label="实际赎回本金"></el-table-column>
+    </el-table>
   </div>
 </template>
 
@@ -46,6 +56,7 @@ export default {
     return {
       totalByMonthVo: {},
       totalByMonthTableVo: {},
+      analysisTotalVos: {},
       param: {
         startTime: this.Utils.getFirstDayOfYear(new Date()),
         endTime: this.Utils.timeFormat(new Date()),
@@ -57,7 +68,8 @@ export default {
   },
   mounted() {
     this.getData();
-    this.getDataTable();
+    //this.getDataTable();
+    this.getAnalysisTotalVo();
   },
 
   methods: {
@@ -141,8 +153,54 @@ export default {
           console.error(err);
         });
     },
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = "总价";
+          return;
+        }
+        const values = data.map(item => Number(item[column.property]));
+        if (!values.every(value => isNaN(value))) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] = this.Utils.toMoney(sums[index]) + "元";
+        } else {
+          sums[index] = "";
+        }
+      });
+
+      return sums;
+    },
+    getAnalysisTotalVo(param) {
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankMyProducts/getAnalysisTotalVo",
+        data: param ? param : {}
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.analysisTotalVos = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
     search() {
-      this.getDataTable(this.param);
+      this.getAnalysisTotalVo(this.param);
       this.getData(this.param);
     }
   }
@@ -178,7 +236,8 @@ table th {
 
   height: 30px;
 
-  word-break: keep-all;white-space:nowrap;
+  word-break: keep-all;
+  white-space: nowrap;
 }
 
 table thead th {
