@@ -28,10 +28,95 @@
     </el-row>
 
     <table>
-      <tr v-for="tr in totalByMonthTableVo">
-        <td v-for="td in tr">{{ td }}</td>
-      </tr>
+      <template v-for="tr in totalByMonthTableVo">
+        <tr v-on:click="getMyProduct(tr[0])">
+          <template v-for="td in tr">
+            <td>{{ td }}</td>
+          </template>
+        </tr>
+      </template>
     </table>
+
+    <!--查看详情 -->
+    <el-dialog :title="dialogTitle" width="600px" :visible.sync="showMyProductFormVisible">
+      <el-form :model="myProduct" ref="editMyProductForm">
+        <el-form-item label="姓名:" label-width="150px">
+          <el-input v-model="myProduct.bank.name" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="银行:" label-width="150px">
+          <el-input v-model="myProduct.bank.bankName" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="银行卡号:" label-width="150px">
+          <el-input v-model="myProduct.bank.bankCard" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="产品类型:" label-width="150px">
+          <el-input v-model="myProduct.productType" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+         <el-form-item label="投资金额:" label-width="150px">
+            <font size="4" face="arial">{{this.Utils.toMoney(myProduct.investmentAmount) }}</font>
+          <el-input v-model="myProduct.investmentAmount" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+ <el-form-item label="买入时间:" prop="buyingTime" label-width="150px">
+          <el-date-picker
+            v-model="myProduct.buyingTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="买入时间"
+            :disabled="true"
+          ></el-date-picker>
+        </el-form-item>
+  
+        <el-form-item label="起息日期:" prop="interestStartTime" label-width="150px">
+          <el-date-picker
+            v-model="myProduct.interestStartTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="起息日期"
+            :disabled="true"
+          ></el-date-picker>
+        </el-form-item>
+   <el-form-item label="收利日期:" prop="profitDate" label-width="150px">
+          <el-date-picker
+            v-model="myProduct.profitDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="收利日期"
+            :disabled="true"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="到期时间:" prop="dueTime" label-width="150px">
+          <el-date-picker
+            v-model="myProduct.dueTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="到期时间"
+            :disabled="true"
+          ></el-date-picker>
+        </el-form-item>
+
+
+         <el-form-item label="预期利率:" label-width="150px">
+          <el-input v-model="myProduct.expectedInterestRate" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+         <el-form-item label="付息方式:" label-width="150px">
+          <el-input v-model="myProduct.interestPaymentMethod" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+         <el-form-item label="收利日利息预期收益:" label-width="150px">
+           <font size="4" face="arial">{{this.Utils.toMoney(myProduct.expectedInterestIncomeMonth) }}</font>
+          <el-input v-model="myProduct.expectedInterestIncomeMonth" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+
+     
+     
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -42,6 +127,20 @@ export default {
     return {
       totalByMonthVo: {},
       totalByMonthTableVo: {},
+      showMyProductFormVisible: false,
+      dialogTitle: "",
+      myProduct: {
+        bank: {
+          id: "",
+          name: "",
+          bankName: "",
+          bankCard: ""
+        },
+        dueTime: "",
+        buyingTime: "",
+        interestStartTime: "",
+        profitDate: ""
+      },
       param: {
         startTime: this.Utils.getFirstDayOfYear(new Date()),
         endTime: this.Utils.timeFormat(new Date()),
@@ -76,6 +175,27 @@ export default {
           if (res.data.code == 0) {
             this.totalByMonthVo = res.data.data;
             this.drawEcharts();
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getMyProduct(id) {
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankMyProducts/selectByPrimaryKey",
+        data: { id: id }
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.showMyProductFormVisible = true;
+            this.myProduct = res.data.data;
           } else {
             this.$message({
               showClose: true,
@@ -143,6 +263,9 @@ table th {
   color: #666;
 
   height: 30px;
+
+  word-break: keep-all;
+  white-space: nowrap;
 }
 
 table thead th {

@@ -177,6 +177,8 @@ table th {
   color: #666;
 
   height: 30px;
+
+  word-break: keep-all;white-space:nowrap;
 }
 
 table thead th {
