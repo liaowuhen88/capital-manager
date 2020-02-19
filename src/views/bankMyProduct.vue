@@ -148,7 +148,15 @@
           </el-row>
 
           <el-row :gutter="20" v-if="scope.row.state == 2">
-            <el-col :span="24">已赎回</el-col>
+            <el-col :span="12">已赎回</el-col>
+            <el-col :span="12">
+              <el-button
+                size="mini"
+                type="primary"
+                plain
+                @click="deleteBankProduct(scope.$index, scope.row)"
+              >删除</el-button>
+            </el-col>
           </el-row>
         </template>
       </el-table-column>
@@ -406,6 +414,7 @@ export default {
       bankNames: [],
       interestPaymentMethods: [],
       states: [
+        { value: 3, label: "作废删除" },
         { value: 2, label: "已赎回" },
         { value: 1, label: "合约中" }
       ],
@@ -753,6 +762,27 @@ export default {
           console.error(err);
         });
     },
+    deleteBankProduct (index, row) {
+      this.bankMyProduct = Object.assign({}, row)
+      this.rowIndex = index
+      this.$http({
+        method: 'post',
+        url: this.BASE_API + '/api/bankMyProducts/delete',
+        data: { id: this.bankMyProduct.id }
+      })
+        .then(res => {
+          // eslint-disable-next-line eqeqeq
+          if (res.data.code == 0) {
+            alert('删除成功')
+          } else {
+            alert('删除失败')
+          }
+        })
+        .catch(err => {
+          console.error(err)
+        });
+    },
+
     submitBankTransaction(bankTransactionForm) {
       // 表单验证
       this.$refs[bankTransactionForm].validate(valid => {

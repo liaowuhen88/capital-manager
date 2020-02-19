@@ -39,13 +39,39 @@
       </table>
     </div>-->
 
-    <el-table :data="analysisTotalVos" show-summary :summary-method="getSummaries" stripe>
+    <el-table
+      :data="analysisTotalVos"
+      show-summary
+      :summary-method="getSummaries"
+      stripe
+      @cell-click="cellClick"
+    >
       <el-table-column prop="time" label="时间"></el-table-column>
-      <el-table-column prop="expectedInterestIncome" label="预期利息收入"></el-table-column>
+      <el-table-column prop="expectedInterestIncome" :formatter="formatter" label="预期利息收入"></el-table-column>
       <el-table-column prop="investmentIncome" :formatter="formatter" label="实际利息收入"></el-table-column>
       <el-table-column prop="investmentAmount" :formatter="formatter" label="预期赎回本金"></el-table-column>
       <el-table-column prop="investmentRedeemPrincipal" :formatter="formatter" label="实际赎回本金"></el-table-column>
     </el-table>
+
+    <el-dialog :title="dialogTitle" :visible.sync="expectedInterestIncomeDetailShow">
+      <el-table :data="expectedIncomePlan" show-summary :summary-method="getSummaries" stripe>
+        <el-table-column prop="id" label="产品id"></el-table-column>
+        <el-table-column prop="time" label="时间"></el-table-column>
+        <el-table-column prop="expectedInterestIncomeMonth" :formatter="formatter" label="预期利息收入"></el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog :title="dialogTitle" :visible.sync="investmentIncomeShow">
+      <el-table :data="investmentIncomeData" show-summary :summary-method="getSummaries" stripe>
+      <el-table-column prop="myProductId" label="理财产品编号"></el-table-column>
+      <el-table-column prop="name" label="姓名"></el-table-column>
+      <el-table-column prop="bankName" label="银行"></el-table-column>
+      <el-table-column prop="realTransactionAmount" :formatter="formatter" label="交易金额"></el-table-column>
+      <el-table-column prop="transactionTypeMsg" label="交易类型"></el-table-column>
+      <el-table-column prop="createTime" label="创建日期"></el-table-column>
+      <el-table-column prop="transactionTime" label="交易日期" width="180"></el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -56,7 +82,12 @@ export default {
     return {
       totalByMonthVo: {},
       totalByMonthTableVo: {},
-      analysisTotalVos: {},
+      analysisTotalVos: [],
+      dialogTitle: "",
+      expectedIncomePlan: [],
+      investmentIncomeData: [],
+      expectedInterestIncomeDetailShow: false,
+      investmentIncomeShow: false,
       param: {
         startTime: this.Utils.getFirstDayOfYear(new Date()),
         endTime: this.Utils.timeFormat(new Date()),
@@ -84,6 +115,58 @@ export default {
     },
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";
+    },
+    cellClick(row, column, cell, event) {
+      if (column.property === "expectedInterestIncome") {
+        this.showExpectedInterestIncomeDetail(row);
+      }
+      if (column.property === "investmentIncome") {
+        this.showInvestmentIncome(row);
+      }
+    },
+    showExpectedInterestIncomeDetail(row) {
+      this.loading = true;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankMyProducts/getExpectedIncomePlan",
+        data: { time: row.time }
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.expectedIncomePlan = res.data.data;
+            this.expectedInterestIncomeDetailShow = true;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    showInvestmentIncome(row) {
+      this.loading = true;
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankBill/queryByTime",
+        data: { time: row.time, transactionTypes: [6] }
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.investmentIncomeData = res.data.data;
+            this.investmentIncomeShow = true;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     },
     getSummaries(param) {
       const { columns, data } = param;
