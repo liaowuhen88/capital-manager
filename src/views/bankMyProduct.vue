@@ -15,7 +15,7 @@
         <el-input v-model="param.productType" autocomplete="off" placeholder="产品类型"></el-input>
       </el-col>
       <el-col :span="2">
-        <el-select v-model="param.state" clearable placeholder="产品状态">
+        <el-select v-model="param.state" multiple  placeholder="产品状态">
           <el-option
             v-for="item in states"
             :key="item.value"
@@ -430,7 +430,7 @@ export default {
         bank: "",
         bankCard: "",
         times: "",
-        state: 1,
+        state: [1],
         productType: "",
         interestPaymentMethod: ""
       },

@@ -44,7 +44,7 @@
       show-summary
       :summary-method="getSummaries"
       stripe
-      @cell-click="cellClick"
+      @row-click="showExpectedInterestIncomeDetail"
     >
       <el-table-column prop="time" label="时间"></el-table-column>
       <el-table-column prop="expectedInterestIncome" :formatter="formatter" label="预期利息收入"></el-table-column>
@@ -53,23 +53,24 @@
       <el-table-column prop="investmentRedeemPrincipal" :formatter="formatter" label="实际赎回本金"></el-table-column>
     </el-table>
 
-    <el-dialog :title="dialogTitle" :visible.sync="expectedInterestIncomeDetailShow">
-      <el-table :data="expectedIncomePlan" show-summary :summary-method="getSummaries" stripe>
+    <el-dialog :title="dialogTitle" :visible.sync="expectedInterestIncomeDetailShow"  >
+      <el-table :data="expectedIncomePlan" show-summary :summary-method="getSummaries" stripe height="600px">
         <el-table-column prop="id" label="产品id"></el-table-column>
         <el-table-column prop="time" label="时间"></el-table-column>
         <el-table-column prop="expectedInterestIncomeMonth" :formatter="formatter" label="预期利息收入"></el-table-column>
+        <el-table-column prop="realInterestIncome" :formatter="formatter" label="利息收入"></el-table-column>
       </el-table>
     </el-dialog>
 
     <el-dialog :title="dialogTitle" :visible.sync="investmentIncomeShow">
       <el-table :data="investmentIncomeData" show-summary :summary-method="getSummaries" stripe>
-      <el-table-column prop="myProductId" label="理财产品编号"></el-table-column>
-      <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="bankName" label="银行"></el-table-column>
-      <el-table-column prop="realTransactionAmount" :formatter="formatter" label="交易金额"></el-table-column>
-      <el-table-column prop="transactionTypeMsg" label="交易类型"></el-table-column>
-      <el-table-column prop="createTime" label="创建日期"></el-table-column>
-      <el-table-column prop="transactionTime" label="交易日期" width="180"></el-table-column>
+        <el-table-column prop="myProductId" label="理财产品编号"></el-table-column>
+        <el-table-column prop="name" label="姓名"></el-table-column>
+        <el-table-column prop="bankName" label="银行"></el-table-column>
+        <el-table-column prop="realTransactionAmount" :formatter="formatter" label="交易金额"></el-table-column>
+        <el-table-column prop="transactionTypeMsg" label="交易类型"></el-table-column>
+        <el-table-column prop="createTime" label="创建日期"></el-table-column>
+        <el-table-column prop="transactionTime" label="交易日期" width="180"></el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -128,7 +129,7 @@ export default {
       this.loading = true;
       this.$http({
         method: "post",
-        url: this.BASE_API + "/api/bankMyProducts/getExpectedIncomePlan",
+        url: this.BASE_API + "/api/bankMyProducts/getExpectedIncomePlanAndReal",
         data: { time: row.time }
       })
         .then(res => {
