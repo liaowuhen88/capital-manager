@@ -55,12 +55,12 @@
           <el-input v-model="myProduct.productType" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
 
-         <el-form-item label="投资金额:" label-width="150px">
-            <font size="4" face="arial">{{this.Utils.toMoney(myProduct.investmentAmount) }}</font>
+        <el-form-item label="投资金额:" label-width="150px">
+          <font size="4" face="arial">{{this.Utils.toMoney(myProduct.investmentAmount) }}</font>
           <el-input v-model="myProduct.investmentAmount" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
 
- <el-form-item label="买入时间:" prop="buyingTime" label-width="150px">
+        <el-form-item label="买入时间:" prop="buyingTime" label-width="150px">
           <el-date-picker
             v-model="myProduct.buyingTime"
             type="date"
@@ -69,7 +69,7 @@
             :disabled="true"
           ></el-date-picker>
         </el-form-item>
-  
+
         <el-form-item label="起息日期:" prop="interestStartTime" label-width="150px">
           <el-date-picker
             v-model="myProduct.interestStartTime"
@@ -79,7 +79,7 @@
             :disabled="true"
           ></el-date-picker>
         </el-form-item>
-   <el-form-item label="收利日期:" prop="profitDate" label-width="150px">
+        <el-form-item label="收利日期:" prop="profitDate" label-width="150px">
           <el-date-picker
             v-model="myProduct.profitDate"
             type="date"
@@ -98,23 +98,32 @@
           ></el-date-picker>
         </el-form-item>
 
-
-         <el-form-item label="预期利率:" label-width="150px">
+        <el-form-item label="预期利率:" label-width="150px">
           <el-input v-model="myProduct.expectedInterestRate" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
 
-         <el-form-item label="付息方式:" label-width="150px">
+        <el-form-item label="付息方式:" label-width="150px">
           <el-input v-model="myProduct.interestPaymentMethod" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
 
-         <el-form-item label="收利日利息预期收益:" label-width="150px">
-           <font size="4" face="arial">{{this.Utils.toMoney(myProduct.expectedInterestIncomeMonth) }}</font>
-          <el-input v-model="myProduct.expectedInterestIncomeMonth" :disabled="true" autocomplete="off"></el-input>
+        <el-form-item label="收利日利息预期收益:" label-width="150px">
+          <font size="4" face="arial">{{this.Utils.toMoney(myProduct.expectedInterestIncomeMonth) }}</font>
+          <el-input
+            v-model="myProduct.expectedInterestIncomeMonth"
+            :disabled="true"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
-
-
-     
-     
+        <el-form-item label="产品状态:" label-width="150px">
+          <el-select v-model="myProduct.state" :disabled="true">
+            <el-option
+              v-for="item in states"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </el-dialog>
   </div>
@@ -129,6 +138,11 @@ export default {
       totalByMonthTableVo: {},
       showMyProductFormVisible: false,
       dialogTitle: "",
+      states: [
+        { value: 3, label: "作废删除" },
+        { value: 2, label: "已赎回" },
+        { value: 1, label: "合约中" }
+      ],
       myProduct: {
         bank: {
           id: "",

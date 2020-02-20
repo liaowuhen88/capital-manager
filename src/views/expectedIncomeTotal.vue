@@ -53,8 +53,15 @@
       <el-table-column prop="investmentRedeemPrincipal" :formatter="formatter" label="实际赎回本金"></el-table-column>
     </el-table>
 
-    <el-dialog :title="dialogTitle" :visible.sync="expectedInterestIncomeDetailShow"  >
-      <el-table :data="expectedIncomePlan" show-summary :summary-method="getSummaries" stripe height="600px">
+    <el-dialog :title="dialogTitle" :visible.sync="expectedInterestIncomeDetailShow">
+      <el-table
+        :data="expectedIncomePlan"
+        show-summary
+        :summary-method="getSummaries"
+        stripe
+        @row-click="getMyProduct"
+        height="600px"
+      >
         <el-table-column prop="id" label="产品id"></el-table-column>
         <el-table-column prop="time" label="时间"></el-table-column>
         <el-table-column prop="expectedInterestIncomeMonth" :formatter="formatter" label="预期利息收入"></el-table-column>
@@ -73,6 +80,96 @@
         <el-table-column prop="transactionTime" label="交易日期" width="180"></el-table-column>
       </el-table>
     </el-dialog>
+
+    <!--查看详情 -->
+    <el-dialog :title="dialogTitle" width="600px" :visible.sync="showMyProductFormVisible">
+      <el-form :model="myProduct" ref="editMyProductForm">
+        <el-form-item label="姓名:" label-width="150px">
+          <el-input v-model="myProduct.bank.name" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="银行:" label-width="150px">
+          <el-input v-model="myProduct.bank.bankName" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="银行卡号:" label-width="150px">
+          <el-input v-model="myProduct.bank.bankCard" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="产品类型:" label-width="150px">
+          <el-input v-model="myProduct.productType" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="投资金额:" label-width="150px">
+          <font size="4" face="arial">{{this.Utils.toMoney(myProduct.investmentAmount) }}</font>
+          <el-input v-model="myProduct.investmentAmount" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="买入时间:" prop="buyingTime" label-width="150px">
+          <el-date-picker
+            v-model="myProduct.buyingTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="买入时间"
+            :disabled="true"
+          ></el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="起息日期:" prop="interestStartTime" label-width="150px">
+          <el-date-picker
+            v-model="myProduct.interestStartTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="起息日期"
+            :disabled="true"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="收利日期:" prop="profitDate" label-width="150px">
+          <el-date-picker
+            v-model="myProduct.profitDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="收利日期"
+            :disabled="true"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="到期时间:" prop="dueTime" label-width="150px">
+          <el-date-picker
+            v-model="myProduct.dueTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="到期时间"
+            :disabled="true"
+          ></el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="预期利率:" label-width="150px">
+          <el-input v-model="myProduct.expectedInterestRate" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="付息方式:" label-width="150px">
+          <el-input v-model="myProduct.interestPaymentMethod" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="收利日利息预期收益:" label-width="150px">
+          <font size="4" face="arial">{{this.Utils.toMoney(myProduct.expectedInterestIncomeMonth) }}</font>
+          <el-input
+            v-model="myProduct.expectedInterestIncomeMonth"
+            :disabled="true"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="产品状态:" label-width="150px">
+          <el-select v-model="myProduct.state" :disabled="true">
+            <el-option
+              v-for="item in states"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -87,7 +184,25 @@ export default {
       dialogTitle: "",
       expectedIncomePlan: [],
       investmentIncomeData: [],
+      states: [
+        { value: 3, label: "作废删除" },
+        { value: 2, label: "已赎回" },
+        { value: 1, label: "合约中" }
+      ],
+      myProduct: {
+        bank: {
+          id: "",
+          name: "",
+          bankName: "",
+          bankCard: ""
+        },
+        dueTime: "",
+        buyingTime: "",
+        interestStartTime: "",
+        profitDate: ""
+      },
       expectedInterestIncomeDetailShow: false,
+      showMyProductFormVisible: false,
       investmentIncomeShow: false,
       param: {
         startTime: this.Utils.getFirstDayOfYear(new Date()),
@@ -272,6 +387,27 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.analysisTotalVos = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    getMyProduct(row) {
+      this.$http({
+        method: "post",
+        url: this.BASE_API + "/api/bankMyProducts/selectByPrimaryKey",
+        data: { id: row.id }
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.showMyProductFormVisible = true;
+            this.myProduct = res.data.data;
           } else {
             this.$message({
               showClose: true,
