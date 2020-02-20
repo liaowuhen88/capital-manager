@@ -66,6 +66,8 @@
         <el-table-column prop="time" label="时间"></el-table-column>
         <el-table-column prop="expectedInterestIncomeMonth" :formatter="formatter" label="预期利息收入"></el-table-column>
         <el-table-column prop="realInterestIncome" :formatter="formatter" label="利息收入"></el-table-column>
+        <el-table-column prop="expectedInvestmentAmount" :formatter="formatter" label="预期本金赎回"></el-table-column>
+        <el-table-column prop="investmentAmount" :formatter="formatter" label="实际本金赎回"></el-table-column>
       </el-table>
     </el-dialog>
 
