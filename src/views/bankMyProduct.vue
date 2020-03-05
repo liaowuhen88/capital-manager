@@ -584,10 +584,16 @@ export default {
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";
     },
-    downloanMyBankProducts() {
-      let a = document.createElement("a");
-      a.href = this.BASE_API + "/excel/excelExport";
-      a.click();
+    downloanMyBankProducts () {
+      let a = document.createElement('a')
+      let json = this.param
+      let params = Object.keys(json).map(function (key) {
+        // body...
+        return encodeURIComponent(key) + '=' + encodeURIComponent(json[key])
+      }).join('&')
+
+      a.href = this.BASE_API + '/excel/excelExport' + '?' + params
+      a.click()
     },
     calculateInterestTotal() {
       var day = this.Utils.getDaysBetween(
