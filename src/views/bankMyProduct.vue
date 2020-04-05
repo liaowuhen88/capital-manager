@@ -322,7 +322,7 @@
           v-if="investmentAmount_show"
           label-width="150px"
         >
-          <el-input v-model="bankMyProduct.investmentAmount" :disabled="true" autocomplete="off"></el-input>
+          <el-input v-model="bankBill.investmentAmount"  autocomplete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="利息金额:" prop="transactionAmount" label-width="150px">
@@ -480,6 +480,7 @@ export default {
         transactionType: "",
         transactionAmount: "",
         transferCard: "",
+        investmentAmount:"",
         remark: ""
       },
       bankProductBackup: Object.assign({}, this.bankProduct),
@@ -714,16 +715,17 @@ export default {
         message: "目前不支持设置提醒规则,待提供"
       });
     },
-    redeem(index, row) {
-      this.bankMyProduct = Object.assign({}, row);
-      this.bankProductIncomeFormVisible = true;
-      this.rowIndex = index;
-      this.dialogTitle = "理财赎回";
-      this.income_show = false;
-      this.investmentAmount_show = true;
-      this.bankBill.myProductId = row.id;
-      this.bankBill.bankCardId = this.bankMyProduct.bank.id;
-      this.bankBill.transactionType = 9;
+    redeem (index, row) {
+      this.bankMyProduct = Object.assign({}, row)
+      this.bankProductIncomeFormVisible = true
+      this.rowIndex = index
+      this.dialogTitle = '理财赎回'
+      this.income_show = false
+      this.investmentAmount_show = true
+      this.bankBill.myProductId = row.id
+      this.bankBill.bankCardId = this.bankMyProduct.bank.id
+      this.bankBill.transactionType = 9
+      this.bankBill.investmentAmount = row.investmentAmount
 
       // this.$confirm(`确定要赎回 【${row.productType}】 吗?`, "提示", {
       //   confirmButtonText: "确定",
