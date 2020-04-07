@@ -15,7 +15,7 @@
         <el-input v-model="param.productType" autocomplete="off" placeholder="产品类型"></el-input>
       </el-col>
       <el-col :span="2">
-        <el-select v-model="param.state" multiple  placeholder="产品状态">
+        <el-select v-model="param.state" multiple placeholder="产品状态">
           <el-option
             v-for="item in states"
             :key="item.value"
@@ -300,6 +300,9 @@
         <el-form-item label="收款方卡号:" prop="bankCard" label-width="150px">
           <el-input v-model="bankMyProduct.bank.bankCard" :disabled="true" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="起息日期:" prop="interestStartTime" label-width="150px">
+          <el-input v-model="bankMyProduct.interestStartTime" :disabled="true" autocomplete="off"></el-input>
+        </el-form-item>
         <el-form-item label="本次收息日期:" prop="transactionTime" label-width="150px">
           <el-date-picker
             v-model="bankBill.transactionTime"
@@ -308,6 +311,7 @@
             placeholder="选择日期"
           ></el-date-picker>
         </el-form-item>
+
         <el-form-item label="下次收息日期:" v-if="income_show" prop="nextProfitDate" label-width="150px">
           <el-date-picker
             v-model="bankBill.nextProfitDate"
@@ -322,13 +326,58 @@
           v-if="investmentAmount_show"
           label-width="150px"
         >
-          <el-input v-model="bankBill.investmentAmount"  autocomplete="off"></el-input>
+          <el-input v-model="bankBill.investmentAmount" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="利息金额:" prop="transactionAmount" label-width="150px">
-          <font size="4" face="arial">{{this.Utils.toMoney(bankBill.transactionAmount) }}</font>
-          <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
+        <el-form-item label="付息方式:" label-width="150px">
+          <el-input
+            v-model="bankMyProduct.interestPaymentMethod"
+            :disabled="true"
+            autocomplete="off"
+          ></el-input>
         </el-form-item>
+
+        <el-form-item label="预期利息金额:" prop="expectedtransactionAmount" label-width="150px">
+          <font size="4" face="arial">{{this.Utils.toMoney(bankBill.expectedtransactionAmount) }}</font>
+        </el-form-item>
+
+        <el-form-item label="实收利息金额:" prop="transactionAmount" label-width="150px">
+          <el-col :span="13">
+            <el-input v-model="bankBill.transactionAmount" autocomplete="off"></el-input>
+          </el-col>
+          <el-col :span="1"></el-col>
+          <el-col :span="10">
+            <font size="4" face="arial">{{this.Utils.toMoney(bankBill.transactionAmount) }}</font>
+          </el-col>
+        </el-form-item>
+        <el-divider></el-divider>
+        <el-form-item
+          v-if="bankMyProduct.interestPaymentMethod == '不定期返还本金'"
+          label="全年天数:"
+          label-width="150px"
+        >
+          <el-input
+            placeholder="全年天数"
+            v-model="bankBill.recalculationParam.days"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item
+          v-if="bankMyProduct.interestPaymentMethod == '不定期返还本金'"
+          label="公式:"
+          label-width="150px"
+        >
+          <el-input
+            placeholder="公式"
+            :disabled="true"
+            v-model="bankBill.recalculationParam.formula"
+            autocomplete="off"
+          ></el-input>
+          <el-button type="primary" plain @click="recalculation">重新计算利息</el-button>
+        </el-form-item>
+
+        <el-divider></el-divider>
         <el-form-item label="备注:" label-width="150px">
           <el-input v-model="bankBill.remark" autocomplete="off"></el-input>
         </el-form-item>
@@ -423,7 +472,8 @@ export default {
         { value: "一次性", label: "一次性" },
         { value: "半年付", label: "半年付" },
         { value: "季付", label: "季付" },
-        { value: "年付", label: "年付" }
+        { value: "年付", label: "年付" },
+        { value: "不定期返还本金", label: "不定期返还本金" }
       ],
       param: {
         name: "",
@@ -478,9 +528,15 @@ export default {
         myProductId: "",
         transactionTime: "",
         transactionType: "",
+        // 预期收入
+        expectedtransactionAmount: "",
         transactionAmount: "",
         transferCard: "",
-        investmentAmount:"",
+        investmentAmount: "",
+        recalculationParam: {
+          days: 360,
+          formula: ""
+        },
         remark: ""
       },
       bankProductBackup: Object.assign({}, this.bankProduct),
@@ -585,16 +641,45 @@ export default {
     formatter(row, column) {
       return this.Utils.toMoney(row[column.property]) + "元";
     },
-    downloanMyBankProducts () {
-      let a = document.createElement('a')
-      let json = this.param
-      let params = Object.keys(json).map(function (key) {
-        // body...
-        return encodeURIComponent(key) + '=' + encodeURIComponent(json[key])
-      }).join('&')
+    recalculation(row, column) {
+      //99万*0.06/360*64
+      let days = this.Utils.getDaysBetween(
+        this.bankMyProduct.interestStartTime,
+        this.bankBill.transactionTime
+      );
 
-      a.href = this.BASE_API + '/excel/excelExport' + '?' + params
-      a.click()
+      this.bankBill.recalculationParam.formula =
+        this.bankMyProduct.investmentAmount +
+        "(投资金额)*" +
+        this.bankMyProduct.expectedInterestRate / 100 +
+        "(利率)/" +
+        this.bankBill.recalculationParam.days +
+        "(全年天数)*" +
+        days +
+        "(利息天数)";
+
+      let num = (
+        ((this.bankMyProduct.investmentAmount *
+          this.bankMyProduct.expectedInterestRate) /
+          100 /
+          this.bankBill.recalculationParam.days) *
+        days
+      ).toFixed(2);
+      this.bankBill.transactionAmount = num;
+    },
+
+    downloanMyBankProducts() {
+      let a = document.createElement("a");
+      let json = this.param;
+      let params = Object.keys(json)
+        .map(function(key) {
+          // body...
+          return encodeURIComponent(key) + "=" + encodeURIComponent(json[key]);
+        })
+        .join("&");
+
+      a.href = this.BASE_API + "/excel/excelExport" + "?" + params;
+      a.click();
     },
     calculateInterestTotal() {
       var day = this.Utils.getDaysBetween(
@@ -715,79 +800,77 @@ export default {
         message: "目前不支持设置提醒规则,待提供"
       });
     },
-    redeem (index, row) {
-      this.bankMyProduct = Object.assign({}, row)
-      this.bankProductIncomeFormVisible = true
-      this.rowIndex = index
-      this.dialogTitle = '理财赎回'
-      this.income_show = false
-      this.investmentAmount_show = true
-      this.bankBill.myProductId = row.id
-      this.bankBill.bankCardId = this.bankMyProduct.bank.id
-      this.bankBill.transactionType = 9
-      this.bankBill.investmentAmount = row.investmentAmount
-
-      // this.$confirm(`确定要赎回 【${row.productType}】 吗?`, "提示", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning"
-      // })
-      //   .then(() => {
-      //     this.$message({
-      //       type: "success",
-      //       message: "赎回成功!"
-      //     });
-      //   })
-      //   .catch(() => {
-      //     console.log("赎回失败");
-      //   });
-    },
-    income(index, row) {
+    redeem(index, row) {
       this.bankMyProduct = Object.assign({}, row);
       this.rowIndex = index;
-      this.income_show = true;
-      this.dialogTitle = "利息收入";
+      this.dialogTitle = "理财赎回";
+      this.income_show = false;
+      this.investmentAmount_show = true;
       this.bankBill.myProductId = row.id;
       this.bankBill.bankCardId = this.bankMyProduct.bank.id;
+      this.bankBill.transactionType = 9;
       this.bankBill.transactionTime = row.profitDate;
-      this.bankBill.transactionType = 6;
+      this.bankBill.investmentAmount = row.investmentAmount;
+
+      this.getExpectedIncome();
+    },
+    getExpectedIncome() {
       this.$http({
         method: "post",
-        url: this.BASE_API + "/api/bankBill/queryLaste",
-        data: { myProductId: this.bankMyProduct.id, transactionTypes: [6] }
+        url: this.BASE_API + "/api/bankMyProducts/getExpectedIncome",
+        data: {
+          myProductId: this.bankMyProduct.id,
+          time: this.bankBill.transactionTime
+        }
       })
         .then(res => {
           if (res.data.code == 0) {
             if (res.data.data) {
-              this.bankBill.transactionAmount = res.data.data.transactionAmount.toString();
+              this.bankBill.expectedtransactionAmount = res.data.data.expectedInterestIncomeMonth.toString();
+              this.bankBill.transactionAmount = res.data.data.expectedInterestIncomeMonth.toString();
             }
             this.bankProductIncomeFormVisible = true;
           } else {
-            this.bankProductIncomeFormVisible = true;
+            this.$message({
+              showClose: true,
+              message: res.data.msg
+            });
           }
         })
         .catch(err => {
           console.error(err);
         });
     },
-    deleteBankProduct (index, row) {
-      this.bankMyProduct = Object.assign({}, row)
-      this.rowIndex = index
+    income(index, row) {
+      this.bankMyProduct = Object.assign({}, row);
+      this.rowIndex = index;
+      this.investmentAmount_show = false;
+      this.income_show = true;
+      this.dialogTitle = "利息收入";
+      this.bankBill.myProductId = row.id;
+      this.bankBill.bankCardId = this.bankMyProduct.bank.id;
+      this.bankBill.transactionTime = row.profitDate;
+      this.bankBill.transactionType = 6;
+      this.getExpectedIncome();
+    },
+    deleteBankProduct(index, row) {
+      this.bankMyProduct = Object.assign({}, row);
+      this.rowIndex = index;
       this.$http({
-        method: 'post',
-        url: this.BASE_API + '/api/bankMyProducts/delete',
+        method: "post",
+        url: this.BASE_API + "/api/bankMyProducts/delete",
         data: { id: this.bankMyProduct.id }
       })
         .then(res => {
           // eslint-disable-next-line eqeqeq
           if (res.data.code == 0) {
-            alert('删除成功')
+            alert("删除成功");
           } else {
-            alert('删除失败')
+            alert("删除失败");
           }
         })
         .catch(err => {
-          console.error(err)
+          console.error(err);
         });
     },
 
